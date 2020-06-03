@@ -26,7 +26,7 @@ def kendallTau(A, B):
             distance += 1
     return distance
 
-def sinthetic_LOP(n,m,phi):
+def synthetic_LOP(n, m, phi):
   instance = np.zeros((n,n))
   s = np.array(mk.samplingMM(m,n, phi=phi, k=None))
   for i in range(n):
@@ -80,7 +80,7 @@ def get_expected_distance(iter_ratio, ini_dist):
 
 class LOP:
   def __init__(self, n, m, phi):
-    self.instance = sinthetic_LOP(n, m, phi)
+    self.instance = synthetic_LOP(n, m, phi)
 
   # Minimized
   def fitness(self, perm):
@@ -91,7 +91,7 @@ def runR(n,m,phi):
     #cego = importr("CEGO")
     rstring = """
     library(CEGO)
-    my_cego <- function(fun, dist=distancePermutationHamming, budget = 15)
+    my_cego <- function(fun, dist, budget = 15)
     {
     seed <- 0
     #distance
@@ -122,7 +122,10 @@ def runR(n,m,phi):
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    best_x, best_fitness = rcode.my_cego(ri.rternalize(lop.fitness))
+    best_x, best_fitness = rcode.my_cego(ri.rternalize(lop.fitness),
+                                         dist = ri.rternalize(kendallTau))
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
+
+runR(6,100, phi=0.9)
