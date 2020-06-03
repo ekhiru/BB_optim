@@ -281,7 +281,8 @@ cat("indbest: ", indbest, "\n")
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
 lop = LOP(6,100, phi=0.9)
+@ri.rternalize
 def lop_fitness(x):
-        return lop.fitness(x)
+    return 0.0
 
 y = runR(lop)
