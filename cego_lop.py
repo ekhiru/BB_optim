@@ -91,6 +91,7 @@ def runR(n,m,phi):
     #cego = importr("CEGO")
     rstring = """
     library(CEGO)
+    options(error=recover)
     my_cego <- function(fun, dist, budget = 15)
     {
     seed <- 0
@@ -101,7 +102,7 @@ def runR(n,m,phi):
     #recombination
     rF <- recombinationPermutationCycleCrossover
     #creation
-    cF <- function()sample(5)
+    cF <- function()sample(6)
     #start optimization
     set.seed(seed)
     res1 <- optimCEGO(x = NULL,
