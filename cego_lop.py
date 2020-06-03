@@ -12,6 +12,7 @@ numpy2ri.activate()
 import rpy2.rinterface as ri
 
 # funcion de distancia entre permutaciones
+@ri.rternalize
 def kendallTau(A, B):
     n = len(A)
     pairs = it.combinations(range(n), 2)
@@ -86,12 +87,8 @@ class LOP:
   def fitness(self, perm):
     print(perm)
     x = get_fitness(perm, self.instance,"LOP")
-    print(x)
+    print(f'x = {x}')
     return x
-
-@ri.rternalize
-def lop_fitness(x):
-    return 0.0
 
 def runR(lop):
     np.random.seed(0)
@@ -270,11 +267,18 @@ cat("indbest: ", indbest, "\n")
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    best_x, best_fitness = rcode.my_cego(lop_fitness,
-                                         dist = ri.rternalize(kendallTau))
+    best_x, best_fitness = rcode.my_cego(ri.rternalize(r_lop_fitness),
+                                         dist = kendallTau)
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
+    
 lop = LOP(6,100, phi=0.9)
+@ri.rternalize
+def r_lop_fitness(x):
+    y = lop.fitness(x)
+    return ri.FloatSexpVector([y])
+
+
 y = runR(lop)
