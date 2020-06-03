@@ -81,164 +81,21 @@ def get_expected_distance(iter_ratio, ini_dist):
 
 class LOP:
   def __init__(self, n, m, phi):
+    self.n = n
     self.instance = synthetic_LOP(n, m, phi)
 
   # Minimized
   def fitness(self, perm):
-    print(perm)
-    x = get_fitness(perm, self.instance,"LOP")
-    print(f'x = {x}')
-    return x
-
-def runR(lop):
-    np.random.seed(0)
+      return get_fitness(perm, self.instance, "LOP")
+    
+def runCEGO(lop, mi, budget):
     #cego = importr("CEGO")
     rstring = """
     library(CEGO)
-    options(error=recover)
-my_optimCEGO <- function (x = NULL, fun, control = list()) 
-{
-    con <- list(evalInit = 2, vectorized = FALSE, verbosity = 0, 
-        plotting = FALSE, targetY = -Inf, budget = 100, creationRetries = 100, 
-        distanceFunction = distancePermutationHamming, creationFunction = solutionFunctionGeneratorPermutation(6), 
-        infill = infillExpectedImprovement, model = modelKriging, 
-        modelSettings = list(), optimizer = optimEA, optimizerSettings = list(), 
-        initialDesign = designMaxMinDist, archiveModelInfo = NULL, 
-        initialDesignSettings = list())
-    con[names(control)] <- control
-    control <- con
-    rm(con)
-    count <- control$evalInit
-    archiveModelInfo <- control$archiveModelInfo
-    vectorized <- control$vectorized
-    verbosity <- control$verbosity
-    plotting <- control$plotting
-    creationFunction <- control$creationFunction
-    distanceFunction <- control$distanceFunction
-    if (is.null(control$initialDesignSettings$distanceFunction)) 
-        control$initialDesignSettings$distanceFunction <- distanceFunction
-    fun
-    if (!vectorized) 
-        fn <- function(x) {
-    y <- lapply(x, fun)
-    print(y)
-    return(unlist(y))
-    }
-    else fn <- fun
-    res <- list(xbest = NA, ybest = NA, x = NA, y = NA, distances = NA, 
-        modelArchive = NA, count = count, convergence = 0, message = "")
-    msg <- "Termination message:"
-    res$x <- control$initialDesign(x, creationFunction, count, 
-        control$initialDesignSettings)
-    distanceHasParam <- FALSE
-    if (is.function(distanceFunction)) {
-        if (length(distanceFunction) == 1) 
-            distanceHasParam <- length(formalArgs(distanceFunction)) > 
-                2
-        else distanceHasParam <- any(sapply(sapply(distanceFunction, 
-            formalArgs, simplify = FALSE), length) > 2)
-        if (!distanceHasParam) 
-            res$distances <- distanceMatrixWrapper(res$x, distanceFunction)
-    }
-    print(fun)
-    print(fn)
-    print(res$x)
-    res$y <- fn(res$x)
-cat("res$y: ")
-print(res$y)
-    indbest <- which.min(res$y)
-cat("indbest: ", indbest, "\n")
-    res$ybest <- res$y[[indbest]]
-    res$xbest <- res$x[[indbest]]
-    model <- buildModel(res, distanceFunction, control)
-    if (!is.null(archiveModelInfo)) {
-        res$modelArchive <- list()
-        archiveIndex <- 1
-        if (identical(model, NA)) {
-            res$modelArchive[[archiveIndex]] <- rep(NA, length(archiveModelInfo))
-            names(res$modelArchive[[archiveIndex]]) <- archiveModelInfo
-        }
-        else {
-            res$modelArchive[[archiveIndex]] <- model$fit[archiveModelInfo]
-            names(res$modelArchive[[archiveIndex]]) <- archiveModelInfo
-        }
-    }
-    useEI <- is.function(control$infill)
-    while ((res$count < control$budget) & (res$ybest > control$targetY)) {
-        if (!identical(model, NA)) {
-            optimres <- CEGO:::optimizeModel(res, creationFunction, 
-                model, control)
-            duplicate <- list(optimres$xbest) %in% res$x
-            improved <- optimres$ybest < optimres$fpredbestKnownY
-        }
-        else {
-            msg <- paste(msg, "Model building failed, optimization stopped prematurely.")
-            warning("Model building failed in optimCEGO, optimization stopped prematurely.")
-            res$convergence <- -1
-            break
-        }
-        res$count <- res$count + 1
-        if (!duplicate && ((improved || useEI))) {
-            res$x[[res$count]] <- optimres$xbest
-        }
-        else {
-            if (!distanceHasParam) {
-                designSize <- length(res$x) + 1
-                if (is.list(distanceFunction)) 
-                  dfun <- distanceFunction[[1]]
-                else dfun <- distanceFunction
-                xc <- designMaxMinDist(res$x, creationFunction, 
-                  designSize, control = list(budget = control$creationRetries, 
-                    distanceFunction = dfun))
-                res$x[[res$count]] <- xc[[designSize]]
-            }
-            else {
-                res$x[[res$count]] <- optimres$xbest
-            }
-        }
-        res$x <- removeDuplicates(res$x, creationFunction)
-        res$y <- c(res$y, fn(res$x[res$count]))
-        indbest <- which.min(res$y)
-        res$ybest <- res$y[[indbest]]
-        res$xbest <- res$x[[indbest]]
-        if (verbosity > 0) 
-            print(paste("Evaluations:", res$count, "    Quality:", 
-                res$ybest))
-        if (plotting) {
-            plot(res$y, type = "l", xlab = "number of evaluations", 
-                ylab = "y")
-            abline(res$ybest, 0, lty = 2)
-        }
-        if (!distanceHasParam & is.function(distanceFunction)) 
-            res$distances <- distanceMatrixUpdate(res$distances, 
-                res$x, distanceFunction)
-        model <- buildModel(res, distanceFunction, control)
-        if (!is.null(archiveModelInfo)) {
-            archiveIndex <- archiveIndex + 1
-            if (identical(model, NA)) {
-                res$modelArchive[[archiveIndex]] <- rep(NA, length(archiveModelInfo))
-                names(res$modelArchive[[archiveIndex]]) <- archiveModelInfo
-            }
-            else {
-                res$modelArchive[[archiveIndex]] <- model$fit[archiveModelInfo]
-                names(res$modelArchive[[archiveIndex]]) <- archiveModelInfo
-            }
-        }
-    }
-    if (min(res$ybest, na.rm = TRUE) <= control$targetY) {
-        msg <- paste(msg, "Successfully achieved target fitness.")
-        res$convergence <- 1
-    }
-    else if (res$count >= control$budget) {
-        msg <- paste(msg, "Target function evaluation budget depleted.")
-    }
-    res$message <- msg
-    res$distances <- NULL
-    res
-}
-    my_cego <- function(fun, dist, budget = 15)
+    my_cego <- function(fun, dist, n, mi = 5, budget = 15)
     {
     seed <- 0
+    set.seed(seed)
     #distance
     #dF <- distancePermutationHamming
     #mutation
@@ -246,17 +103,16 @@ cat("indbest: ", indbest, "\n")
     #recombination
     rF <- recombinationPermutationCycleCrossover
     #creation
-    cF <- function()sample(6)
+    cF <- function()sample(n)
     #start optimization
-    set.seed(seed)
-    res1 <- my_optimCEGO(x = NULL,
+    res1 <- optimCEGO(x = NULL,
                       fun = fun,
                       control = list(creationFunction=cF,
                                      distanceFunction = dist,
                                      optimizerSettings=list(budget=100,popsize=10,
                                                             mutationFunction=mF,
                                                             recombinationFunction=rF),
-                                     evalInit=5,budget=budget,targetY=0,verbosity=1,
+                                     evalInit=mi,budget=budget,targetY=0,verbosity=1,
                                      model=modelKriging,
                                      vectorized=FALSE))
     print(res1)
@@ -267,18 +123,22 @@ cat("indbest: ", indbest, "\n")
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    best_x, best_fitness = rcode.my_cego(ri.rternalize(r_lop_fitness),
-                                         dist = kendallTau)
+    best_x, best_fitness = rcode.my_cego(r_lop_fitness,
+                                         dist = kendallTau,
+                                         n = lop.n,
+                                         mi = mi,
+                                         budget = budget)
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
-    
+
+np.random.seed(42)
+
 lop = LOP(6,100, phi=0.9)
 @ri.rternalize
 def r_lop_fitness(x):
     y = lop.fitness(x)
     return ri.FloatSexpVector([y])
 
-
-y = runR(lop)
+y = runCEGO(lop, mi = 10, budget = 15)
