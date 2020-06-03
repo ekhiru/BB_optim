@@ -89,6 +89,10 @@ class LOP:
     print(x)
     return x
 
+@ri.rternalize
+def lop_fitness(x):
+    return 0.0
+
 def runR(lop):
     np.random.seed(0)
     #cego = importr("CEGO")
@@ -263,14 +267,6 @@ cat("indbest: ", indbest, "\n")
     }
     """
 
-    rstring = """
-    my_test <- function(x, fun) fun(x)
-    """
-    rtest = STAP(rstring, "rtest")
-    y = rtest.my_test([0,1,2,3,4,5], lop_fitness)
-    print(y)
-    return y
-    
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
@@ -281,8 +277,4 @@ cat("indbest: ", indbest, "\n")
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
 lop = LOP(6,100, phi=0.9)
-@ri.rternalize
-def lop_fitness(x):
-    return 0.0
-
 y = runR(lop)
