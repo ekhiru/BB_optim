@@ -3,7 +3,7 @@ import numpy as np
 import itertools as it
 import mallows_kendall as mk
 import os
-#os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/rpy2/rpy2/issues/591/runtimeerror-found-a-situation-in-which-we
+os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/rpy2/rpy2/issues/591/runtimeerror-found-a-situation-in-which-we
 
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r as R
@@ -50,7 +50,7 @@ def u_phi(sample,s0, ws):
         theta = 0.001
     return np.exp(-theta) # theta = - np.log(phi)
 
-def get_fitness(perm, instance,problem):
+def get_fitness(perm, instance, problem):
     sol = 0
     n = len(perm)#sum inthe upper triangle. we have to maximize this
     inverse = np.argsort(perm)
@@ -88,9 +88,9 @@ class LOP:
     x = get_fitness(perm, self.instance,"LOP")
     print(x)
     return x
-    
-def runR(n,m,phi):
-    lop = LOP(n,m,phi)
+
+def runR(lop):
+    np.random.seed(0)
     #cego = importr("CEGO")
     rstring = """
     library(CEGO)
@@ -263,15 +263,25 @@ cat("indbest: ", indbest, "\n")
     }
     """
 
+    rstring = """
+    my_test <- function(x, fun) fun(x)
+    """
+    rtest = STAP(rstring, "rtest")
+    y = rtest.my_test([0,1,2,3,4,5], lop_fitness)
+    print(y)
+    return y
+    
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    def lop_fitness(x):
-        return lop.fitness(x)
-    best_x, best_fitness = rcode.my_cego(ri.rternalize(lop_fitness),
+    best_x, best_fitness = rcode.my_cego(lop_fitness,
                                          dist = ri.rternalize(kendallTau))
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
-runR(6,100, phi=0.9)
+lop = LOP(6,100, phi=0.9)
+def lop_fitness(x):
+        return lop.fitness(x)
+
+y = runR(lop)
