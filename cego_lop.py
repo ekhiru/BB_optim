@@ -3,7 +3,7 @@ import numpy as np
 import itertools as it
 import mallows_kendall as mk
 import os
-os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/rpy2/rpy2/issues/591/runtimeerror-found-a-situation-in-which-we
+#os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/rpy2/rpy2/issues/591/runtimeerror-found-a-situation-in-which-we
 
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r as R
@@ -84,8 +84,11 @@ class LOP:
 
   # Minimized
   def fitness(self, perm):
-    return get_fitness(perm, self.instance,"LOP")
-
+    print(perm)
+    x = get_fitness(perm, self.instance,"LOP")
+    print(x)
+    return x
+    
 def runR(n,m,phi):
     lop = LOP(n,m,phi)
     #cego = importr("CEGO")
@@ -115,7 +118,11 @@ my_optimCEGO <- function (x = NULL, fun, control = list())
         control$initialDesignSettings$distanceFunction <- distanceFunction
     fun
     if (!vectorized) 
-        fn <- function(x) unlist(lapply(x, fun))
+        fn <- function(x) {
+    y <- lapply(x, fun)
+    print(y)
+    return(unlist(y))
+    }
     else fn <- fun
     res <- list(xbest = NA, ybest = NA, x = NA, y = NA, distances = NA, 
         modelArchive = NA, count = count, convergence = 0, message = "")
@@ -132,6 +139,9 @@ my_optimCEGO <- function (x = NULL, fun, control = list())
         if (!distanceHasParam) 
             res$distances <- distanceMatrixWrapper(res$x, distanceFunction)
     }
+    print(fun)
+    print(fn)
+    print(res$x)
     res$y <- fn(res$x)
 cat("res$y: ")
 print(res$y)
@@ -256,7 +266,9 @@ cat("indbest: ", indbest, "\n")
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    best_x, best_fitness = rcode.my_cego(ri.rternalize(lop.fitness),
+    def lop_fitness(x):
+        return lop.fitness(x)
+    best_x, best_fitness = rcode.my_cego(ri.rternalize(lop_fitness),
                                          dist = ri.rternalize(kendallTau))
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
