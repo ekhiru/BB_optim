@@ -12,8 +12,10 @@ from rpy2.robjects import FloatVector
 numpy2ri.activate()
 import rpy2.rinterface as ri
 
+
 # funcion de distancia entre permutaciones
-@ri.rternalize
+# MANUEL: There is a tentative implementation for scipy here: https://github.com/scipy/scipy/pull/7205/files
+# but it looks quite different.
 def kendallTau(A, B):
     n = len(A)
     pairs = it.combinations(range(n), 2)
@@ -22,15 +24,20 @@ def kendallTau(A, B):
         a = A[x] - A[y]
         try:
             b = B[x] - B[y]# if discordant (different signs)
+        # MANUEL: when can such error happen?
         except:
             print("ERROR kendallTau, check b",A, B, x, y)
         if (a * b < 0):
             distance += 1
     return distance
 
+
+@ri.rternalize
+def r_kendallTau(a,b): return kendallTau(a,b)
+
 def synthetic_LOP(n, m, phi):
   instance = np.zeros((n,n))
-  s = np.array(mk.samplingMM(m,n, phi=phi, k=None))
+  s = np.asarray(mk.samplingMM(m,n, phi=phi, k=None))
   for i in range(n):
       for j in range(i+1,n):
           instance[i,j] = (s[:,i]< s[:,j]).sum()
@@ -38,9 +45,9 @@ def synthetic_LOP(n, m, phi):
   return instance
 
 def u_phi(sample,s0, ws):
-    m , n = np.array(sample).shape
+    m , n = np.asarray(sample).shape
     #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
-    dist_avg = np.array([mk.kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
+    dist_avg = np.asarray([mk.kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
     try:
         theta = optimize.newton(mk.mle_theta_mm_f, 0.01, fprime=mk.mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
@@ -131,7 +138,7 @@ def runCEGO(lop, mi, budget):
     rcode = STAP(rstring, "rcode")
     lop_r_fitness = lop.make_r_fitness()
     best_x, best_fitness, x , y = rcode.my_cego(lop_r_fitness,
-                                                dist = kendallTau,
+                                                dist = r_kendallTau,
                                                 n = lop.n,
                                                 mi = mi,
                                                 budget = budget)
