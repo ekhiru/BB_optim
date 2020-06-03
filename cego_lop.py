@@ -8,6 +8,7 @@ os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r as R
 from rpy2.robjects import numpy2ri
+from rpy2.robjects import FloatVector
 numpy2ri.activate()
 import rpy2.rinterface as ri
 
@@ -76,7 +77,7 @@ def paint(df):
         plt.show()
 
 def get_expected_distance(iter_ratio, ini_dist):
-    return ini_dist-ini_dist*iter_ratio
+    return ini_dist - ini_dist * iter_ratio
 #get_expected_distance(0, 4)
 
 class LOP:
@@ -87,27 +88,32 @@ class LOP:
   # Minimized
   def fitness(self, perm):
       return get_fitness(perm, self.instance, "LOP")
-    
+
+  # Returns a closure function that can be called from R.
+  def make_r_fitness(self):
+      @ri.rternalize
+      def r_fitness(x):
+          y = self.fitness(x)
+          return FloatVector(np.asarray(y))
+      return r_fitness
+
+
 def runCEGO(lop, mi, budget):
-    #cego = importr("CEGO")
     rstring = """
     library(CEGO)
-    my_cego <- function(fun, dist, n, mi = 5, budget = 15)
+    my_cego <- function(fun, dist, n, mi = 5, budget = 15, seed = 0)
     {
-    seed <- 0
     set.seed(seed)
-    #distance
-    #dF <- distancePermutationHamming
-    #mutation
+    # mutation
     mF <- mutationPermutationSwap
-    #recombination
+    # recombination
     rF <- recombinationPermutationCycleCrossover
     #creation
-    cF <- function()sample(n)
-    #start optimization
-    res1 <- optimCEGO(x = NULL,
-                      fun = fun,
-                      control = list(creationFunction=cF,
+    cF <- function() sample(n)
+    # start optimization
+    res <- optimCEGO(x = NULL,
+                     fun = fun,
+                     control = list(creationFunction=cF,
                                      distanceFunction = dist,
                                      optimizerSettings=list(budget=100,popsize=10,
                                                             mutationFunction=mF,
@@ -115,30 +121,29 @@ def runCEGO(lop, mi, budget):
                                      evalInit=mi,budget=budget,targetY=0,verbosity=1,
                                      model=modelKriging,
                                      vectorized=FALSE))
-    print(res1)
-    return(list(res1$xbest, res1$ybest))
+    print(res)
+    return(list(res$xbest, res$ybest, do.call(rbind, res$x), res$y))
     }
     """
 
     # with open('myfunc.r', 'r') as f:
     #     rstring = f.read()
     rcode = STAP(rstring, "rcode")
-    best_x, best_fitness = rcode.my_cego(r_lop_fitness,
-                                         dist = kendallTau,
-                                         n = lop.n,
-                                         mi = mi,
-                                         budget = budget)
+    lop_r_fitness = lop.make_r_fitness()
+    best_x, best_fitness, x , y = rcode.my_cego(lop_r_fitness,
+                                                dist = kendallTau,
+                                                n = lop.n,
+                                                mi = mi,
+                                                budget = budget)
+    x = np.asarray(x)
+    y = np.asarray(y)
+    print(x)
+    print(y)
     best_x = np.asarray(best_x)
     best_fitness = np.asarray(best_fitness)[0]
     print(f'best: {best_x}\nbest_fitness: {best_fitness}')
 
 
 np.random.seed(42)
-
-lop = LOP(6,100, phi=0.9)
-@ri.rternalize
-def r_lop_fitness(x):
-    y = lop.fitness(x)
-    return ri.FloatSexpVector([y])
-
+lop = LOP(10,100, phi=0.9)
 y = runCEGO(lop, mi = 10, budget = 15)
