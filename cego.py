@@ -66,13 +66,14 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
     #best_fitness = np.asarray(best_fitness)[0]
     #print(f'best: {best_x}\nbest_fitness: {best_fitness}')
     df = pd.DataFrame()#columns=['problem','rep','m','rho','fitnesses','phi_estim','phi_sample','dist'])
-    best_known_fit = instance.get_fitness(best_known_sol)
-    df['Fitness'] = instance.evaluations/best_known_fit
-    df['Problem'] = 'LOP'
+    # Evaluate without saving the solution.
+    best_known_fit = instance.fitness_nosave(best_known_sol)
+    df['Fitness'] = instance.evaluations / best_known_fit
+    df['Problem'] = instance.problem_name
     df['Solver'] = 'CEGO'
     df['Sample size'] = range(m)
     df['rep'] = rep
 #    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
-    df['Distance'] = [mk.kendallTau(perm,best_known_sol) for perm in instance.solutions]
+    df['Distance'] = [kendallTau(perm, best_known_sol) for perm in instance.solutions]
     return df
 

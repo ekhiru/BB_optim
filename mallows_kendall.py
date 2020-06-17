@@ -314,12 +314,29 @@ def random_perm_at_dist(n, dist, sk):
         i += 1
     return v2ranking(v)
 
+def u_phi(sample, s0, ws):
+    m , n = np.asarray(sample).shape
+    #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+    dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
+    try:
+        theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
+    except:
+        #if dist_avg == 0.0: return s0, np.exp(-5)#=phi
+        print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
+        print(s0)
+        raise
+    if theta < 0:
+        theta = 0.001
+    return np.exp(-theta) # theta = - np.log(phi)
 
 
+def uborda(sample, ws):
+    mul = (sample * ws[:, None]).sum(axis=0)
+    return np.argsort(np.argsort(mul))
 
-
-
-
+def get_expected_distance(iter_ratio, ini_dist):
+    return ini_dist - ini_dist * iter_ratio
+#get_expected_distance(0, 4)
 
 
 
