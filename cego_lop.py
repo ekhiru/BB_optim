@@ -31,7 +31,7 @@ def solve_one_umm(instance, ms, rho, rep,  m_ini, true_sol):
         ws = ws/ws.max()
         ws = rho**(1-ws)
         borda = mk.uborda(np.array(sample),ws)
-        phi_estim = u_phi(sample,borda, ws)
+        phi_estim = mk.u_phi(sample,borda, ws)
         expected_dist = mk.get_expected_distance((m+1)/ms,(n-1)*n/4)#initial distance is the expectred at uniformity
         phi_sample = mk.find_phi(n, expected_dist, expected_dist+1)
         #phi_estim = 1 - (m+1)/(ms)

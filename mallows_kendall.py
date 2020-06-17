@@ -16,6 +16,7 @@ def find_phi_n(n, bins): #NO
         ed.append(dmin)
         phi_ed.append(find_phi(n, dmin, dmin+1))
     return ed, phi_ed
+
 def find_phi(n, dmin, dmax): #NO
     imin, imax = np.float64(0),np.float64(1)
     iterat = 0
