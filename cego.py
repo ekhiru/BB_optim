@@ -41,7 +41,7 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
                                      optimizerSettings=list(budget=budgetGA,popsize=20,
                                                             mutationFunction=mF,
                                                             recombinationFunction=rF),
-                                     evalInit=m_ini,budget=budget,targetY=0,verbosity=1,
+                                     evalInit=m_ini,budget=budget,verbosity=1,
                                      model=modelKriging,
                                      vectorized=FALSE))
     print(res)
