@@ -243,6 +243,7 @@ def kendallTau(A, B=None):
     for x, y in pairs:
         #if not A[x]!=A[x] and not A[y]!=A[y]:#OJO no se check B
         a = A[x] - A[y]
+        # MANUEL: How can this fail?
         try:
             b = B[x] - B[y]# if discordant (different signs)
         except:
