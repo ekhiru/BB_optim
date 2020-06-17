@@ -60,7 +60,7 @@ def run_and_save(n,rep,phi_instance,budgetGA,SLURM_JOB_ID="Local",m_max=400):
     df['run_time'] = time.time() - start_time
     for rho in rhos:
         start_time = time.time()
-        dfuMM = solve_one_umm(instance,m_max, rho, rep,  m_ini,true_sol)
+        dfuMM = solve_one_umm(instance, m_max, rho, rep, m_ini, true_sol)
         dfuMM['run_time'] = time.time() - start_time
         df = pd.concat([df,dfuMM],sort=False)
     df['best_known'] = instance.get_fitness(true_sol)
