@@ -14,13 +14,13 @@ def synthetic_LOP(n, m, phi):
   return instance
 
 def get_fitness(perm, instance):
-# In case it is not numpy array
-    perm = np.asarray(perm)
-    n = len(perm) #sum in the upper triangle. we have to maximize this
-    sol = 0
-    for i in range(n):
-        sol += instance[perm[i], perm[i:n]]
-    return sol
+  # In case it is not numpy array
+  perm = np.asarray(perm)
+  n = len(perm) #sum in the upper triangle. we have to maximize this
+  sol = 0
+  for i in range(n):
+    sol += instance[perm[i], perm[i:n]]
+  return sol
 
 # Linear Ordering Problem
 class LOP:
