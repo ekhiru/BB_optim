@@ -19,7 +19,7 @@ def get_fitness(perm, instance):
   n = len(perm) #sum in the upper triangle. we have to maximize this
   sol = 0
   for i in range(n):
-    sol += instance[perm[i], perm[i:n]]
+    sol += instance[perm[i], perm[i:n]].sum()
   return sol
 
 # Linear Ordering Problem
