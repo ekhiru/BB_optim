@@ -58,5 +58,5 @@ class LOP:
       @ri.rternalize
       def r_fitness(x):
           y = self.fitness(x)
-          return FloatVector(np.asarray(-y))
+          return FloatVector(-np.asarray(y))
       return r_fitness
