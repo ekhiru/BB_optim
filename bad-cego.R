@@ -26,7 +26,7 @@ gen_lop_fitness <- function(mat) {
   lop_fitness
 }
 
-my_cego <- function(fun, dist, n, m_ini = 5, budget = 400, seed = 0, budgetGA = 10000)
+my_cego <- function(fun, dist, n, m_ini = 5, budget = 100, seed = 0, budgetGA = 1000)
 {
   set.seed(seed)
   # mutation
@@ -54,7 +54,6 @@ my_cego <- function(fun, dist, n, m_ini = 5, budget = 400, seed = 0, budgetGA = 
 instance <- "instance_0.9"
 M <- read.csv(instance,header = FALSE)
 n <- nrow(M)
-perm <- sample(1:n)
 
 lop_fitness <- gen_lop_fitness(M)
 print(lop_fitness(1:n))
