@@ -1,6 +1,7 @@
 import numpy as np
 import itertools as it
 import scipy as sp
+from scipy import optimize
 #fit MM
 
 # estas dos funciones valen para buscar los thetas para diferentes E[d].
@@ -334,10 +335,6 @@ def u_phi(sample, s0, ws):
 def uborda(sample, ws):
     mul = (sample * ws[:, None]).sum(axis=0)
     return np.argsort(np.argsort(mul))
-
-def get_expected_distance(iter_ratio, ini_dist):
-    return ini_dist - ini_dist * iter_ratio
-#get_expected_distance(0, 4)
 
 
 

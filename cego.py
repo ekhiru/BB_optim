@@ -17,12 +17,13 @@ import rpy2.rinterface as ri
 @ri.rternalize
 def r_kendallTau(A,B):
     return kendallTau(A,B)
-    
+
 
 # rep : replication number.
-def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
+def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
     rstring = """
     library(CEGO)
+
     my_cego <- function(fun, dist, n, m_ini = 5, budget = 15, seed = 0, budgetGA = 100)
     {
     set.seed(seed)
@@ -33,6 +34,7 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
     #creation
     cF <- function() sample(n)
     # start optimization
+    print("antes del optimCEGO")
     res <- optimCEGO(x = NULL,
                      fun = fun,
                      control = list(creationFunction=cF,
@@ -44,7 +46,7 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
                                      evalInit=m_ini,budget=budget,verbosity=1,
                                      model=modelKriging,
                                      vectorized=FALSE))
-    print(res)
+
     return(list(res$xbest, res$ybest, do.call(rbind, res$x), res$y))
     }
     """
@@ -69,12 +71,12 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, budgetGA):
     df = pd.DataFrame()#columns=['problem','rep','m','rho','fitnesses','phi_estim','phi_sample','dist'])
     # Evaluate without saving the solution.
     best_known_fit = instance.fitness_nosave(best_known_sol)
-    df['Fitness'] = instance.evaluations / best_known_fit
+    worst_known_fit = instance.fitness_nosave(worst_known_sol)
+    df['Fitness'] = (instance.evaluations - best_known_fit)/ (worst_known_fit - best_known_fit)
     df['Problem'] = instance.problem_name
     df['Solver'] = 'CEGO'
     df['Sample size'] = range(m)
     df['rep'] = rep
 #    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
-    df['Distance'] = [kendallTau(perm, best_known_sol) for perm in instance.solutions]
+    df['Distance'] = [kendallTau(perm, best_known_sol)/(instance.n*(instance.n-1)/2) for perm in instance.solutions]
     return df
-

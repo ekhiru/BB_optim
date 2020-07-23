@@ -15,11 +15,14 @@ def synthetic_LOP(n, m, phi):
 
 def get_fitness(perm, instance):
   # In case it is not numpy array
+
   perm = np.asarray(perm)
-  n = len(perm) #sum in the upper triangle. we have to maximize this
+  n = len(perm) #sum in the LOWER triangle. we have to MINIMIZE this
   sol = 0
+  perm = perm.astype(int) #a veces vienen floats
   for i in range(n):
-    sol += instance[perm[i], perm[i:n]].sum()
+    #print(perm,i,n, perm.astype(int))
+    sol += instance[perm[i], perm[0:i]].sum()
   return sol
 
 # Linear Ordering Problem
@@ -30,7 +33,7 @@ class LOP:
   @classmethod
   def generate_synthetic(cls, n, m, phi):
     return cls(n, synthetic_LOP(n, m, phi))
-    
+
   # Methods
   def __init__(self, n, instance):
     self.n = n
@@ -44,12 +47,13 @@ class LOP:
   # an alias of the above for compatibility
   def get_fitness(self, perm):
     return self.fitness_nosave(perm)
-      
+
   # Minimized
   def fitness(self, perm):
       x = get_fitness(perm, self.instance)
       self.evaluations.append(x)
       self.solutions.append(perm)
+      #print("----XXX>>>>perm",perm)
       return x
 
   # Returns a closure function that can be called from R.
@@ -57,6 +61,8 @@ class LOP:
   def make_r_fitness(self):
       @ri.rternalize
       def r_fitness(x):
-          y = self.fitness(x)
-          return FloatVector(-np.asarray(y))
+          xpy = np.asarray(x)-1
+          y = self.fitness(xpy)
+#          print("xpy",xpy,y)
+          return FloatVector(np.asarray(y)) #no le gustan los negativos
       return r_fitness
