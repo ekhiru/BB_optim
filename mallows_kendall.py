@@ -256,9 +256,9 @@ def kendallTau(A, B=None):
     return distance
 
 
-def partial_ord2partial_rank(pord,n,k,type="beta"):#NO
-    if type=="gamma": val = -1
-    if type=="beta": val = k
+def partial_ord2partial_rank(pord, n, k, type="beta"):#NO
+    if type == "gamma": val = -1
+    elif type == "beta": val = k
 
     # pord is a collection of partial orderings, each of which (1) has len n (2) np.nans for the unspecified places (3) is np.array
     #input partial ordering of the first k items. The first k positions have vals [0,n-1]

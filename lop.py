@@ -9,21 +9,28 @@ def synthetic_LOP(n, m, phi):
   s = np.asarray(mk.samplingMM(m,n, phi=phi, k=None))
   for i in range(n):
       for j in range(i+1,n):
-          instance[i,j] = (s[:,i]< s[:,j]).sum()
+          instance[i,j] = (s[:,i] < s[:,j]).sum()
           instance[j,i] = m - instance[i,j]
   return instance
 
 def get_fitness(perm, instance):
   # In case it is not numpy array
-
-  perm = np.asarray(perm)
+  perm = np.asarray(perm, dtype=int)
   n = len(perm) #sum in the LOWER triangle. we have to MINIMIZE this
   sol = 0
-  perm = perm.astype(int) #a veces vienen floats
   for i in range(n):
     #print(perm,i,n, perm.astype(int))
     sol += instance[perm[i], perm[0:i]].sum()
+   return sol
+
+# Faster version
+def get_fitness_fitness(perm, instance):
+  # In case it is not numpy array.
+  perm = np.asarray(perm, dtype=int)
+  # Sum of the upper triangle. We have to maximize this.
+  sol = np.tril(instance[np.ix_(perm, perm)]).sum()
   return sol
+
 
 # Linear Ordering Problem
 class LOP:
