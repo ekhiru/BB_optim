@@ -21,7 +21,7 @@ def get_fitness(perm, instance):
   for i in range(n):
     #print(perm,i,n, perm.astype(int))
     sol += instance[perm[i], perm[0:i]].sum()
-   return sol
+  return sol
 
 # Faster version
 def get_fitness_fitness(perm, instance):
