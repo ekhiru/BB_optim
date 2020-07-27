@@ -35,20 +35,21 @@ def get_expected_distance(iterat,n,m):
 
 #get_expected_distance(0, 4)
 
-def binary_search_rho(w,rho_ini=1,rho_end=0, tol=0.001,ratio_samples=0.25,weight_mass=0.9):#0<w_i<1, w is sorted increasingly,
+def binary_search_rho(w,ratio_samples_learn,weight_mass_learn,rho_ini=1,rho_end=0, tol=0.001):#0<w_i<1, w is sorted increasingly,
   #if pos is None we take the largest 4th.
   #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho*ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
   # codes as a recursive binary search in (0,1)
-  pos = int(len(w)*ratio_samples)
+  pos = int(len(w)*ratio_samples_learn)
+  # print(pos,len(w),ratio_samples_learn)
   rho_med = rho_ini + (rho_end-rho_ini)/2
   acum = np.cumsum(rho_med**w)
   a = acum[pos]
   b = acum[-1]
-  if abs( a/b - weight_mass) < tol: return rho_med
-  if a/b > weight_mass: return binary_search_rho(w,rho_ini,rho_med)
-  return binary_search_rho(w,rho_med,rho_end)
+  if abs( a/b - weight_mass_learn) < tol: return rho_med
+  if a/b > weight_mass_learn: return binary_search_rho(w,ratio_samples_learn,weight_mass_learn,rho_ini,rho_med)
+  return binary_search_rho(w,ratio_samples_learn,weight_mass_learn,rho_med,rho_end)
 
-def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM):
+def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_samples_learn,weight_mass_learn):
     res = []
     n = instance.n
     N = (n-1)*n/2
@@ -77,7 +78,7 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM):
         ws = ws/ws.max()
         co = ws.copy()
         co.sort()
-        rho = binary_search_rho(co)
+        rho = binary_search_rho(co,ratio_samples_learn,weight_mass_learn)
 
         # print(rho)
         ws = rho**(ws) #MINIMIZE
@@ -112,7 +113,7 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM):
     return df
 
 
-def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,SLURM_JOB_ID="Local",m_max=400):
+def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400):
     np.random.seed(rep)
     true_sol = list(range(n))
     m_inst = 200
@@ -128,7 +129,7 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,SLURM_JOB_ID="Local",m_max
     df['run_time'] = time.time() - start_time
     #for rho in rhos:
     start_time = time.time()
-    dfuMM = solve_one_umm(instance, m_max, rep, m_ini, true_sol,true_sol[::-1],budgetMM)
+    dfuMM = solve_one_umm(instance, m_max, rep, m_ini, true_sol,true_sol[::-1],budgetMM,ratio_samples_learn,weight_mass_learn)
     dfuMM['run_time'] = time.time() - start_time
     df = pd.concat([df,dfuMM],sort=False)
     df['best_known'] = instance.get_fitness(true_sol)
@@ -137,6 +138,8 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,SLURM_JOB_ID="Local",m_max
     df['budget'] = budgetGA
     df['n'] = n
     df['m_max'] = m_max
+    df['ratio_samples_learn'] = ratio_samples_learn
+    df['weight_mass_learn'] = weight_mass_learn
     df.to_pickle('pickles/pick'+str(SLURM_JOB_ID)+'.pkl')
 
 
@@ -144,6 +147,6 @@ if __name__ == '__main__':
     print(sys.argv)
     params = [float(p) for p in sys.argv[1:]]
     print(params)
-    [n,rep,phi_instance,budgetGA,budgetMM,SLURM_JOB_ID,m_max] = params
-    print("assigned",[n,rep,phi_instance,budgetGA,budgetMM,SLURM_JOB_ID,m_max] )
-    run_and_save(int(n),int(rep),float(phi_instance),int(budgetGA),int(budgetMM),int(SLURM_JOB_ID),int(m_max))
+    [n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn,weight_mass_learn,SLURM_JOB_ID,m_max] = params
+    # n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400
+    run_and_save(int(n),int(rep),float(phi_instance),int(budgetGA),int(budgetMM),float(ratio_samples_learn),float(weight_mass_learn),int(SLURM_JOB_ID),int(m_max))
