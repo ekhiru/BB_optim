@@ -9,8 +9,8 @@ def synthetic_LOP(n, m, phi):
   s = np.asarray(mk.samplingMM(m,n, phi=phi, k=None))
   for i in range(n):
       for j in range(i+1,n):
-          instance[i,j] = (s[:,i] < s[:,j]).sum()
-          instance[j,i] = m - instance[i,j]
+          instance[i,j] = (s[:,i] < s[:,j]).sum()/m
+          instance[j,i] = 1 - instance[i,j]
   return instance
 
 def get_fitness(perm, instance):
@@ -19,9 +19,10 @@ def get_fitness(perm, instance):
   n = len(perm) #sum in the LOWER triangle. we have to MINIMIZE this
   sol = 0
   for i in range(n):
-    #print(perm,i,n, perm.astype(int))
+    # print("trace",perm,i,n, perm.astype(int),instance[perm[i], perm[0:i]])
+    # print(i,perm[i], perm[0:i])
     sol += instance[perm[i], perm[0:i]].sum()
-   return sol
+  return sol
 
 # Faster version
 def get_fitness_fitness(perm, instance):
