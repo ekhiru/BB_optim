@@ -1,0 +1,7 @@
+#                                                              -*- mode: r -*-
+parametersFile = "parameters-cego.txt"
+trainInstancesFile = "train-instances.txt"
+trainInstancesDir = ""
+maxExperiments = 100
+targetRunner = "./target-runner-cego.py"
+

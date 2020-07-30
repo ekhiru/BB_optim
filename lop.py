@@ -6,7 +6,7 @@ import rpy2.rinterface as ri
 
 def synthetic_LOP(n, m, phi):
   instance = np.zeros((n,n))
-  s = np.asarray(mk.samplingMM(m,n, phi=phi, k=None))
+  s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
   for i in range(n):
       for j in range(i+1,n):
           instance[i,j] = (s[:,i] < s[:,j]).sum()/m
@@ -37,18 +37,24 @@ def get_fitness_fitness(perm, instance):
 class LOP:
   # Class attributes
   problem_name = "LOP"
-
+  
   @classmethod
   def generate_synthetic(cls, n, m, phi):
-    return cls(n, synthetic_LOP(n, m, phi))
+    instance = synthetic_LOP(n, m, phi)
+    best_sol = list(range(n))
+    worst_sol = best_sol[::-1]
+    return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol)
+    
 
   # Methods
-  def __init__(self, n, instance):
+  def __init__(self, n, instance, best_sol = None, worst_sol = None):
     self.n = n
     self.instance = instance
     self.evaluations = []
     self.solutions = []
-
+    self.best_sol = best_sol
+    self.worst_sol = worst_sol
+    
   def fitness_nosave(self, perm):
       return get_fitness(perm, self.instance)
 

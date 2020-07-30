@@ -78,5 +78,5 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
     df['Sample size'] = range(m)
     df['rep'] = rep
 #    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
-    df['Distance'] = [kendallTau(perm, best_known_sol)/(instance.n*(instance.n-1)/2) for perm in instance.solutions]
+    df['Distance'] = [ kendallTau(perm, best_known_sol) / (instance.n * (instance.n - 1) / 2) for perm in instance.solutions]
     return df

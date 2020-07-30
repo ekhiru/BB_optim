@@ -115,7 +115,6 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_s
 
 def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400):
     np.random.seed(rep)
-    true_sol = list(range(n))
     m_inst = 200
     m_ini = 10
     # rhos=[1e-3,1e-5,1e-7,1e-9]
@@ -125,15 +124,16 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,w
     problem = instance.problem_name
     start_time = time.time()
     df = pd.DataFrame()
-    #df = cego.runCEGO(instance = instance, m_ini = m_ini, m = m_max,rep=rep, best_known_sol=true_sol, worst_known_sol=true_sol[::-1], budgetGA=budgetGA)
+    #df = cego.runCEGO(instance = instance, m_ini = m_ini, m = m_max,rep=rep, best_known_sol=instance.best_sol, worst_known_sol=instance.worst_sol, budgetGA=budgetGA)
     df['run_time'] = time.time() - start_time
     #for rho in rhos:
     start_time = time.time()
-    dfuMM = solve_one_umm(instance, m_max, rep, m_ini, true_sol,true_sol[::-1],budgetMM,ratio_samples_learn,weight_mass_learn)
+    dfuMM = solve_one_umm(instance, m_max, rep, m_ini, instance.best_sol, instance.worst_sol, budgetMM,ratio_samples_learn,weight_mass_learn)
     dfuMM['run_time'] = time.time() - start_time
     df = pd.concat([df,dfuMM],sort=False)
-    df['best_known'] = instance.get_fitness(true_sol)
-    df['worst_known'] = instance.get_fitness(true_sol[::-1])
+    
+    df['best_known'] = instance.get_fitness(instance.best_sol)
+    df['worst_known'] = instance.get_fitness(instance.worst_sol)
     df['phi_instance'] = phi_instance
     df['budget'] = budgetGA
     df['n'] = n
