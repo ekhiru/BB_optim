@@ -1,0 +1,375 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% abbrev.bib 
+%%
+%% To the extent that the contents of bib files may be subject to
+%% copyright, the contents of the IRIDIA BibTeX Repository are placed
+%% under the public domain by associating it to the Creative Commons CC0
+%% 1.0 Universal license (http://creativecommons.org/publicdomain/zero/1.0/).
+%
+%% READ THESE RULES FIRST BEFORE MODIFYING THIS FILE
+%% 1. Keep each one of Series, Publishers, Institutes and Proceedings sorted.
+%% 2. Check that what you are adding has not been added already with a
+%%    different name.
+%% 3. Publishers should have a -pub and -ad form, for the publisher field
+%%    and the address field. 
+%%    If the publisher has several addresses, add them as -ad-city.
+%% 4. The address of proceedings refers to the location of the proceedings. 
+%%    Only in that case, the publisher field should be constructed by joining 
+%%    the -pub and -ad forms like: publisher = ams-pub # ", " # ams-ad,
+%% 5. If you want to use months, the correct way is using the following 
+%%    abbrevations, which are directly supported by BibTeX:
+%%    jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
+%% 6. Always use quotes "" instead of braces {} for the string definition.
+%% 7. Add a string for booktitles of proceedings. Add the short form to
+%%    abbrevshort.bib.
+%% Z. Some of the entries do not follow the above rules.
+%%    Please help us to update them little by little.
+@PREAMBLE{ "\providecommand{\MaxMinAntSystem}{{$\cal MAX$--$\cal MIN$} {A}nt {S}ystem} "
+             # "\providecommand{\Rpackage}[1]{#1} "
+             # "\providecommand{\SoftwarePackage}[1]{#1} "
+             # "\providecommand{\proglang}[1]{#1} " }
+
+@string{and = " and "}
+@string{Tam = "To appear"}
+@string{ta = "to appear"}
+@string{ip = "In press"}
+@string{notreadyet = ""}
+@string{notavailable = ""}
+@string{searchforit = ""}
+
+%%%%%%%%%%%%%%
+%%% Series %%%
+%%%%%%%%%%%%%%
+@string{aisc    = "Advances in Intelligent and Soft Computing"}
+@string{aisc2   = "Advances in Intelligent Systems and Computing"}
+@string{cmiap   = "Computational Methods in Applied Sciences"}
+@string{dmtcs	= "{DIMACS} Series on Discrete Mathematics and Theoretical Computer Science"}
+@string{isorms  = "International Series in Operations Research \& Management Science"}
+@string{lnai	= "Lecture Notes in Artificial Intelligence"}
+@string{lncs	= "Lecture Notes in Computer Science"}
+@string{lnems   = "Lecture Notes in Economics and Mathematical Systems"}
+@String{natcompser = "Natural Computing Series"}
+@string{nato	= "NATO ASI Series"}
+@String{nc-opt  = "Nonconvex optimization and its applications"}
+@string{orcs    = "Operations Research/Computer Science Interfaces"}
+@String{sici    = "Studies in Computational Intelligence"}
+
+%%%%%%%%%%%%%%%%%%
+%%% Publishers
+%%%%%%%%%%%%%%%%%%
+@string{aaaimit	= "{AAAI} Press\slash {MIT} Press, Menlo Park, CA"}
+@string{aaaip	= "AAAI Press, Menlo Park, CA"}
+@string{aaaip-pub = "{AAAI} Press"}
+@string{acm = "ACM Press, New York, NY"}
+@string{acm-ad = "New York, NY"}
+@string{acm-pub = "ACM Press"}
+@string{ams-ad = "Providence, RI"}
+@string{ams-pub = "American Mathematical Society"}
+@string{ap-n    = "Academic Press, New York, NY"},
+@string{asme    = "ASME Press"}
+@string{athena  = "Athena Scientific, Belmont, MA"}
+@string{aw-boston-pub     = "Addison-Wesley, Boston, MA"} 
+@string{aw-pub      = "Addison-Wesley"} 
+@string{aw-reading-pub     = "Addison-Wesley, Reading, MA"} 
+@string{blsp    = "Blackwell Scientific Publications, Oxford, UK"}
+@string{bsp = "Baltzer Science Publishers"}
+@string{ccp = "Civil-Comp Press, Stirling, Scotland"}
+@string{chapman = "Chapman \& Hall\slash CRC"}
+@string{chapman-ad = "Boca Raton, FL"}
+@string{crc-press = "CRC Press"}
+@string{cup-ny =  "Cambridge University Press"}
+@string{cup-ny-ad =  "New York, NY"}
+@string{curas = "Curran Associates, Red Hook, NY"}
+@string{cws = "Centre for Water Systems, Exeter, UK"}
+@string{ellipses = "Editions Ellipses"}
+@string{ellipses-ad = "Paris, FR"}
+@string{elsevier = "Elsevier"}
+@string{elsevier-a = "Elsevier, Amsterdam, The Netherlands"}
+@string{freeman = "Freeman \& Co, San Francisco, CA"}
+@string{hup = "Harvard University Press, Cambridge, MA"}
+@string{iasted = "IASTED\slash ACTA Press, Anaheim, CA"}
+@string{ieee-csp = "IEEE Computer Society Press"}
+@string{ieee-csp-ad = "Los Alamitos, CA"}
+@string{ieeep = "IEEE Press"}
+@string{ieeep-ad = "Piscataway, NJ"}
+@string{iop = "IOP Publishing"}
+@string{iop-ad = "Bristol, UK"}
+@string{ios = "IOS Press, Amsterdam, The Netherlands"}
+@string{ios-ad = "Amsterdam, The Netherlands"}
+@string{ios-pub = "IOS Press"}
+@string{jws	= "John Wiley \& Sons"}
+@string{jws-c	= "John Wiley \& Sons, Chichester, UK"}
+@string{jws-c-ad = "Chichester, UK"}
+@string{jws-ny	= "John Wiley \& Sons, New York, NY"}
+@string{jws-ny-ad = "New York, NY"}
+@string{kap	= "Kluwer Academic Publishers"}
+@string{kap-ma	= "Kluwer Academic Publishers, Boston, MA"}
+@string{kap-nl	= "Kluwer Academic Publishers, Dordrecht, The Netherlands"}
+@string{kap-no	= "Kluwer Academic Publishers, Norwell, MA"}
+@string{lea	= "Lawrence Erlbaum Associates"}
+@string{masson	= "Masson, Milano, Italy"}
+@string{mgh	= "McGraw Hill"}
+@string{mgh-b	= "McGraw Hill, Boston, MA"}
+@string{mgh-l	= "McGraw Hill, London, UK"}
+@string{mgh-ny	= "McGraw Hill, New York, NY"}
+@string{mit	= "MIT Press, Cambridge, MA"}
+@string{mit-ad	= "Cambridge, MA"}
+@string{mit-pub	= "MIT Press"}
+@string{mk	= "Morgan Kaufmann Publishers"}
+@string{mk-ad-san	= "San Francisco, CA"}
+@string{mk-p	= "Morgan Kaufmann Publishers, Palo Alto, CA"}
+@string{mk-s	= "Morgan Kaufmann Publishers, San Francisco, CA"}
+@string{mk-sm	= "Morgan Kaufmann Publishers, San Mateo, CA"}
+@string{nh	= "North-Holland"}
+@string{nh-a	= "North-Holland, Amsterdam, The Netherlands"}
+@string{ob      = "R.~Oldenburg Verlag, M{\"u}nchen, Germany"}
+@string{oup	= "Oxford University Press"}
+@string{oup-n	= "Oxford University Press, New York, NY"}
+@string{pergamon	= "Pergamon Press, New York, NY"}
+@string{ph	= "Prentice Hall, Englewood Cliffs, NJ"}
+@string{pm = "Palgrave Macmillan Ltd., Basingstoke, UK"}
+@string{pp	= "Pitman Publishing, London, UK"}
+@string{pub-IEEE     = "IEEE Computer Society Press"}
+@string{pup	= "Princeton University Press, Princeton, NJ"}
+@string{rsp = " Research Studies Press Ltd. "}
+@string{siam    = "Society for Industrial and Applied Mathematics, Philadelphia, PA, USA"}
+@string{springer = "Springer"}
+@string{springer-aisc = "Springer, Berlin\slash Heidelberg"}
+@string{springer-aisc-ad = "Berlin, Heidelberg"}
+@string{springer-aisc1 = "Springer International Publishing"}
+@string{springer-aisc2 = "Springer International Publishing, Switzerland"}
+@string{springer-berl = "Springer, Berlin, Germany"}
+@string{springer-berlin = "Springer, Berlin"}
+@string{springer-berlin-ad = "Berlin, Germany"}
+@string{springer-cham = "Springer, Cham"}
+@string{springer-int-pub = "Springer International Publishing"}
+@string{springer-isorms = "Springer, US"}
+@string{springer-lnai = "Springer, Heidelberg, Germany"}
+@string{springer-lncs = "Springer, Heidelberg, Germany"}
+@string{springer-lncs-ad = "Heidelberg, Germany"}
+@string{springer-lncs-swiss = "Springer International Publishing, Switzerland"}
+@string{springer-lnems = "Springer, Heidelberg, Germany"}
+@string{springer-lon = "Springer, London, UK"}
+@string{springer-nl = "Springer, Netherlands"}
+@string{springer-ny = "Springer, New York, NY"}
+@string{springer-ny-ad = "New York, NY"}
+@string{springer-sing = "Springer Verlag, Singapore"}
+@string{springer-verlag = "Springer Verlag"}
+@string{springer-verlag-ny = "Springer Verlag New York"}
+@string{springer-wien = "Springer Verlag, Vienna, Austria"}
+@string{taylorfrancis = "Taylor \& Francis"}
+@string{teubner	= "Teubner Verlag, Stuttgart, Germany"}
+@string{uip = "University of Illinois Press"}
+@string{ump = "University of Michigan Press, Ann Arbor, MI"}
+@string{vik = "Viking, New York, NY"}
+@string{worldscientific = "World Scientific Publishing Co., Singapore"}
+%%%%%%%% End of PUBLISHERS
+
+%%% address: Typically for Springer, which has many.
+@string{add-berlin-heidelberg = "Berlin, Heidelberg"}
+@string{add-london = "London, UK"}
+@string{add-cham = "Cham, Switzerland"}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Institutes %%%
+@string{COIN = "Computational Optimization and Innovation (COIN) Laboratory, University of Michigan, USA"}
+@string{cs-ubc  = "Department of Computer Science, University of British Columbia, Canada"}
+@string{deipm	= "Dipartimento di Elettronica e Informazione, Politecnico di Milano, Italy"}
+@string{depm	= "Dipartimento di Elettronica, Politecnico di Milano, Italy"}
+@string{dimacs  = "DIMACS Center, Rutgers University, Piscataway, NJ, USA"}
+@string{gerad   = "Groupe d'\'etudes et de recherche en analyse des d\'ecisions (GERAD), Montr{\'e}al, Canada"}
+@string{cimne = "CIMNE, Barcelona, Spain"}%International Center for Numerical Methods in Engineering
+@string{icsi	= "International Computer Science Institute, Berkeley, CA"}
+@string{idsia	= "IDSIA, Lugano, Switzerland"}
+@string{iridia	= "IRIDIA, Universit{\'e} Libre de Bruxelles, Belgium"}
+@string{iridia-phd = "IRIDIA, {\'E}cole polytechnique, Universit{\'e} Libre de Bruxelles, Belgium"}
+@string{inria   = "INRIA, France"}
+@string{lsi-upc = "Department LSI, Universitat Polit{\`e}cnica de Catalunya"}
+@string{mit-thesis = "Massachusetts Institute of Technology"}
+@string{siubsc	= "Scienze dell'Informazione, Universit{\'a} di Bologna, Sede di Cesena, Italy"}
+@string{thd	= "FG Intellektik, FB Informatik, TH Darmstadt"}
+@string{tik-eth = "Computer Engineering and Networks Laboratory (TIK), Swiss Federal Institute of Technology (ETH), Z{\"u}rich, Switzerland"}
+@string{tub      = "Technische Universit{\"a}t Berlin"}
+@string{tud	= "FG Intellektik, FB Informatik, TU Darmstadt, Germany"}
+@string{tud-cs	= "FB Informatik, TU Darmstadt, Germany"}
+@string{ulb     = "Universit{\'e} Libre de Bruxelles, Brussels, Belgium"}
+@string{upd     = "Universit{\'e} Paris-Dauphine, Paris, France"}
+@string{urbana  = "University of Illinois at Urbana-Champaign, Urbana, IL"}
+%%%%%%%% End of PUBLISHERS
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Proceedings
+@string{Proc_of = "Proceedings of "}
+@string{Proc_of_the = Proc_of # " the "}
+
+@string{aaai   = Proc_of_the # "AAAI National Conference on Artificial Intelligence"}
+@string{aaai10	= Proc_of_the # "10th National Conference on Artificial Intelligence"}
+@string{aaai11	= Proc_of_the # "11th National Conference on Artificial Intelligence"}
+@string{aaai14	= Proc_of_the # "14th National Conference on Artificial Intelligence"}
+
+@string{ants2010 = "Swarm Intelligence, 7th International Conference, ANTS 2010"}
+@string{ants2012 = "Swarm Intelligence, 8th International Conference, ANTS 2012"}
+@string{ants2014 = "Swarm Intelligence, 9th International Conference, ANTS 2014"}
+@string{ants2016 = "Swarm Intelligence, 10th International Conference, ANTS 2016"}
+@string{ants2018 = "Swarm Intelligence, 11th International Conference, ANTS 2018"}
+
+@string{ccie10  = Proc_of_the # "2010 International Conference 
+                  on Computing, Control and Industrial Engineering,
+                  ({CCIE}'10)"}
+@string{cec = " Congress on Evolutionary Computation (CEC"}
+@string{cec99  = Proc_of_the # "1999" # cec # "'99)"}
+@string{cec00  = Proc_of_the # "2000" # cec # "'00)"}
+@string{cec01  = Proc_of_the # "2001" # cec # "'01)"}
+@string{cec02  = Proc_of_the # "2002" # cec # "'02)"}
+@string{cec05  = Proc_of_the # "2005" # cec # " 2005)"}
+@string{cec06  = Proc_of_the # "2006" # cec # " 2006)"}
+@string{cec09  = Proc_of_the # "2009" # cec # " 2009)"}
+@string{cec11  = Proc_of_the # "2011" # cec # " 2011)"}
+@string{cec12  = Proc_of_the # "2012" # cec # " 2012)"}
+@string{ea2009 = "Artificial Evolution: 9th International Conference, Evolution Artificielle, EA, 2009"}
+@string{ea2011 = "Artificial Evolution: 10th International Conference, Evolution Artificielle, EA, 2011"}
+@string{ecai   = Proc_of_the # "European Conference on Artificial
+		                Intelligence"}
+@string{ecai9 = Proc_of_the # "9th European Conference on Artificial
+		                Intelligence"}
+@string{ecai11 = Proc_of_the # "11th European Conference on Artificial
+                  Intelligence"}
+@string{ecai14 = Proc_of_the # "14th European Conference on Artificial
+		                Intelligence"}
+@string{ecal92  = Proc_of_the # "First European Conference on
+                  Artificial Life"}
+@string{ecal97  = Proc_of_the # "Fourth European Conference on
+                  Artificial Life"}
+@string{ecal01  = Proc_of_the # "Sixth European Conference on
+                  Artificial Life"}
+@string{emo = " Evolutionary Multi-criterion Optimization, EMO " }
+@string{emo2001 = emo # "2001"}
+@string{emo2003 = emo # "2003"}
+@string{emo2005 = emo # "2005"}
+@string{emo2007 = emo # "2007"}
+@string{emo2009 = emo # "2009"}
+@string{emo2011 = emo # "2011"}
+@string{emo2013 = emo # "2013"}
+@string{emo2015 = emo # "2015"}
+@string{emo2017 = emo # "2017"}
+@string{emo2019 = emo # "2019"}
+@string{eurogen2001="Evolutionary Methods for Design, Optimisation and Control"}
+@string{eurogp2012 = Proc_of_the # "15th European Conference on Genetic Programming, EuroGP 2012"}
+@string{evoworkshops00 = "Real-World Applications of Evolutionary Computing, EvoWorkshops 2000"}
+@string{evoworkshops01 = "Applications of Evolutionary Computing,
+                  Proceedings of  EvoWorkshops 2001"}
+@string{evoworkshops02 = "Applications of Evolutionary Computing,
+                  Proceedings of  EvoWorkshops 2002"}
+@string{evoworkshops03 = "Applications of Evolutionary Computing,
+                  Proceedings of EvoWorkshops 2003"}
+@string{evoworkshops04 = "Applications of Evolutionary Computing, Proceedings of EvoWorkshops 2004"}
+@string{evocop = " European Conference on Evolutionary Computation in Combinatorial Optimization "}
+@string{evocop2003 = Proc_of # "EvoCOP 2003 -- 3rd " # evocop}
+@string{evocop2005 = Proc_of # "EvoCOP 2005 -- 5th" # evocop}
+@string{evocop2006 = Proc_of # "EvoCOP 2006 -- 6th" # evocop}
+@string{evocop2009 = Proc_of # "EvoCOP 2009 -- 9th" # evocop}
+@string{evocop2011 = Proc_of # "EvoCOP 2011 -- 11th" # evocop}
+@string{evocop2012 = Proc_of # "EvoCOP 2012 -- 12th" # evocop}
+@string{evocop2013 = Proc_of # "EvoCOP 2013 -- 13th" # evocop}
+@string{evocop2014 = Proc_of # "EvoCOP 2014 -- 14th" # evocop}
+@string{evocop2017 = Proc_of # "EvoCOP 2017 -- 17th" # evocop}
+@string{evocop2018 = Proc_of # "EvoCOP 2018 -- 18th" # evocop}
+
+@string{gecco99 = Proc_of_the # "Genetic and Evolutionary Computation 
+                   Conference (GECCO-1999)"}
+@string{gecco01 = Proc_of_the # "Genetic and Evolutionary Computation
+                   Conference (GECCO-2001)"}
+@string{gecco03 = Proc_of_the # "Genetic and Evolutionary Computation
+                  Conference (GECCO 2003)"}
+@string{gecco = Proc_of_the # "Genetic and Evolutionary Computation Conference, GECCO "}
+@string{gecco2009 = gecco # "2009" }
+@string{gecco2010 = gecco # "2010" }
+@string{gecco2011 = gecco # "2011" }
+@string{gecco2012 = gecco # "2012" }
+@string{gecco2013 = gecco # "2013" }
+@string{gecco2014 = gecco # "2014" }
+@string{gecco2015 = gecco # "2015" }
+@string{gecco2016 = gecco # "2016" }
+@string{gecco2017 = gecco # "2017" }
+@string{gecco2018 = gecco # "2018" }
+@string{gecco2019 = gecco # "2019" }
+@string{gecco2020 = gecco # "2020" }
+
+@string{icml = " International Conference on Machine Learning, {ICML} "}
+@string{icml1994 = Proc_of_the # "11th" # icml # "1994"}
+@string{icml2008 = Proc_of_the # "25th" # icml # "2008"}
+@string{icml2009 = Proc_of_the # "26th" # icml # "2009"}
+@string{icml2010 = Proc_of_the # "27th" # icml # "2010"}
+@string{icml2012 = Proc_of_the # "29th" # icml # "2012"}
+@string{icml2014 = Proc_of_the # "31st" # icml # "2014"}
+@string{icml2015 = Proc_of_the # "32nd" # icml # "2015"}
+@string{icml2018 = Proc_of_the # "35th" # icml # "2018"}
+
+@string{icatt2010 = "Astrodynamics Tools and Techniques (ICATT 2010), 4th
+                  International Conference on"}
+@string{icga3  = Proc_of_the # "Third International Conference
+                  on Genetic Algorithms (ICGA'89)"}
+@string{icga4  = Proc_of_the # "Fourth International Conference
+                  on Genetic Algorithms (ICGA'91)"}
+@string{icga7  = Proc_of_the # "Seventh International Conference
+                  on Genetic Algorithms (ICGA'97)"}
+@string{ijcai  = Proc_of_the # "International Joint Conference on
+                  Artificial Intelligence"}
+@string{ijcai13  = Proc_of_the # "13th International Joint Conference on
+                  Artificial Intelligence"}
+@string{ijcai15  = Proc_of_the # "15th International Joint Conference on  Artificial Intelligence"}
+@string{ijcai17  = Proc_of_the # "17th International Joint Conference on
+                  Artificial Intelligence"}
+@string{isr33  = Proc_of_the # "33rd International Symposium on Robotics"}
+@string{lion2014 = "Learning and Intelligent Optimization, 8th International Conference, LION 8"}
+@string{mic1   = Proc_of_the # "Metaheuristics International Conference"}
+@string{mic4   = Proc_of_the # "Fourth Metaheuristics International
+                  Conference"}
+@string{ml10   = Proc_of_the # "Tenth International Conference on
+                  Machine Learning (ML-93)"}
+@string{ml14   = Proc_of_the # "Fourteenth International Conference on
+                  Machine Learning (ML-97)"}
+@string{nips = " Advances in Neural Information Processing Systems "}
+@string{nips6  = nips # "6 ({NIPS6})"}
+@string{nips8  = nips # "8 ({NIPS8})"}
+@string{nips9  = nips # "9 ({NIPS9})"}
+
+@string{ppsn = " International Conference on Parallel Problem Solving from Nature "}
+@string{ppsn1  = Proc_of # "PPSN-I, First" # ppsn}
+@string{ppsn2  = Proc_of # "PPSN-II, Second" # ppsn}
+@string{ppsn3  = Proc_of # "PPSN-III, Third" # ppsn}
+@string{ppsn4  = Proc_of # "PPSN-IV, Fourth" # ppsn}
+@string{ppsn5  = Proc_of # "PPSN-V, Fifth" # ppsn}
+@string{ppsn6  = Proc_of # "PPSN-VI, Sixth" # ppsn}
+@string{ppsn7  = Proc_of # "PPSN-VII, Seventh" # ppsn}
+@string{ppsn8  = Proc_of # "PPSN-VIII, Eigth" # ppsn}
+@string{sab2   = "From Animals to Animats 2. Proceedings of the Second
+                  International Conference on Simulation of Adaptive
+                  Behavior (SAB92)"}
+@string{sab3   = "From Animals to Animats 3. Proceedings of the Third
+                  International Conference on Simulation of Adaptive
+                  Behavior (SAB94)"}
+@string{sls2009 = "Engineering Stochastic Local Search
+                  Algorithms. Designing, Implementing and Analyzing
+                  Effective Heuristics. SLS~2009" }
+@string{soda5  = Proc_of_the # "Fifth Annual ACM-SIAM Symposium on Discrete Algorithms"}
+@string{soda6  = Proc_of_the # "Sixth Annual ACM-SIAM Symposium on Discrete Algorithms"}
+@string{soda7  = Proc_of_the # "Seventh Annual ACM-SIAM Symposium on Discrete Algorithms"}
+
+@string{smc02  = Proc_of_the # "IEEE International Conference on Systems, Man and Cybernetics"}
+@string{www10  = Proc_of_the # "19th International Conference on World Wide Web ({WWW 2010})"}
+
+@string{wcci94  = Proc_of_the # "1994 World Congress on Computational Intelligence (WCCI 1994)"}
+
+@string{wcci02  = Proc_of_the # "2002 World Congress on Computational Intelligence (WCCI 2002)"}
+
+%% End of proceedings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Local Variables:
+% sort-fold-case: t
+% auto-fill-function: nil
+% End:

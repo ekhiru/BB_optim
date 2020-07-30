@@ -1,0 +1,133 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+%f
+\documentclass[runningheads]{llncs}
+%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amssymb}
+\usepackage{multirow}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{tabularx,booktabs}
+\usepackage{adjustbox}
+\usepackage{xspace}
+\usepackage{url}
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\let\OldStatex\Statex
+\renewcommand{\Statex}[1][3]{%
+  \setlength\@tempdima{\algorithmicindent}%
+  \OldStatex\hskip\dimexpr#1\@tempdima\relax}
+\makeatother
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=black,          % color of internal links
+    citecolor=black,        % color of links to bibliography
+    filecolor=black,      % color of file links
+    urlcolor=black           % color of external links
+}
+
+\usepackage[square,numbers,sort&compress]{natbib}
+% Fixes for using natbib and llncs
+\makeatletter
+\renewcommand\bibsection%
+{
+  \section*{\refname
+    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
+}
+\renewcommand\@biblabel[1]{#1.}
+\makeatother
+
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\renewcommand{\Re}{\ensuremath{\mathbb{R}}}
+\newcommand{\FEmax}{\ensuremath{FE^\text{max}}\xspace}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage[normalem]{ulem}
+% \sout is not very good. It cannot handle commands within its argument.
+\newcommand{\SuggestEdit}[3][red]{\textcolor{#1}{\sout{#2}}\textcolor{#1}{#3}}
+\let\svthefootnote\thefootnote
+\newcommand\colorfootnote[2][black]{\def\thefootnote{\color{#1}\svthefootnote}%
+  \footnote{\color{#1}#2}\def\thefootnote{\color{black}\svthefootnote}}
+\newcommand\RevComment[3][red]{\protect\colorfootnote[#1]{{\textbf{[#2: #3]}}}}
+
+% Command for edits, command for commenting and color
+\newcommand\newrevisor[3]{%%
+  \colorlet{#1}{#3}
+  \expandafter\newcommand\csname#1\endcsname[2]{\SuggestEdit[#1]{##1}{##2}}%%
+  \expandafter\newcommand\csname#2\endcsname[1]{\RevComment[#1]{#2}{##1}}%%
+}
+\newrevisor{manuel}{MANUEL}{Purple}
+
+\begin{document}
+%
+\title{A Cool Title}
+\titlerunning{A Cool Title}
+
+\author{Ekhine Irurozki\inst{1}\and
+Manuel L{\'o}pez-Ib{\'a}{\~n}ez\inst{2}}
+%\authorrunning{ et al.}
+
+\institute{ \and
+  University of Málaga, Spain
+   \\\email{manuel.lopez-ibanez@uma.es}
+ }
+%
+\maketitle              % typeset the header of the contribution
+%
+\begin{abstract}
+
+
+\keywords{Combinatorial optimization \and Bayesian optimization \and Expensive black-box optimization \and Estimation of distribution algorithms}
+\end{abstract}
+%
+%
+%
+\section{Introduction}
+% minimize the uncertainty in the final solutions or
+
+\citet{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}
+\citet{PerLopStu2015si}
+
+\citep{LopDubPerStuBir2016irace}
+
+\section{Background}
+
+\section{Methods}
+
+\section{Experimental setup}
+
+\section{Experimental analysis}
+
+\section{Conclusions}
+
+\section*{Acknowledgements}
+
+
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+\renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
+\bibliographystyle{splncs04nat}
+\bibliography{optbib/abbrev,optbib/authors,optbib/journals,optbib/biblio,optbib/crossref}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
