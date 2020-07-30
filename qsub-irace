@@ -21,6 +21,7 @@ irace_main() {
 #!/bin/bash --login
 #$ -N $JOBNAME
 #$ -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
+#$ -M manuel.lopez-ibanez@manchester.ac.uk
 #$ -m ase
 #      b     Mail is sent at the beginning of the job.
 #      e     Mail is sent at the end of the job.
@@ -32,7 +33,7 @@ irace_main() {
 #$ -cwd
 module load apps/R/3.5.2
 module load apps/anaconda3
-$IRACE --exec-dir=$EXECDIR --parallel $NB_SLAVES --seed $RUNSEED $PARAMS
+$IRACE --exec-dir=$EXECDIR --parallel $NB_PARALLEL_PROCESS --seed $RUNSEED $PARAMS
 EOF
 }
 ## End of customization
@@ -80,7 +81,7 @@ SEED=1234567
 PARAMS=
 while [ $# -gt 0 ]; do
     case "$1" in
-        --parallel) shift; NB_SLAVES="$1"; shift;;
+        --parallel) shift; NB_PARALLEL_PROCESS="$1"; shift;;
         --seed) shift; SEED="$1"; shift;;
         --machine) shift; MACHINE="$1"; shift;;
         *) PARAMS="$PARAMS $1"; shift;;# terminate case
@@ -88,12 +89,10 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-if [ $NB_SLAVES -lt 2 ]; then
+if [ $NB_PARALLEL_PROCESS -lt 2 ]; then
     error "--parallel must be larger than 1"
     exit 1
 fi
-
-let NB_PARALLEL_PROCESS=NB_SLAVES+1
 
 for i in $(seq $START $REPETITIONS); do
     EXECDIR=$(printf '%s-%002d' ${EXECDIR_PREFIX} $i)

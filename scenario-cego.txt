@@ -5,6 +5,6 @@ sampleInstances=0
 parameterFile = "parameters-cego.txt"
 trainInstancesFile = "train-instances.txt"
 trainInstancesDir = ""
-maxExperiments = 200
+maxExperiments = 500
 targetRunner = "./target-runner-cego.py"
 
