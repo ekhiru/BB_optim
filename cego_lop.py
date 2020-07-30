@@ -1,4 +1,4 @@
-import scipy as sp
+from scipy.spatial import distance
 import time
 import sys
 import os
@@ -93,7 +93,7 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_s
         perms = mk.samplingMM(budgetMM,n, phi=phi_sample, k=None)
         #perm = perm[borda]
         perms = [perm[borda] for perm in perms]
-        dists = sp.spatial.distance. cdist (perms, sample, metric=mk.kendallTau)
+        dists = distance.cdist (perms, sample, metric=mk.kendallTau)
         dists = np.sort(dists, axis=1)
         indi = np.argmax(dists[:,0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
         perm = perms[indi]
