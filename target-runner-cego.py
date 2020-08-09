@@ -55,9 +55,11 @@ budget = 400
 assert budget > 2 * args.m_ini
 
 stdout = sys.stdout
-with open(f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout', 'w') as sys.stdout:
+outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout' 
+with open(outfilename, 'w') as sys.stdout:
     out = cego.runCEGO(instance, args.m_ini, budget, args.algo_seed, best_known_sol = instance.best_sol, worst_known_sol = instance.worst_sol,
                        budgetGA = 10**args.budgetGA)
 sys.stdout = stdout
 print(np.min(out["Fitness"]))
-
+# remove tmp file.
+os.remove(outfilename)

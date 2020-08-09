@@ -55,9 +55,11 @@ instance = LOP.generate_synthetic(args.n, args.m, args.phi)
 budget = 400
 
 stdout = sys.stdout
-with open(f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout', 'w') as sys.stdout:
+outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout' 
+with open(outfilename, 'w') as sys.stdout:
     out = solve_one_umm(instance, budget, args.algo_seed, args.m_ini, instance.best_sol, instance.worst_sol, args.budgetMM, args.rsl, args.wml)
     
 sys.stdout = stdout
 print(np.min(out["Fitness"]))
-
+# remove tmp file.
+os.remove(outfilename)
