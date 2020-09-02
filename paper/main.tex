@@ -1,47 +1,25 @@
-% This is samplepaper.tex, a sample chapter demonstrating the
-% LLNCS macro package for Springer Computer Science proceedings;
-% Version 2.20 of 2017/10/04
-%f
 \documentclass[runningheads]{llncs}
-%
-\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{amsmath,amssymb,amssymb}
-\usepackage{multirow}
-\usepackage{multirow}
-\usepackage{booktabs}
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-\usepackage{tabularx,booktabs}
-\usepackage{adjustbox}
+
+\usepackage{amsmath,amssymb}
+%\usepackage[square,numbers,sort&compress]{natbib}
 \usepackage{xspace}
-\usepackage{url}
-\makeatletter
-\def\BState{\State\hskip-\ALG@thistlm}
-\let\OldStatex\Statex
-\renewcommand{\Statex}[1][3]{%
-  \setlength\@tempdima{\algorithmicindent}%
-  \OldStatex\hskip\dimexpr#1\@tempdima\relax}
-\makeatother
-
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=black,          % color of internal links
-    citecolor=black,        % color of links to bibliography
-    filecolor=black,      % color of file links
-    urlcolor=black           % color of external links
-}
-
-\usepackage[square,numbers,sort&compress]{natbib}
+%% Useful packages
+\usepackage{graphicx}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{booktabs} % For formal tables
+\usepackage{enumitem}
+\usepackage{afterpage}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[square,numbers,sort]{natbib}
 % Fixes for using natbib and llncs
 \makeatletter
+% required for natbib to have "References" printed and as section*, not chapter*
 \renewcommand\bibsection%
-{
-  \section*{\refname
-    \@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}
-}
+{\section*{\refname\@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}}
 \renewcommand\@biblabel[1]{#1.}
 \makeatother
 
@@ -50,50 +28,56 @@
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
-\renewcommand{\Re}{\ensuremath{\mathbb{R}}}
-\newcommand{\FEmax}{\ensuremath{FE^\text{max}}\xspace}
 
-\usepackage[dvipsnames]{xcolor}
-\usepackage[normalem]{ulem}
-% \sout is not very good. It cannot handle commands within its argument.
-\newcommand{\SuggestEdit}[3][red]{\textcolor{#1}{\sout{#2}}\textcolor{#1}{#3}}
-\let\svthefootnote\thefootnote
-\newcommand\colorfootnote[2][black]{\def\thefootnote{\color{#1}\svthefootnote}%
-  \footnote{\color{#1}#2}\def\thefootnote{\color{black}\svthefootnote}}
-\newcommand\RevComment[3][red]{\protect\colorfootnote[#1]{{\textbf{[#2: #3]}}}}
+\hyphenation{%%% Merriam-Webster
+  di-men-sion-al %%
+  op-tical net-works semi-conduc-tor %%
+  pher-o-mone non-dom-i-nance %%
+  non-dom-i-nat-ed chro-mo-some %%
+  sto-chas-tic make-span an-a-lys-ing}
 
-% Command for edits, command for commenting and color
-\newcommand\newrevisor[3]{%%
-  \colorlet{#1}{#3}
-  \expandafter\newcommand\csname#1\endcsname[2]{\SuggestEdit[#1]{##1}{##2}}%%
-  \expandafter\newcommand\csname#2\endcsname[1]{\RevComment[#1]{#2}{##1}}%%
+
+\title{Mallows, Black-box combinatorial optimization, limited budget,  ???}
+\author{Ekhiñe Irurozki\inst{1} \and Manuel López-Ibáñez\inst{2}\orcidID{0000-0001-9974-1295}}
+\institute{
+   Basque Center for Applied Mathematics\\
+   \email{eirurozki@bcamath.org}
+   \and
+   University of Málaga, Málaga, Spain\\
+   \email{manuel.lopez-ibanez@uma.es}
 }
-\newrevisor{manuel}{MANUEL}{Purple}
+\date{}%
 
 \begin{document}
-%
-\title{A Cool Title}
-\titlerunning{A Cool Title}
 
-\author{Ekhine Irurozki\inst{1}\and
-Manuel L{\'o}pez-Ib{\'a}{\~n}ez\inst{2}}
-%\authorrunning{ et al.}
+\maketitle
 
-\institute{ \and
-  University of Málaga, Spain
-   \\\email{manuel.lopez-ibanez@uma.es}
- }
-%
-\maketitle              % typeset the header of the contribution
-%
 \begin{abstract}
-
+%The abstract should briefly summarize the contents of the paper in
+%150--250 words.
+  Black-box combinatorial optimization problems arise in practice when the
+  objective function is evaluated by means of a simulator or a real-world
+  experiment. In such cases, classical techniques such as mixed-integer
+  programming and local search cannot be applied. Moreover, often each solution
+  evaluation is expensive in terms of time or resources, thus only a limited
+  number of evaluations is possible, typically several order of magnitude
+  smaller than in white-box optimization problems. In the continuous case,
+  Bayesian optimization, in particular using Gaussian processes, has proven
+  very effective under these conditions. Much less research is available in the
+  combinatorial case. In this paper, we propose and analyze an
+  estimation-of-distribution (EDA) algorithm based on a Mallows probabilistic
+  model and compare it with CEGO, a Bayesian optimization algorithm for
+  combinatorial optimization. Experimental results show that the Bayesian
+  algorithm is able to obtain very good solutions with very few evaluations,
+  however, at a significant computational cost, whereas the proposed EDA
+  outperforms CEGO when the number of solutions evaluated approaches 400, and
+  it is significantly faster. These results suggest that the combination of
+  Bayesian optimization and a Mallows-based EDA may be an interesting direction
+  for future research.
 
 \keywords{Combinatorial optimization \and Bayesian optimization \and Expensive black-box optimization \and Estimation of distribution algorithms}
 \end{abstract}
-%
-%
-%
+
 \section{Introduction}
 % minimize the uncertainty in the final solutions or
 
@@ -106,7 +90,62 @@ Manuel L{\'o}pez-Ib{\'a}{\~n}ez\inst{2}}
 
 \section{Methods}
 
+Description of UMM and CEGO
+
+Combinatorial Efficient Global Optimization
+(CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
+method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
+optimization problems. In EGO, Gaussian process models are used as a surrogate
+of the landscape of the expensive original problem. An optimization method
+searches for solutions in the surrogate model by optimizing the expected
+improvement criterion, which balances the expected mean and variance of the
+chosen solution. Once a solution is chosen, it is evaluated on the actual
+objective function and the result is used to update the surrogate-model,
+hopefully increasing its predictive power.
+
+CEGO replaces the Euclidean distance measure, used by the surrogate model in
+EGO, with a distance measure appropriate to combinatorial
+landscapes~\citep{ZaeStoBar2014:ppsn}, such as the Kendall distance for
+permutations~\citep{?}. In CEGO, the surrogate model is explored by a GA with
+crossover and mutation operators appropriate for the particular combinatorial
+problem. The original paper notes that coupling the GA with local search does
+not improve the results significantly since the model is anyway an inexact
+estimation of the original objective
+function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
+
+What else do we need to say?
+
+\newcommand{\minit}{\ensuremath{m_\text{ini}}}
+
+\newcommand{\FEmax}{\ensuremath{FE_{\max}}}
+
 \section{Experimental setup}
+
+We use the implementation of GECO provided by the
+authors\footnote{\url{https://cran.r-project.org/package=CEGO}}. Following the
+original paper~\citep{ZaeStoFriFisNauBar2014}, we use and the GA that optimizes
+the surrogate models uses a population size of 20, crossover rate of 0.5,
+mutation rate of 1, tournament selection of size 2 and probability of 0.9,
+interchange mutation (i.e., exchanging two randomly selected elements of the
+permutation) and cycle crossover for permutations. The budget of each run of
+the GA is \textcolor{red}{10^5} evaluations using the surrogate-model. Although
+it is never stated in the original paper, the implementation of CEGO generates
+a set of initial solutions of size \minit by means of a
+max-min-distance sequential design: new solutions are added to the set
+sequentially by maximizing the minimum distance to solutions already in the
+set. These initial solutions are then evaluated on the actual objective
+function and the result is used to build the initial surrogate model.
+
+Here we use $\minit=20$.
+
+In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
+the actual objective function. In a white-box context, state-of-the-art
+algorithms for the problems considered here typically evaluate
+\textcolor{red}{hundreds? thousands?} of solutions, thus, the budget considered
+here for the black-box context is extremely limited.
+
+We implemented UMM in Python. The parameter settings that we use are...
+
 
 \section{Experimental analysis}
 
@@ -115,12 +154,6 @@ Manuel L{\'o}pez-Ib{\'a}{\~n}ez\inst{2}}
 \section*{Acknowledgements}
 
 
-%
-% ---- Bibliography ----
-%
-% BibTeX users should specify bibliography style 'splncs04'.
-% References will then be sorted and formatted in the correct style.
-%
 \renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
 \bibliographystyle{splncs04nat}
 \bibliography{optbib/abbrev,optbib/authors,optbib/journals,optbib/biblio,optbib/crossref}
