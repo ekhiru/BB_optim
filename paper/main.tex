@@ -21,6 +21,7 @@
 \renewcommand\bibsection%
 {\section*{\refname\@mkboth{\MakeUppercase{\refname}}{\MakeUppercase{\refname}}}}
 \renewcommand\@biblabel[1]{#1.}
+\def\bibfont{\small}
 \makeatother
 
 % If you use the hyperref package, please uncomment the following line
@@ -128,7 +129,7 @@ the surrogate models uses a population size of 20, crossover rate of 0.5,
 mutation rate of 1, tournament selection of size 2 and probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements of the
 permutation) and cycle crossover for permutations. The budget of each run of
-the GA is \textcolor{red}{10^5} evaluations using the surrogate-model. Although
+the GA is \textcolor{red}{$10^5$} evaluations using the surrogate-model. Although
 it is never stated in the original paper, the implementation of CEGO generates
 a set of initial solutions of size \minit by means of a
 max-min-distance sequential design: new solutions are added to the set
@@ -149,9 +150,19 @@ We implemented UMM in Python. The parameter settings that we use are...
 
 \section{Experimental analysis}
 
+Bayesian optimization methods using a global GP model, such as CEGO, are know
+to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
+intuition is that this problem becomes worse in rugged combinatorial
+landscapes, where small steps may produce drastic changes.
+
 \section{Conclusions}
 
-\section*{Acknowledgements}
+\paragraph*{Acknowledgements.}
+
+Thanks to Hao Wang (Leiden University) for pointing us to the arguments of
+\citet{EriPeaGar2019scalable}.
+
+
 
 
 \renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
