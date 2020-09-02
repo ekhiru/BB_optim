@@ -113,10 +113,10 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_s
     return df
 
 
-def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400):
+def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400,m_ini=10):
     np.random.seed(rep)
-    m_inst = 200
-    m_ini = 10
+    m_inst = 200 # for LOP instance
+    #m_ini = 10
     # rhos=[1e-3,1e-5,1e-7,1e-9]
     # rhos = [1e-9]
     #rhos = [1e-7]
@@ -131,13 +131,15 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,w
     dfuMM = solve_one_umm(instance, m_max, rep, m_ini, instance.best_sol, instance.worst_sol, budgetMM,ratio_samples_learn,weight_mass_learn)
     dfuMM['run_time'] = time.time() - start_time
     df = pd.concat([df,dfuMM],sort=False)
-    
+
     df['best_known'] = instance.get_fitness(instance.best_sol)
     df['worst_known'] = instance.get_fitness(instance.worst_sol)
     df['phi_instance'] = phi_instance
-    df['budget'] = budgetGA
+    df['budgetGA'] = budgetGA
+    df['budgetMM'] = budgetMM
     df['n'] = n
     df['m_max'] = m_max
+    df['m_ini'] = m_ini
     df['ratio_samples_learn'] = ratio_samples_learn
     df['weight_mass_learn'] = weight_mass_learn
     df.to_pickle('pickles/pick'+str(SLURM_JOB_ID)+'.pkl')
@@ -147,6 +149,6 @@ if __name__ == '__main__':
     print(sys.argv)
     params = [float(p) for p in sys.argv[1:]]
     print(params)
-    [n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn,weight_mass_learn,SLURM_JOB_ID,m_max] = params
+    [n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn,weight_mass_learn,SLURM_JOB_ID,m_max,m_ini] = params
     # n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400
-    run_and_save(int(n),int(rep),float(phi_instance),int(budgetGA),int(budgetMM),float(ratio_samples_learn),float(weight_mass_learn),int(SLURM_JOB_ID),int(m_max))
+    run_and_save(int(n),int(rep),float(phi_instance),int(budgetGA),int(budgetMM),float(ratio_samples_learn),float(weight_mass_learn),int(SLURM_JOB_ID),int(m_max),int(m_ini))
