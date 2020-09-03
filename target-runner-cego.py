@@ -28,8 +28,8 @@ import re
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
 parser = ArgumentParser(description = "CEGO")
-parser.add_argument('configuration_id', type=int, help='configuration_id')
-parser.add_argument('instance_id', type=int, help='instance_id')
+parser.add_argument('configuration_id', type=str, help='configuration_id')
+parser.add_argument('instance_id', type=str, help='instance_id')
 parser.add_argument('algo_seed', type=int, help='random seed')
 # These are part of the instance definition
 parser.add_argument('-seed', type=int, help='inst_seed')
