@@ -34,7 +34,7 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
     #creation
     cF <- function() sample(n)
     # start optimization
-    print("antes del optimCEGO")
+#    print("antes del optimCEGO")
     res <- optimCEGO(x = NULL,
                      fun = fun,
                      control = list(creationFunction=cF,

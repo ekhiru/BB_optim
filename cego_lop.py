@@ -124,7 +124,7 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,w
     problem = instance.problem_name
     start_time = time.time()
     df = pd.DataFrame()
-    #df = cego.runCEGO(instance = instance, m_ini = m_ini, m = m_max,rep=rep, best_known_sol=instance.best_sol, worst_known_sol=instance.worst_sol, budgetGA=budgetGA)
+    df = cego.runCEGO(instance = instance, m_ini = m_ini, m = m_max,rep=rep, best_known_sol=instance.best_sol, worst_known_sol=instance.worst_sol, budgetGA=budgetGA)
     df['run_time'] = time.time() - start_time
     #for rho in rhos:
     start_time = time.time()
