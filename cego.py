@@ -21,6 +21,7 @@ def r_kendallTau(A,B):
 
 # rep : replication number.
 def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
+    
     rstring = """
     library(CEGO)
 
@@ -70,13 +71,23 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
     #print(f'best: {best_x}\nbest_fitness: {best_fitness}')
     df = pd.DataFrame()#columns=['problem','rep','m','rho','fitnesses','phi_estim','phi_sample','dist'])
     # Evaluate without saving the solution.
-    best_known_fit = instance.fitness_nosave(best_known_sol)
-    worst_known_fit = instance.fitness_nosave(worst_known_sol)
-    df['Fitness'] = (instance.evaluations - best_known_fit)/ (worst_known_fit - best_known_fit)
+    if worst_known_sol is None:
+        worst_known_fit = 0
+    else:
+        worst_known_fit = instance.fitness_nosave(worst_known_sol)
+    
+    # FIXME: We should move all these calculations outside here so that we don't need the best known or worst-known here.
+    if best_known_sol is None:
+        df['Fitness'] = instance.evaluations
+    else:
+        best_known_fit = instance.fitness_nosave(best_known_sol)
+        df['Fitness'] = (instance.evaluations - best_known_fit) / np.abs(worst_known_fit - best_known_fit)
     df['Problem'] = instance.problem_name
     df['Solver'] = 'CEGO'
     df['Sample size'] = range(m)
     df['rep'] = rep
-#    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
-    df['Distance'] = [ kendallTau(perm, best_known_sol) / (instance.n * (instance.n - 1) / 2) for perm in instance.solutions]
+    #    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
+    # FIXME: We should calculate the distance outside here so we do not need the best_known_sol here.
+    if best_known_sol is not None:
+        df['Distance'] = [ kendallTau(perm, best_known_sol) / (instance.n * (instance.n - 1) / 2) for perm in instance.solutions]
     return df

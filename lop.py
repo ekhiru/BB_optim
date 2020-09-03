@@ -72,11 +72,11 @@ class LOP:
 
   # Returns a closure function that can be called from R.
   # WARNING: this function minimizes for CEGO
+  # FIXME: Can we make this a function shared by all problems instead of copy-pasting?
   def make_r_fitness(self):
-      @ri.rternalize
-      def r_fitness(x):
-          xpy = np.asarray(x)-1
-          y = self.fitness(xpy)
-#          print("xpy",xpy,y)
-          return FloatVector(np.asarray(y)) #no le gustan los negativos
-      return r_fitness
+    @ri.rternalize
+    def r_fitness(x):
+      xpy = np.asarray(x) - 1 # R vectors are 1-indexed
+      y = self.fitness(xpy)
+      return FloatVector(np.asarray(y))
+    return r_fitness
