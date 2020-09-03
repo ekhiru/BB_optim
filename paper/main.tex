@@ -80,7 +80,18 @@
 \end{abstract}
 
 \section{Introduction}
+
+Motivation: Manuel
+
+In many practical optimization problems, the objective function contexts
 % minimize the uncertainty in the final solutions or
+
+Related work: Ekhine
+
+Our contribution: Ekhine
+\begin{itemize}
+\item 
+\end{itemize}
 
 \citet{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}
 \citet{PerLopStu2015si}
@@ -89,13 +100,16 @@
 
 \section{Background}
 
-MM, GMM, uMM
+MM, GMM, uMM; Ekhine
 
+LOP: Ekhine
 
+Quizás luego: PFSP y QAP
 
 \section{Methods}
 
-Description of UMM and CEGO
+
+CEGO: Manuel.
 
 Combinatorial Efficient Global Optimization
 (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
@@ -120,9 +134,11 @@ function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
 
 What else do we need to say?
 
-\newcommand{\minit}{\ensuremath{m_\text{ini}}}
+\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
 
 \newcommand{\FEmax}{\ensuremath{FE_{\max}}}
+
+Description of UMM: Ekhine
 
 new approach: add sample, learn distri, sample distri
 
@@ -142,11 +158,11 @@ the surrogate models uses a population size of 20, crossover rate of 0.5,
 mutation rate of 1, tournament selection of size 2 and probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements of the
 permutation) and cycle crossover for permutations. The budget of each run of
-the GA is \textcolor{red}{$10^5$} evaluations using the surrogate-model. Although
-it is never stated in the original paper, the implementation of CEGO generates
-a set of initial solutions of size \minit by means of a
-max-min-distance sequential design: new solutions are added to the set
-sequentially by maximizing the minimum distance to solutions already in the
+the GA is \textcolor{red}{$10^5$} evaluations using the
+surrogate-model. Although it is never stated in the original paper, the
+implementation of CEGO generates a set of initial solutions of size \minit by
+means of a max-min-distance sequential design: new solutions are added to the
+set sequentially by maximizing the minimum distance to solutions already in the
 set. These initial solutions are then evaluated on the actual objective
 function and the result is used to build the initial surrogate model.
 
@@ -160,10 +176,18 @@ here for the black-box context is extremely limited.
 
 We implemented UMM in Python. The parameter settings that we use are...
 
+Complete this with details of uMM: MANUEL
+
+Computing system details: MANUEL
+
+Describir como se generan las intancias de LOP: Ekhine
+
+Describir las instancias: Ekhine
+
 
 \section{Experimental analysis}
 
-Bayesian optimization methods using a global GP model, such as CEGO, are know
+Bayesian optimization methods using a global GP model, such as CEGO, are known
 to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
 intuition is that this problem becomes worse in rugged combinatorial
 landscapes, where small steps may produce drastic changes.
