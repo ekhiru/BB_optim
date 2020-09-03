@@ -2,9 +2,8 @@
 firstTest=6
 eachTest=3
 sampleInstances=0
-parameterFile = "parameters-cego.txt"
+parameterFile = "parameters-umm.txt"
 trainInstancesFile = "train-instances.txt"
 trainInstancesDir = ""
 maxExperiments = 500
-targetRunner = "./target-runner-cego.py"
-
+targetRunner = "./target-runner-umm.py"

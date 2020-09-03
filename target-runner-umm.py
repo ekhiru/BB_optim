@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 import mallows_kendall as mk
 from lop import LOP
-import cego
+from cego_lop import solve_one_umm
 import re
 
 
@@ -37,8 +37,10 @@ parser.add_argument('-m', type=int, help='inst_m')
 parser.add_argument('-n', type=int, help='inst_n')
 parser.add_argument('-phi', type=float, help='inst_n')
 # Parameters for the target algorithm
+parser.add_argument('--rsl', type=float, default=0, help='rsl')
+parser.add_argument('--wml', type=float, default=0, help='wml')
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
-parser.add_argument('--budgetGA', type=int, default=0, help='budgetGA')
+parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
 
 args = parser.parse_args()
 # inst_seed, inst_m, inst_n, phi = re.search("seed=([0-9]+)\s+m=([0-9]+)\s+n=([0-9]+)\s+phi=([^ ]+)", args.instance).group(1,2,3,4)
@@ -47,18 +49,16 @@ args = parser.parse_args()
 # inst_n = int(inst_n)
 # phi = float(phi)
 
-
 np.random.seed(args.seed)
 instance = LOP.generate_synthetic(args.n, args.m, args.phi)
 
 budget = 400
-assert budget > 2 * args.m_ini
 
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout' 
 with open(outfilename, 'w') as sys.stdout:
-    out = cego.runCEGO(instance, args.m_ini, budget, args.algo_seed, best_known_sol = instance.best_sol, worst_known_sol = instance.worst_sol,
-                       budgetGA = 10**args.budgetGA)
+    out = solve_one_umm(instance, budget, args.algo_seed, args.m_ini, instance.best_sol, instance.worst_sol, args.budgetMM, args.rsl, args.wml)
+    
 sys.stdout = stdout
 print(np.min(out["Fitness"]))
 # remove tmp file.

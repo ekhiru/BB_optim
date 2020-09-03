@@ -1,4 +1,4 @@
-import scipy as sp
+from scipy.spatial import distance
 import time
 import sys
 import os
@@ -37,7 +37,7 @@ def get_expected_distance(iterat,n,m):
 
 def binary_search_rho(w,ratio_samples_learn,weight_mass_learn,rho_ini=1,rho_end=0, tol=0.001):#0<w_i<1, w is sorted increasingly,
   #if pos is None we take the largest 4th.
-  #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho*ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
+  #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
   # codes as a recursive binary search in (0,1)
   pos = int(len(w)*ratio_samples_learn)
   # print(pos,len(w),ratio_samples_learn)
@@ -93,7 +93,7 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_s
         perms = mk.samplingMM(budgetMM,n, phi=phi_sample, k=None)
         #perm = perm[borda]
         perms = [perm[borda] for perm in perms]
-        dists = sp.spatial.distance. cdist (perms, sample, metric=mk.kendallTau)
+        dists = distance.cdist (perms, sample, metric=mk.kendallTau)
         dists = np.sort(dists, axis=1)
         indi = np.argmax(dists[:,0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
         perm = perms[indi]

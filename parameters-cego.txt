@@ -1,0 +1,3 @@
+m_ini    "--m_ini="    i (5,50)
+budgetGA "--budgetGA=" i (1,4)
+
