@@ -1,3 +1,4 @@
+import pickle
 from scipy.spatial import distance
 import time
 import sys
@@ -112,15 +113,22 @@ def solve_one_umm(instance, ms, rep,  m_ini, best_sol,worst_sol,budgetMM,ratio_s
     # autorho.propor.plot()
     return df
 
+def read_instance(iname):
+    print(iname)
+    if  "LOPsynt_" in iname:
+        pf = open(iname, 'rb')
+        return pickle.load(pf)
 
-def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400,m_ini=10):
+
+def run_and_save(n,rep,instance_name,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400,m_ini=10):
     np.random.seed(rep)
     m_inst = 200 # for LOP instance
     #m_ini = 10
     # rhos=[1e-3,1e-5,1e-7,1e-9]
     # rhos = [1e-9]
     #rhos = [1e-7]
-    instance = LOP.generate_synthetic(n, m_inst, phi_instance)
+    #instance = LOP.generate_synthetic(n, m_inst, instance_name)
+    instance = read_instance(instance_name)
     problem = instance.problem_name
     start_time = time.time()
     df = pd.DataFrame()
@@ -134,7 +142,7 @@ def run_and_save(n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,w
 
     df['best_known'] = instance.get_fitness(instance.best_sol)
     df['worst_known'] = instance.get_fitness(instance.worst_sol)
-    df['phi_instance'] = phi_instance
+    df['instance_name'] = instance_name
     df['budgetGA'] = budgetGA
     df['budgetMM'] = budgetMM
     df['n'] = n
@@ -149,6 +157,6 @@ if __name__ == '__main__':
     print(sys.argv)
     params = [float(p) for p in sys.argv[1:]]
     print(params)
-    [n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn,weight_mass_learn,SLURM_JOB_ID,m_max,m_ini] = params
-    # n,rep,phi_instance,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400
-    run_and_save(int(n),int(rep),float(phi_instance),int(budgetGA),int(budgetMM),float(ratio_samples_learn),float(weight_mass_learn),int(SLURM_JOB_ID),int(m_max),int(m_ini))
+    [n,rep,instance_name,budgetGA,budgetMM,ratio_samples_learn,weight_mass_learn,SLURM_JOB_ID,m_max,m_ini] = params
+    # n,rep,instance_name,budgetGA,budgetMM,ratio_samples_learn=0.25,weight_mass_learn=0.9,SLURM_JOB_ID="Local",m_max=400
+    run_and_save(int(n),int(rep),instance_name,int(budgetGA),int(budgetMM),float(ratio_samples_learn),float(weight_mass_learn),int(SLURM_JOB_ID),int(m_max),int(m_ini))
