@@ -1,40 +1,19 @@
-import numpy as np
+from problem import Problem
 import mallows_kendall as mk
-
-from rpy2.robjects import FloatVector
-import rpy2.rinterface as ri
+import numpy as np
+import re
 
 def synthetic_LOP(n, m, phi):
   instance = np.zeros((n,n))
   s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
   for i in range(n):
       for j in range(i+1,n):
-          instance[i,j] = (s[:,i] < s[:,j]).sum()/m
+          instance[i,j] = (s[:,i] < s[:,j]).sum() / m
           instance[j,i] = 1 - instance[i,j]
   return instance
 
-def get_fitness(perm, instance):
-  # In case it is not numpy array
-  perm = np.asarray(perm, dtype=int)
-  n = len(perm) #sum in the LOWER triangle. we have to MINIMIZE this
-  sol = 0
-  for i in range(n):
-    # print("trace",perm,i,n, perm.astype(int),instance[perm[i], perm[0:i]])
-    # print(i,perm[i], perm[0:i])
-    sol += instance[perm[i], perm[0:i]].sum()
-  return sol
-
-# Faster version
-def get_fitness_fitness(perm, instance):
-  # In case it is not numpy array.
-  perm = np.asarray(perm, dtype=int)
-  # Sum of the upper triangle. We have to maximize this.
-  sol = np.tril(instance[np.ix_(perm, perm)]).sum()
-  return sol
-
-
 # Linear Ordering Problem
-class LOP:
+class LOP(Problem):
   # Class attributes
   problem_name = "LOP"
   
@@ -44,39 +23,29 @@ class LOP:
     best_sol = list(range(n))
     worst_sol = best_sol[::-1]
     return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol)
-    
 
+  @classmethod
+  def read_instance(cls, filename):
+    if "synthetic" in filename:
+      seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
+      np.random.seed(int(seed))
+      return cls.generate_synthetic(int(n), int(m), float(phi))
+    else:
+      # FIXME: How to read LOPLIB instances?
+      pass
+    
   # Methods
   def __init__(self, n, instance, best_sol = None, worst_sol = None):
     self.n = n
+    # FIXME: Can we find a better name than instance?
     self.instance = instance
-    self.evaluations = []
-    self.solutions = []
-    self.best_sol = best_sol
-    self.worst_sol = worst_sol
-    
-  def fitness_nosave(self, perm):
-      return get_fitness(perm, self.instance)
+    super().__init__(best_sol = best_sol, worst_sol = worst_sol)
+        
+  def fitness_nosave(self, x):
+    # In case it is not numpy array.
+    x = np.asarray(x, dtype=int)
+    # Sum of the upper triangle. We have to minimize this.
+    f = np.tril(self.instance[np.ix_(x, x)]).sum()
+    return f
 
-  # an alias of the above for compatibility
-  def get_fitness(self, perm):
-    return self.fitness_nosave(perm)
-
-  # Minimized
-  def fitness(self, perm):
-      x = get_fitness(perm, self.instance)
-      self.evaluations.append(x)
-      self.solutions.append(perm)
-      #print("----XXX>>>>perm",perm)
-      return x
-
-  # Returns a closure function that can be called from R.
-  # WARNING: this function minimizes for CEGO
-  # FIXME: Can we make this a function shared by all problems instead of copy-pasting?
-  def make_r_fitness(self):
-    @ri.rternalize
-    def r_fitness(x):
-      xpy = np.asarray(x) - 1 # R vectors are 1-indexed
-      y = self.fitness(xpy)
-      return FloatVector(np.asarray(y))
-    return r_fitness
+  

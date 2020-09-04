@@ -32,43 +32,75 @@ $@
 EOF
 }
 
-n=20
-budgetGA=10
-budgetMM=10
-m_max=400
-phi_instances="0.5 0.7 0.9"
-nruns = 9 # we run +1
+launch_local() {
+    echo $1
+    shift
+    echo "running: $@"
+    $@
+}
+
+INSTANCES="\
+qap/kra32.dat \
+qap/nug12.dat \
+qap/nug30.dat \
+qap/tho30.dat \
+pfsp/rec05.txt \
+"
+
+LOP_n=20
+LOP_m=200
+LOP_seed=123456
+LOP_phi="0.5 0.7 0.9"
+
+for n in $LOP_n; do
+    for m in $LOP_m; do
+        for seed in $LOP_seed; do
+            for phi in $LOP_phi; do
+                INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=0.5"
+            done
+        done
+    done
+done
+
+m_ini=10
+budgetGA=4 # Actually, 10**budgetGA
+budget=400
+nruns=10
 
 LAUNCHER=qsub_job
+LAUNCHER=launch_local
 
-for repe in $(seq 0 $nruns); do
-  for phi_instance in $phi_instances; do
-      ratio_samples_learn=0.15
-      weight_mass_learn=0.84
-      budgetMM=15
-      m_ini=23
-      $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
+mkdir -p results
 
-      ratio_samples_learn=0.23
-      weight_mass_learn=0.88
-      budgetMM=16
-      m_ini=38
-      #sbatch --export=n=$n,repe=$repe,phi_instance=$phi_instance,budgetGA=$budgetGA,m_max=$m_max,budgetMM=$budgetMM,ratio_samples_learn=$ratio_samples_learn,weight_mass_learn=$weight_mass_learn,m_ini=$m_ini run_one.sl
-      $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
+counter=0
+for instance in $INSTANCES; do
+    counter=$((counter+1))
+    for run in $(seq 1 $nruns); do
+        $LAUNCHER cego-$run-$counter ./target-runner-cego.py cego $counter $run $instance --m_ini $m_ini --budgetGA $budgetGA --budget 400 --output results/cego-$run-$counter
+        
+      # ratio_samples_learn=0.15
+      # weight_mass_learn=0.84
+      # budgetMM=15
+      # m_ini=23
+      # $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
 
-      ratio_samples_learn=0.22
-      weight_mass_learn=0.83
-      budgetMM=14
-      m_ini=32
-      #sbatch --export=n=$n,repe=$repe,phi_instance=$phi_instance,budgetGA=$budgetGA,m_max=$m_max,budgetMM=$budgetMM,ratio_samples_learn=$ratio_samples_learn,weight_mass_learn=$weight_mass_learn,m_ini=$m_ini run_one.sl
-      $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
+      # ratio_samples_learn=0.23
+      # weight_mass_learn=0.88
+      # budgetMM=16
+      # m_ini=38
+      # $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
 
-      ratio_samples_learn=0.17
-      weight_mass_learn=0.83
-      budgetMM=17
-      m_ini=32
-      #sbatch --export=n=$n,repe=$repe,phi_instance=$phi_instance,budgetGA=$budgetGA,m_max=$m_max,budgetMM=$budgetMM,ratio_samples_learn=$ratio_samples_learn,weight_mass_learn=$weight_mass_learn,m_ini=$m_ini run_one.sl
-      $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
+      # ratio_samples_learn=0.22
+      # weight_mass_learn=0.83
+      # budgetMM=14
+      # m_ini=32
+      # $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
+
+      # ratio_samples_learn=0.17
+      # weight_mass_learn=0.83
+      # budgetMM=17
+      # m_ini=32
+      # $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
     done
 done
 

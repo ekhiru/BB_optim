@@ -18,48 +18,45 @@
 ###############################################################################
 import sys
 import os
-import numpy as np
 import pandas as pd
-import mallows_kendall as mk
-from lop import LOP
-import cego
-import re
-
+from cego import cego
+import runner
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
 parser = ArgumentParser(description = "CEGO")
 parser.add_argument('configuration_id', type=str, help='configuration_id')
 parser.add_argument('instance_id', type=str, help='instance_id')
-parser.add_argument('algo_seed', type=int, help='random seed')
-# These are part of the instance definition
-parser.add_argument('-seed', type=int, help='inst_seed')
-parser.add_argument('-m', type=int, help='inst_m')
-parser.add_argument('-n', type=int, help='inst_n')
-parser.add_argument('-phi', type=float, help='inst_n')
+parser.add_argument('seed', type=int, help='random seed')
+parser.add_argument('instance_name', type=str, help='instance name')
+
 # Parameters for the target algorithm
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
+parser.add_argument('--budget', type=int, default=400, help='budget')
 parser.add_argument('--budgetGA', type=int, default=0, help='budgetGA')
+parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
-# inst_seed, inst_m, inst_n, phi = re.search("seed=([0-9]+)\s+m=([0-9]+)\s+n=([0-9]+)\s+phi=([^ ]+)", args.instance).group(1,2,3,4)
-# inst_seed = int(inst_seed)
-# inst_m = int(inst_m)
-# inst_n = int(inst_n)
-# phi = float(phi)
 
+problem = runner.get_problem(args.instance_name)
+instance = problem.read_instance(args.instance_name)
 
-np.random.seed(args.seed)
-instance = LOP.generate_synthetic(args.n, args.m, args.phi)
-
-budget = 400
+budget = args.budget
 assert budget > 2 * args.m_ini
 
+budgetGA = 10**args.budgetGA
+
 stdout = sys.stdout
-outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout' 
+outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout' 
 with open(outfilename, 'w') as sys.stdout:
-    out = cego.runCEGO(instance, args.m_ini, budget, args.algo_seed, best_known_sol = instance.best_sol, worst_known_sol = instance.worst_sol,
-                       budgetGA = 10**args.budgetGA)
+    df = runner.run_once(cego, instance, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA)
+    if args.output is not None:
+        df['Problem'] = instance.problem_name
+        df['instance'] = args.instance_name
+        df['Solver'] = "CEGO"
+        df.to_csv(args.output + '.csv', index=False)
+        df.to_pickle(args.output + '.pkl')
+        
 sys.stdout = stdout
-print(np.min(out["Fitness"]))
+print(df["Fitness"].min())
 # remove tmp file.
 os.remove(outfilename)

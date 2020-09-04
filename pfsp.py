@@ -1,11 +1,11 @@
 import numpy as np
 
-from rpy2.robjects import FloatVector
-import rpy2.rinterface as ri
+from problem import Problem
 
-class PFSP:
+class PFSP(Problem):
     # Class attributes
     problem_name = "PFSP"
+
     @classmethod
     def read_instance(cls, filename, opt_filename = None):
         print(f"Reading instance from {filename}")
@@ -39,12 +39,9 @@ class PFSP:
         self.P = np.asarray(P)
         # jobs, machines
         self.n, self.m = self.P.shape
-        
         self.instance_name = instance_name
-        self.evaluations = []
-        self.solutions = []
-        self.best_sol = best_sol
-        self.worst_sol = worst_sol
+        super().__init__(best_sol = best_sol, worst_sol = worst_sol)
+
 
     def completion_times(self, x):
         C = self.P[x, :]
@@ -61,21 +58,3 @@ class PFSP:
     
     def fitness_nosave(self, x):
         return self.makespan(x)
-       
-    # Minimized
-    def fitness(self, x):
-        f = self.fitness_nosave(x)
-        self.solutions.append(x)
-        self.evaluations.append(f)
-        return f
-
-    # Returns a closure function that can be called from R.
-    # WARNING: this function minimizes for CEGO
-    # FIXME: Can we make this a function shared by all problems instead of copy-pasting?
-    def make_r_fitness(self):
-        @ri.rternalize
-        def r_fitness(x):
-            xpy = np.asarray(x) - 1 # R vectors are 1-indexed
-            y = self.fitness(xpy)
-            return FloatVector(np.asarray(y))
-        return r_fitness
