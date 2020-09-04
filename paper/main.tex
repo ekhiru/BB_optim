@@ -100,7 +100,31 @@ Our contribution: Ekhine
 
 \section{Background}
 
-MM, GMM, uMM; Ekhine
+
+
+Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the inverse permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
+
+Distributions over permutations are functions that assign a probability value to each of the permutations in $S_n$, $p(\sigma)\in[0,1]$ \cite{critchlow91}. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma$ as follows:
+
+\begin{equation}
+p(\sigma)=\frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi}
+\end{equation}
+
+with two parameters, $\theta$ and $\sigma_0$, 
+where permutation $\sigma_0$ a reference permutation that has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and $\theta$, the dispersion parameter controls this decay. The distance $d(\sigma,\sigma_0)$ is the Kendall's-$\tau$ distance. The normalization constant $\psi$ can be easily computed for the Kendall's-$\tau$ distance as well as for the Hamming, Cayley and Ulam distance~\cite{Irurozki2016b}. 
+
+One of the most common problems related ti probability distributions is that of learning the maximum likelihood parameters  given a sample of data $S$. For the MM, this problem tranlates to learning $\theta$ and $\sigma_0$ that best describe a sample of permutations. 
+
+The learning process is divide in two stages: first, we estimate the central permutation of the distribution, $\hat\sigma0$ and, second, compute the dispersion parameter, $\hat\theta$. 
+
+The exact maximum likelihood estimation is computationally hard~\cite{Dwork:2001:RAM:371920.372165}. However, the approximate learning requires polynomilal computational time and is guarantied to obtain high quality parameters~\cite{Caragiannis2013,Coppersmith:2010}. 
+
+This process of sample $S$ is as follows: first, compute $\hat\sigma0$ with the Borda count algorithm. Borda orders the items $[n]$ by their \textit{Borda score} increasingly, where the Borda score $B(i)$ is the average of each position $i$, $B(i) \propto \sum_{t\in S}  \sigma_t(i)$. Second, the computation of $\theta$ is casted as a numerical optimization problem~\cite{Irurozki2016b}. 
+
+Recently, it has been proposed an extension of Borda by the name of uBorda. uBorda considers a sample of permutations $S$ along with a weight $w(\sigma)$ for each permutation $\sigma$~\cite{}. Intuitively it is equivalent to replicating the permutations in the sample proportionally to their weight. It has been used to learn a MM in an evolving preference context. In this paper, we propose to use uBorda where each permutation in the sample $\sigma\in S$ is weighted by its fitness function $w(\sigma)=f(\sigma)$.
+
+
+
 
 LOP: Ekhine
 
