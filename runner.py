@@ -22,7 +22,7 @@ def get_problem(instance_name):
         from lop import LOP
         return LOP
     elif "pfsp" in instance_name:
-        from pfsp import pfsp
+        from pfsp import PFSP
         return PFSP
     raise ValueError("Unknown problem: " + instance_name)
 
