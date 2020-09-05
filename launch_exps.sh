@@ -10,12 +10,13 @@ qsub_job() {
     PARALLEL_ENV=smp.pe
     # We would like to use $BASHPID here, but OS X version of bash does not
     # support it.
-    JOBNAME=$$-$1
+    JOBNAME=$1-$$
     shift 1
     qsub -v PATH <<EOF
 #!/bin/bash --login
 #$ -N $JOBNAME
-#$ -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
+# -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
+#$ -l sandybridge
 #$ -M manuel.lopez-ibanez@manchester.ac.uk
 #$ -m ase
 #      b     Mail is sent at the beginning of the job.
@@ -24,9 +25,8 @@ qsub_job() {
 #      s     Mail is sent when the job is suspended.
 #
 #$ -o ${JOBNAME}.stdout
-#$ -j
+#$ -j y
 #$ -cwd
-module load apps/R/3.5.2
 module load apps/anaconda3
 $@
 EOF
@@ -68,7 +68,7 @@ budget=400
 nruns=10
 
 LAUNCHER=qsub_job
-LAUNCHER=launch_local
+#LAUNCHER=launch_local
 
 mkdir -p results
 
