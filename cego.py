@@ -54,7 +54,7 @@ def cego(instance, seed, budget, # m: number of evaluations
     """
     rcode = STAP(rstring, "rcode")
     r_fitness = instance.make_r_fitness()
-    best_x, best_fitness, x , y = rcode.my_cego(r_fitness,
+    best_x, best_fitness, x, y = rcode.my_cego(r_fitness,
                                                 dist = r_kendallTau,
                                                 n = instance.n,
                                                 m_ini = m_ini,

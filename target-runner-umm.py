@@ -18,48 +18,47 @@
 ###############################################################################
 import sys
 import os
-import numpy as np
 import pandas as pd
-import mallows_kendall as mk
-from lop import LOP
-from cego_lop import solve_one_umm
-import re
+import runner
+from umm import uMM
 
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
-parser = ArgumentParser(description = "CEGO")
+parser = ArgumentParser(description = "uMM")
 parser.add_argument('configuration_id', type=int, help='configuration_id')
 parser.add_argument('instance_id', type=int, help='instance_id')
 parser.add_argument('algo_seed', type=int, help='random seed')
-# These are part of the instance definition
-parser.add_argument('-seed', type=int, help='inst_seed')
-parser.add_argument('-m', type=int, help='inst_m')
-parser.add_argument('-n', type=int, help='inst_n')
-parser.add_argument('-phi', type=float, help='inst_n')
+parser.add_argument('instance_name', type=str, help='instance name')
+
 # Parameters for the target algorithm
+parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
+parser.add_argument('--budget', type=int, default=400, help='budget')
+parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
 parser.add_argument('--rsl', type=float, default=0, help='rsl')
 parser.add_argument('--wml', type=float, default=0, help='wml')
-parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
-parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
+parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
-# inst_seed, inst_m, inst_n, phi = re.search("seed=([0-9]+)\s+m=([0-9]+)\s+n=([0-9]+)\s+phi=([^ ]+)", args.instance).group(1,2,3,4)
-# inst_seed = int(inst_seed)
-# inst_m = int(inst_m)
-# inst_n = int(inst_n)
-# phi = float(phi)
 
-np.random.seed(args.seed)
-instance = LOP.generate_synthetic(args.n, args.m, args.phi)
+problem = runner.get_problem(args.instance_name)
+instance = problem.read_instance(args.instance_name)
 
-budget = 400
+budget = args.budget
+assert budget > 2 * args.m_ini
 
 stdout = sys.stdout
-outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.algo_seed}.stdout' 
+outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout'
 with open(outfilename, 'w') as sys.stdout:
-    out = solve_one_umm(instance, budget, args.algo_seed, args.m_ini, instance.best_sol, instance.worst_sol, args.budgetMM, args.rsl, args.wml)
-    
+    df = runner.run_once(uMM, instance, args.seed, budget = budget, m_ini = args.m_ini, 
+                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml)
+    if args.output is not None:
+        df['Problem'] = instance.problem_name
+        df['instance'] = args.instance_name
+        df['Solver'] = "uMM"
+        df.to_csv(args.output + '.csv', index=False)
+        df.to_pickle(args.output + '.pkl')
+        
 sys.stdout = stdout
-print(np.min(out["Fitness"]))
+print(df["Fitness"].min())
 # remove tmp file.
 os.remove(outfilename)

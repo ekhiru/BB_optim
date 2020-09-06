@@ -90,8 +90,9 @@ def uMM(instance,
                       columns=['rho','phi_estim','phi_sample','Distance'])
     df['Fitness'] = fitnesses
     df['x'] = sample
-    df['budget'] = budget
     df['m_ini'] = m_ini
+    df['seed'] = seed
+    df['budget'] = budget
     df['budgetMM'] = budgetMM
     df['ratio_samples_learn'] = ratio_samples_learn
     df['weight_mass_learn'] = weight_mass_learn
