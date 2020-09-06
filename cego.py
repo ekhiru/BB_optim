@@ -64,7 +64,6 @@ def cego(instance, seed, budget, # m: number of evaluations
 
     # We use what instance recorded because CEGO may not get us what was
     # actually evaluated.
-    
     return pd.DataFrame(dict(
         Fitness=instance.evaluations, x=instance.solutions, m_ini = m_ini, seed = seed, budget = budget, budgetGA = budgetGA,
         Distance = [ instance.distance_to_best(perm) for perm in instance.solutions]))

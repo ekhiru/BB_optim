@@ -32,7 +32,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
   return binary_search_rho(w, ratio_samples_learn, weight_mass_learn, mid, last)
 
 def get_expected_distance(iterat,n,m):
-    N = (n-1) * n / 2
+    N = (n - 1) * n / 2
     f_ini, f_end = N / 4, 1
     iter_decrease = m - 10
     salto = (f_ini - f_end ) / iter_decrease
@@ -48,7 +48,6 @@ def uMM(instance,
         weight_mass_learn):
     np.random.seed(seed)
     n = instance.n
-    N = (n - 1) * n / 2
     sample = [np.random.permutation(range(n)) for _ in range(m_ini)]
     fitnesses = [instance.fitness(perm) for perm in sample]
     # ['rho','phi_estim','phi_sample','Distance']
@@ -76,6 +75,7 @@ def uMM(instance,
         #perm = perm[borda]
         perms = [perm[borda] for perm in perms]
         dists = distance.cdist(perms, sample, metric=mk.kendallTau)
+        # FIXME: We probably do not need to sort, just find the min per axis=1.
         dists = np.sort(dists, axis=1)
         indi = np.argmax(dists[:, 0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
         perm = perms[indi]

@@ -193,19 +193,20 @@ Quality guarantees
 \section{Experimental setup}
 
 We use the implementation of GECO provided by the
-authors\footnote{\url{https://cran.r-project.org/package=CEGO}}. Following the authors of CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use and the GA that optimizes
-the surrogate models uses a population size of 20, crossover rate of 0.5,
-mutation rate of 1, tournament selection of size 2 and probability of 0.9,
-interchange mutation (i.e., exchanging two randomly selected elements of the
-permutation) and cycle crossover for permutations. The budget of each run of
-the GA is \textcolor{red}{$10^4$} evaluations using the
+authors\footnote{\url{https://cran.r-project.org/package=CEGO}}. Following the
+authors of CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use and
+the GA that optimizes the surrogate models uses a population size of 20,
+crossover rate of 0.5, mutation rate of 1, tournament selection of size 2 and
+probability of 0.9, interchange mutation (i.e., exchanging two randomly
+selected elements of the permutation) and cycle crossover for permutations. The
+budget of each run of the GA is \textcolor{red}{$10^4$} evaluations using the
 surrogate-model. Although it is never stated in the original paper, the
-implementation of CEGO generates a set of initial solutions of size \minit by
-means of a max-min-distance sequential design: new solutions are added to the
-set sequentially by maximizing the minimum distance to solutions already in the
-set. These initial solutions are then evaluated on the actual objective
-function and the result is used to build the initial surrogate model.  Here we
-use $\minit=20$.\MANUEL{\citet{ZaeStoBar2014:ppsn} uses 10 so we may want to change this}
+implementation of CEGO generates a set of initial solutions of size
+$\minit=10$ by means of a max-min-distance sequential design: new solutions
+are added to the set sequentially by maximizing the minimum distance to
+solutions already in the set. These initial solutions are then evaluated on the
+actual objective function and the result is used to build the initial surrogate
+model.% \citet{ZaeStoBar2014:ppsn} uses 10 
 
 The CPU time required for a single run of CEGO using these settings is larger
 than a week.  For simplicity, we use Kendall Tau distance~\citep{?} in all

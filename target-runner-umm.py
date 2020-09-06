@@ -20,8 +20,6 @@ import sys
 import os
 import pandas as pd
 import runner
-from umm import uMM
-
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
 parser = ArgumentParser(description = "uMM")
@@ -40,24 +38,15 @@ parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
 
-problem = runner.get_problem(args.instance_name)
-instance = problem.read_instance(args.instance_name)
-
 budget = args.budget
 assert budget > 2 * args.m_ini
 
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout'
 with open(outfilename, 'w') as sys.stdout:
-    df = runner.run_once(uMM, instance, args.seed, budget = budget, m_ini = args.m_ini, 
-                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml)
-    if args.output is not None:
-        df['Problem'] = instance.problem_name
-        df['instance'] = args.instance_name
-        df['Solver'] = "uMM"
-        df.to_csv(args.output + '.csv', index=False)
-        df.to_pickle(args.output + '.pkl')
-        
+    df = runner.run_once("uMM", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, 
+                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml, out_filename = args.output)
+            
 sys.stdout = stdout
 print(df["Fitness"].min())
 # remove tmp file.

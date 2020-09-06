@@ -5,9 +5,10 @@ import rpy2.rinterface as ri
 from mallows_kendall import kendallTau
 
 class Problem:
-    def __init__(self, best_sol = None, worst_sol = None):
+    def __init__(self, best_sol = None, worst_sol = None, instance_name = None):
         self.best_sol = best_sol
         self.worst_sol = worst_sol
+        self.instance_name = instance_name
         if best_sol is not None:
             self.best_fitness = self.fitness_nosave(best_sol)
         if worst_sol is not None:

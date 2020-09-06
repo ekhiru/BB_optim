@@ -56,7 +56,7 @@ for n in $LOP_n; do
     for m in $LOP_m; do
         for seed in $LOP_seed; do
             for phi in $LOP_phi; do
-                INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=0.5"
+                INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
             done
         done
     done

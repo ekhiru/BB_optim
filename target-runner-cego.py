@@ -19,7 +19,6 @@
 import sys
 import os
 import pandas as pd
-from cego import cego
 import runner
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
@@ -37,9 +36,6 @@ parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
 
-problem = runner.get_problem(args.instance_name)
-instance = problem.read_instance(args.instance_name)
-
 budget = args.budget
 assert budget > 2 * args.m_ini
 
@@ -48,13 +44,7 @@ budgetGA = 10**args.budgetGA
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout' 
 with open(outfilename, 'w') as sys.stdout:
-    df = runner.run_once(cego, instance, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA)
-    if args.output is not None:
-        df['Problem'] = instance.problem_name
-        df['instance'] = args.instance_name
-        df['Solver'] = "CEGO"
-        df.to_csv(args.output + '.csv', index=False)
-        df.to_pickle(args.output + '.pkl')
+    df = runner.run_once("CEGO", instance_name, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA, out_filename = args.output)
         
 sys.stdout = stdout
 print(df["Fitness"].min())

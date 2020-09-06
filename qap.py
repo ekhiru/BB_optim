@@ -31,8 +31,8 @@ class QAP(Problem):
         assert self.B.shape[0] == self.B.shape[1]
         assert self.A.shape[0] == self.B.shape[0]
         self.n = self.A.shape[0]
-        self.instance_name = instance_name
-        super().__init__(best_sol = best_sol, worst_sol = worst_sol)
+        super().__init__(best_sol = best_sol, worst_sol = worst_sol,
+                         instance_name = instance_name)
         
     def fitness_nosave(self, x):
         return np.sum(self.A * self.B[np.ix_(x, x)])

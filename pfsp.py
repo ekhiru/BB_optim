@@ -39,9 +39,8 @@ class PFSP(Problem):
         self.P = np.asarray(P)
         # jobs, machines
         self.n, self.m = self.P.shape
-        self.instance_name = instance_name
-        super().__init__(best_sol = best_sol, worst_sol = worst_sol)
-
+        super().__init__(best_sol = best_sol, worst_sol = worst_sol,
+                         instance_name = instance_name)
 
     def completion_times(self, x):
         C = self.P[x, :]
