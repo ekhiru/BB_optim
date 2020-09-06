@@ -5,12 +5,10 @@ import pandas as pd
 
 
 def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
-                      # 0 < w_i < 1, w is sorted increasingly,
+                      # 0 <= w_i <= 1, w is sorted increasingly,
                       rho_ini=1, rho_end=0, tol=0.001):
   w = np.asarray(w)
-  #assert np.all(w > 0.0)
   assert np.all(w >= 0.0)
-  #assert np.all(w < 1.0)
   assert np.all(w <= 1.0)
   #if pos is None we take the largest 4th.
   #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
