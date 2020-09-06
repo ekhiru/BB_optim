@@ -30,6 +30,23 @@
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 
+%% Revision documents
+\usepackage[dvipsnames]{xcolor}
+\usepackage[normalem]{ulem}
+% FIXME: \sout is not very good. It cannot handle commands within its argument.
+\newcommand{\SuggestEdit}[3][red]{\textcolor{#1}{\sout{#2}}\textcolor{#1}{#3}}
+\let\svthefootnote\thefootnote
+\newcommand\colorfootnote[2][black]{\def\thefootnote{\color{#1}\svthefootnote}%
+  \footnote{\color{#1}#2}\def\thefootnote{\color{black}\svthefootnote}}
+\newcommand\RevComment[3][red]{\protect\colorfootnote[#1]{{\textbf{[#2: #3]}}}}
+% Command for edits, command for commenting and color
+\newcommand\newrevisor[3]{%%
+  \colorlet{#1}{#3}
+  \expandafter\newcommand\csname#1\endcsname[2]{\SuggestEdit[#1]{##1}{##2}}%%
+  \expandafter\newcommand\csname#2\endcsname[1]{\RevComment[#1]{#2}{##1}}%%
+}
+\newrevisor{manuel}{MANUEL}{Purple}
+
 \hyphenation{%%% Merriam-Webster
   di-men-sion-al %%
   op-tical net-works semi-conduc-tor %%
@@ -100,8 +117,6 @@ Our contribution: Ekhine
 
 \section{Background}
 
-
-
 Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the inverse permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
 
 Distributions over permutations are functions that assign a probability value to each of the permutations in $S_n$, $p(\sigma)\in[0,1]$ \cite{critchlow91}. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma$ as follows:
@@ -133,7 +148,7 @@ Quizás luego: PFSP y QAP
 \section{Methods}
 
 
-CEGO: Manuel.
+\manuel{CEGO: Manuel.}{}
 
 Combinatorial Efficient Global Optimization
 (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
@@ -176,21 +191,28 @@ Quality guarantees
 \section{Experimental setup}
 
 We use the implementation of GECO provided by the
-authors\footnote{\url{https://cran.r-project.org/package=CEGO}}. Following the
-original paper~\citep{ZaeStoFriFisNauBar2014}, we use and the GA that optimizes
+authors\footnote{\url{https://cran.r-project.org/package=CEGO}}. Following the authors of CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use and the GA that optimizes
 the surrogate models uses a population size of 20, crossover rate of 0.5,
 mutation rate of 1, tournament selection of size 2 and probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements of the
 permutation) and cycle crossover for permutations. The budget of each run of
-the GA is \textcolor{red}{$10^5$} evaluations using the
+the GA is \textcolor{red}{$10^4$} evaluations using the
 surrogate-model. Although it is never stated in the original paper, the
 implementation of CEGO generates a set of initial solutions of size \minit by
 means of a max-min-distance sequential design: new solutions are added to the
 set sequentially by maximizing the minimum distance to solutions already in the
 set. These initial solutions are then evaluated on the actual objective
-function and the result is used to build the initial surrogate model.
+function and the result is used to build the initial surrogate model.  Here we
+use $\minit=20$.\MANUEL{\citet{ZaeStoBar2014:ppsn} uses 10 so we may want to change this}
 
-Here we use $\minit=20$.
+The CPU time required for a single run of CEGO using these settings is larger
+than a week.  For simplicity, we use Kendall Tau distance~\citep{?} in all
+experiments\MANUEL{\citet{ZaeStoBar2014:ppsn} claims this is called Swap
+  distance, could you double-check?}. Nevertheless,
+\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
+when using Hamming distance. We plan to extend our analysis of uMM to other
+distance measures and to the dynamic selection of distance
+measures~\citep{ZaeStoBar2014:ppsn}.
 
 In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
@@ -198,16 +220,27 @@ algorithms for the problems considered here typically evaluate
 \textcolor{red}{hundreds? thousands?} of solutions, thus, the budget considered
 here for the black-box context is extremely limited.
 
-We implemented UMM in Python. The parameter settings that we use are...
+We implemented UMM in Python 3. The parameter settings that we use are...
 
 Complete this with details of uMM: MANUEL
 
-Computing system details: MANUEL
+\manuel{Computing system details: MANUEL}{%
+  All experiments were run on Intel Xeon E5-2640 CPUs at 2.50\,GHz, 64\,GB RAM
+  running CentOS Linux release 7.4.1708 (Core).  }
+
 
 Describir como se generan las intancias de LOP: Ekhine
 
 Describir las instancias: Ekhine
 
+For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$?}
+
+In the case of the QAP and PFSP, we consider the same instances as
+\citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
+\texttt{nug12},\texttt{nug30},\texttt{tho30} and \texttt{kra32} for the QAP,
+with $n$ equal to the number in the instance name, and \texttt{reC05},
+\texttt{reC13}, \texttt{reC19}, \texttt{reC31} for the PFSP, with
+$n \in \{20, 20, 30, 50\}$, respectively.
 
 \section{Experimental analysis}
 
@@ -217,6 +250,12 @@ intuition is that this problem becomes worse in rugged combinatorial
 landscapes, where small steps may produce drastic changes.
 
 \section{Conclusions}
+
+Open questions:
+\begin{itemize}
+\item How difficult is to extend uMM to other distance metrics?
+\item Can we plot the posterior probability of the optimal solution?
+\end{itemize}
 
 \paragraph*{Acknowledgements.}
 
