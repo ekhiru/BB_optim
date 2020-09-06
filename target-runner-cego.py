@@ -27,12 +27,12 @@ parser.add_argument('configuration_id', type=str, help='configuration_id')
 parser.add_argument('instance_id', type=str, help='instance_id')
 parser.add_argument('seed', type=int, help='random seed')
 parser.add_argument('instance_name', type=str, help='instance name')
+parser.add_argument("--output", type=str, default=None, help="output file")
 
 # Parameters for the target algorithm
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
 parser.add_argument('--budget', type=int, default=400, help='budget')
 parser.add_argument('--budgetGA', type=int, default=0, help='budgetGA')
-parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
 
@@ -44,7 +44,7 @@ budgetGA = 10**args.budgetGA
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout' 
 with open(outfilename, 'w') as sys.stdout:
-    df = runner.run_once("CEGO", instance_name, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA, out_filename = args.output)
+    df = runner.run_once("CEGO", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA, out_filename = args.output)
         
 sys.stdout = stdout
 print(df["Fitness"].min())

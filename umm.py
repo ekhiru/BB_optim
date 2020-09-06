@@ -79,7 +79,8 @@ def uMM(instance,
         dists = np.sort(dists, axis=1)
         indi = np.argmax(dists[:, 0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
         perm = perms[indi]
-
+        # FIXME: This should already be an array of int type. 
+        perm = np.asarray(perm, dtype='int')
         sample.append(perm)
         fitnesses.append(instance.fitness(perm))
 

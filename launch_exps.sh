@@ -45,6 +45,9 @@ qap/nug12.dat \
 qap/nug30.dat \
 qap/tho30.dat \
 pfsp/rec05.txt \
+pfsp/rec13.txt \
+pfsp/rec19.txt \
+pfsp/rec31.txt \
 "
 
 LOP_n=20
@@ -76,12 +79,13 @@ counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
     for run in $(seq 1 $nruns); do
-        #$LAUNCHER cego-$run-$counter ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output results/cego-$run-$counter
         rsl=0.15
 	wml=0.84
 	budgetMM=15
 	umm_m_ini=23
-	$LAUNCHER umm-$run-$counter ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $rsl --wml $wml --budget $budget --output results/umm-$run-$counter
+	$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $rsl --wml $wml --budget $budget --output results/umm-$counter-$run
+        
+	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output results/cego-$counter-$run
         
 	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
 	

@@ -23,10 +23,11 @@ import runner
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
 parser = ArgumentParser(description = "uMM")
-parser.add_argument('configuration_id', type=int, help='configuration_id')
-parser.add_argument('instance_id', type=int, help='instance_id')
-parser.add_argument('algo_seed', type=int, help='random seed')
+parser.add_argument('configuration_id', type=str, help='configuration_id')
+parser.add_argument('instance_id', type=str, help='instance_id')
+parser.add_argument('seed', type=int, help='random seed')
 parser.add_argument('instance_name', type=str, help='instance name')
+parser.add_argument("--output", type=str, default=None, help="output file")
 
 # Parameters for the target algorithm
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
@@ -34,7 +35,6 @@ parser.add_argument('--budget', type=int, default=400, help='budget')
 parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
 parser.add_argument('--rsl', type=float, default=0, help='rsl')
 parser.add_argument('--wml', type=float, default=0, help='wml')
-parser.add_argument("--output", type=str, default=None, help="output file")
 
 args = parser.parse_args()
 

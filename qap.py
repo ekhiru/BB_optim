@@ -35,5 +35,7 @@ class QAP(Problem):
                          instance_name = instance_name)
         
     def fitness_nosave(self, x):
+        # In case it is not numpy array.
+        x = np.asarray(x, dtype=int)
         return np.sum(self.A * self.B[np.ix_(x, x)])
     

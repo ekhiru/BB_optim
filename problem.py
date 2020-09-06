@@ -9,9 +9,13 @@ class Problem:
         self.best_sol = best_sol
         self.worst_sol = worst_sol
         self.instance_name = instance_name
-        if best_sol is not None:
+        if best_sol is None:
+            self.best_fitness = None
+        else:
             self.best_fitness = self.fitness_nosave(best_sol)
-        if worst_sol is not None:
+        if worst_sol is None:
+            self.worst_fitness = None
+        else:
             self.worst_fitness = self.fitness_nosave(worst_sol)
         self.reset()
     

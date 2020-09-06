@@ -56,4 +56,6 @@ class PFSP(Problem):
         return C[self.n - 1, self.m - 1]
     
     def fitness_nosave(self, x):
+        # In case it is not numpy array.
+        x = np.asarray(x, dtype=int)
         return self.makespan(x)

@@ -33,7 +33,7 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
         from umm import uMM
         algo = uMM
     elif algo_name == "CEGO":
-        from umm import cego
+        from cego import cego
         algo = cego
     else:
         raise ValueError("Unknown algo: " + algo_name)
