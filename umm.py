@@ -64,8 +64,8 @@ def uMM(instance,
         ws = rho ** ws #MINIMIZE
         # print(ws,co[:int(len(co)/4)].sum(),co.sum())
 
-        borda = mk.uborda(np.array(sample),ws)
-        phi_estim = mk.u_phi(sample,borda, ws)
+        borda = mk.uborda(np.array(sample), ws)
+        phi_estim = mk.u_phi(sample, borda, ws)
         expected_dist = get_expected_distance(m, n, budget)
         phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
         #phi_estim = 1 - (m+1)/(budget)
