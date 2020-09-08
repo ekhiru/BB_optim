@@ -179,15 +179,32 @@ What else do we need to say?
 
 \newcommand{\FEmax}{\ensuremath{FE_{\max}}}
 
-Description of UMM: Ekhine
+cosas de intro : 
+This new methodology relies on the assumption that the fitness landscatpe is correlated with a distribution over the same space. 
+Previous paper have confirmed this point
+For this case study, we show that this case for the Mallows model under the Kendall distance and 
 
-new approach: add sample, learn distri, sample distri
+
+
+In this section, we introduce our main contribution: We present a new methodology for the optimization of black box functions with a minimal number of queries. This methodology is a probabilistic, population-based algorithm. 
+
+Essentially, the algorithm  considers a sample of permutations along with the fitness of each of them. It is an iterative process in which the number of iterations is fixed. 
+Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual. 
+
+
+\section{Learning stage}
+In this section
+
+
+
 
 learn distri: uMM with param $\rho$ and binary search rho
 
-sample: peakig distri
+sample: peakig distri. Borda is the 
 
 Quality guarantees
+
+prrof, probem-distri correlation
 
 
 \section{Experimental setup}
@@ -200,7 +217,7 @@ crossover rate of 0.5, mutation rate of 1, tournament selection of size 2 and
 probability of 0.9, interchange mutation (i.e., exchanging two randomly
 selected elements of the permutation) and cycle crossover for permutations. The
 budget of each run of the GA is \textcolor{red}{$10^4$} evaluations using the
-surrogate-model. Although it is never stated in the original paper, the
+surrogate-model. Although it is never stated in the original paper, the	`
 implementation of CEGO generates a set of initial solutions of size
 $\minit=10$ by means of a max-min-distance sequential design: new solutions
 are added to the set sequentially by maximizing the minimum distance to
