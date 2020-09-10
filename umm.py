@@ -71,6 +71,7 @@ def uMM(instance,
         #phi_estim = 1 - (m+1)/(budget)
         perms = mk.samplingMM(budgetMM, n, phi=phi_sample, k=None)
         #perm = perm[borda]
+        # Transforms from sampling space to board space.
         perms = [perm[borda] for perm in perms]
         dists = distance.cdist(perms, sample, metric=mk.kendallTau)
         # FIXME: We probably do not need to sort, just find the min per axis=1.

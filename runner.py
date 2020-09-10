@@ -44,7 +44,7 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
     df = algo(instance, seed, **algo_params)
     if instance.best_fitness is not None and instance.worst_fitness is not None:
         df['Fitness'] = (df.Fitness - instance.best_fitness) / (instance.worst_fitness - instance.best_fitness)
-    
+    df['Function evaluations'] = np.arange(1, 10)
     df['run_time'] = timer.elapsed()
     df['Problem'] = instance.problem_name
     df['instance'] = instance.instance_name
