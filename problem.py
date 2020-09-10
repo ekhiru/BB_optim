@@ -36,7 +36,7 @@ class Problem:
     def distance_to_best(self, perm):
         if self.best_sol is None:
             return np.nan
-        return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) / 2)
+        return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) * 0.5)
   
     # Returns a closure function that can be called from R.
     # WARNING: this function minimizes for CEGO
