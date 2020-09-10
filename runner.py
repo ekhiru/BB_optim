@@ -12,6 +12,7 @@ class Timer:
         self.elapsed()
 
 import pandas as pd
+import numpy as np
 
 def get_problem(instance_name):
     instance_name = instance_name.lower()
