@@ -108,8 +108,27 @@ prediction models, simulations or physical experiments. When decision variables
 are continuous, the use of Bayesian surrogate-models, e.g., Gaussian processes,
 in optimization has become
 widespread~\citep{JonSchWel98go,ForKea2009surrogate}. Motivated by this
-success, there have been attempts at adapting such surrogate models to the
-combinatorial case~\citep{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}.
+success, there have been attempts at adapting such Bayesian optimization
+algorithms to the combinatorial case, a notable example being Combinatorial
+Efficient Global Optimization
+(CEGO)~\citep{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}. However, the
+ruggedness of combinatorial landscapes, which makes local search particularly
+effective in the white-box context, lessens the effectiveness of global
+surrogate models~\citep{EriPeaGar2019scalable}. Moreover, surrogate models are
+expensive to train and optimize. Unless each function evaluation requires a day
+or more, the time required by the Bayesian optimizer itself may impose a
+significant overhead in computation time. \citet{PerLopStu2015si} recently
+showed that ant colony optimization (ACO)~\citep{DorStu2004:book} is
+competitive with CEGO on a black-box version of the travelling salesman problem
+under a budget of $1\,000$ function evaluations. ACO basically builds a
+probability distribution model from which solutions are sampled with a bias
+towards the best solutions evaluated so far. As such, ACO may be considered a
+type of estimation-of-distribution algorithm (EDA) for combinatorial
+optimization.
+
+In this work, we propose and analyze uMM, an EDA specifically designed for
+black-box combinatorial optimization under a limited budget. The proposed uMM \ldots\MANUEL{what is the inspiration}
+\
 
 % minimize the uncertainty in the final solutions or
 
@@ -120,8 +139,6 @@ Our contribution: Ekhine
 \item 
 \end{itemize}
 
-\citet{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}
-\citet{PerLopStu2015si}
 
 \citep{LopDubPerStuBir2016irace}
 
@@ -185,7 +202,7 @@ What else do we need to say?
 
 \newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
 
-\newcommand{\FEmax}{\ensuremath{FE_{\max}}}
+\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
 
 cosas de intro : 
 This new methodology relies on the assumption that the fitness landscatpe is correlated with a distribution over the same space. 
