@@ -14,17 +14,18 @@ class Timer:
 import pandas as pd
 import numpy as np
 
-def get_problem(instance_name):
-    instance_name = instance_name.lower()
-    if "qap" in instance_name:
+def get_instance(instance_name):
+    instance_name_lower = instance_name.lower()
+    if "qap" in instance_name_lower:
         from qap import QAP
-        return QAP
-    elif "lop" in instance_name:
+        return QAP.read_instance(instance_name, opt_filename = "qap/optimal.txt")
+    elif "lop" in instance_name_lower:
         from lop import LOP
-        return LOP
-    elif "pfsp" in instance_name:
+        return LOP.read_instance(instance_name)
+    elif "pfsp" in instance_name_lower:
         from pfsp import PFSP
-        return PFSP
+        return PFSP.read_instance(instance_name)
+    
     raise ValueError("Unknown problem: " + instance_name)
 
 
@@ -39,8 +40,7 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
     else:
         raise ValueError("Unknown algo: " + algo_name)
     
-    problem = get_problem(instance_name)
-    instance = problem.read_instance(instance_name)
+    instance = get_instance(instance_name)
     timer = Timer()
     df = algo(instance, seed, **algo_params)
     if instance.best_fitness is not None and instance.worst_fitness is not None:
