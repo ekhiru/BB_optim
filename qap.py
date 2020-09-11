@@ -16,12 +16,12 @@ class QAP(Problem):
             with open(opt_filename) as f:
                 for line in f:
                     name, best_sol = line.strip().split(" ")
-                    if filename.find(name) >= 0: 
+                    if filename.find(name) >= 0:
                         best_sol = np.fromstring(best_sol, dtype=int, sep=",")
                         best_sol -= 1 # 0-indexed
                         print(f"Reading best solution {best_sol} from {opt_filename}")
                         break
-        
+        # print(best_sol, type(best_sol))
         return QAP(A, B, instance_name = filename, best_sol = best_sol)
 
     def __init__(self, A, B, best_sol = None, worst_sol = None, instance_name = "(generated)"):
@@ -33,9 +33,8 @@ class QAP(Problem):
         self.n = self.A.shape[0]
         super().__init__(best_sol = best_sol, worst_sol = worst_sol,
                          instance_name = instance_name)
-        
+
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
         return np.sum(self.A * self.B[np.ix_(x, x)])
-    

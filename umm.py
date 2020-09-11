@@ -1,3 +1,4 @@
+from imp import reload
 import numpy as np
 import mallows_kendall as mk
 from scipy.spatial import distance
@@ -51,7 +52,7 @@ def uMM(instance,
     # ['rho','phi_estim','phi_sample','Distance']
     res = [ [np.nan, np.nan, np.nan,
              instance.distance_to_best(perm)] for perm in sample]
-    
+
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
         ws = ws - ws.min()
@@ -60,8 +61,11 @@ def uMM(instance,
         co.sort()
         rho = binary_search_rho(co, ratio_samples_learn, weight_mass_learn)
 
-        # print(rho)
+        # print(fitnesses)
+        # print(ws)
         ws = rho ** ws #MINIMIZE
+        # print(ws)
+        # ws = rho ** (1-ws) #MAXIMIZE
         # print(ws,co[:int(len(co)/4)].sum(),co.sum())
 
         borda = mk.uborda(np.array(sample), ws)
@@ -78,16 +82,16 @@ def uMM(instance,
         dists = np.sort(dists, axis=1)
         indi = np.argmax(dists[:, 0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
         perm = perms[indi]
-        # FIXME: This should already be an array of int type. 
+        # FIXME: This should already be an array of int type.
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
         fitnesses.append(instance.fitness(perm))
+        # print("Fitness, best, desde UMM.py", fitnesses[-1], instance.best_fitness)
+        # print(fitnesses,ws)
 
         # This is only used for reporting stats.
         res.append([rho, phi_estim, phi_sample, instance.distance_to_best(borda)])
-        #print(perm,fitnesses[-1])
-    df = pd.DataFrame(res,
-                      columns=['rho','phi_estim','phi_sample','Distance'])
+    df = pd.DataFrame(res, columns=['rho','phi_estim','phi_sample','Distance'])
     df['Fitness'] = fitnesses
     df['x'] = sample
     df['m_ini'] = m_ini

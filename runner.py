@@ -1,3 +1,4 @@
+from imp import reload
 import time
 class Timer:
     def __init__(self):
@@ -20,7 +21,12 @@ def get_problem(instance_name):
         from qap import QAP
         return QAP
     elif "lop" in instance_name:
+        import lop as lop
+        reload(lop)
+
         from lop import LOP
+
+
         return LOP
     elif "pfsp" in instance_name:
         from pfsp import PFSP
@@ -31,6 +37,8 @@ def get_problem(instance_name):
 def run_once(algo_name, instance_name, seed, out_filename = None,
              **algo_params):
     if algo_name == "uMM":
+        import umm as umm
+        reload(umm)
         from umm import uMM
         algo = uMM
     elif algo_name == "CEGO":
@@ -38,11 +46,15 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
         algo = cego
     else:
         raise ValueError("Unknown algo: " + algo_name)
-    
+
     problem = get_problem(instance_name)
     instance = problem.read_instance(instance_name)
+    # return instance
+
+
     timer = Timer()
     df = algo(instance, seed, **algo_params)
+
     if instance.best_fitness is not None and instance.worst_fitness is not None:
         df['Fitness'] = (df.Fitness - instance.best_fitness) / (instance.worst_fitness - instance.best_fitness)
     df['Function evaluations'] = np.arange(1, len(df['Fitness'])+1)
@@ -54,4 +66,3 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
         df.to_csv(out_filename + '.csv.gz', index=False)
         df.to_pickle(out_filename + '.pkl.gz')
     return df
-
