@@ -44,10 +44,11 @@ class LOP(Problem):
           n = int(f.readline().strip())
           instance = np.loadtxt(f, max_rows=n)
       best_sol, best_fitness = None, None
-      best = pd.read_csv('lop/best_knowns.csv', sep='\t')
-      best = best[best.instance_name==filename.split('/')[-1]]#.best_fval.values[0]
-      if len(best) == 1:
-          best_fitness  = instance.sum() - best.best_fval.values[0]
+      print("The best fitnesses are not load (lop.py), uncomemnt the following lines")
+      # best = pd.read_csv('lop/best_knowns.csv', sep='\t')
+      # best = best[best.instance_name==filename.split('/')[-1]]#.best_fval.values[0]
+      # if len(best) == 1:
+      #     best_fitness  = instance.sum() - best.best_fval.values[0]
 
       # if opt_filename is not None:
       #     with open(opt_filename) as f:
