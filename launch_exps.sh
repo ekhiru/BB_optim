@@ -16,7 +16,7 @@ qsub_job() {
 #!/bin/bash --login
 #$ -N $JOBNAME
 # -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
-#$ -l sandybridge
+#$ -l ivybridge
 #$ -M manuel.lopez-ibanez@manchester.ac.uk
 #$ -m ase
 #      b     Mail is sent at the beginning of the job.
@@ -28,6 +28,7 @@ qsub_job() {
 #$ -j y
 #$ -cwd
 module load apps/anaconda3
+echo "running: $@"
 $@
 EOF
 }
@@ -72,20 +73,22 @@ LAUNCHER=qsub_job
 #LAUNCHER=launch_local
 
 cego_m_ini=10
-budgetGA=4 # Actually, 10**budgetGA
+budgetGA=3 # Actually, 10**budgetGA
 
 mkdir -p results
 counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
     for run in $(seq 1 $nruns); do
+	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output results/cego-$counter-$run
+
         rsl=0.15
 	wml=0.84
 	budgetMM=15
 	umm_m_ini=23
-	$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $rsl --wml $wml --budget $budget --output results/umm-$counter-$run
+	#$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $rsl --wml $wml --budget $budget --output results/umm-$counter-$run
         
-	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output results/cego-$counter-$run
+
         
 	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
 	
