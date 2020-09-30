@@ -63,6 +63,7 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
     df['instance'] = instance.instance_name
     df['Solver'] = algo_name
     if out_filename is not None:
+        
         df.to_csv(out_filename + '.csv.gz', index=False)
         df.to_pickle(out_filename + '.pkl.gz')
     return df

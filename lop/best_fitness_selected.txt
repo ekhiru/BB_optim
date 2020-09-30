@@ -1,4 +1,4 @@
-instance_name	best_fval
+instance_name	best_known_global
 N-t1d100.01	106852
 N-t1d100.02	105947
 N-t1d150.01	235056
