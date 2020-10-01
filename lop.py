@@ -4,8 +4,15 @@ import numpy as np
 import re
 import os
 
-
-
+def generate_list_of_instances(opt_filename):
+    with open(opt_filename) as f:
+        for line in f:
+            name, value = line.strip().split("\t")
+            instance_name = find_in_lop_folder(name, "path")
+            if instance_name:
+                print(instance_name)
+    
+    
 def find_in_lop_folder(instance_name, ret_value='instance'):
     for fol in os.listdir("lop"):
         subdir = "lop/" + fol
