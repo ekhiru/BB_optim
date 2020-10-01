@@ -34,6 +34,7 @@ class LOP(Problem):
     def read_instance(cls, filename, opt_filename = "lop/best_knowns.csv"):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
+            print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
             return cls.generate_synthetic(int(n), int(m), float(phi), int(seed))
         else:
             print(f"Reading instance from {filename}")
@@ -50,8 +51,10 @@ class LOP(Problem):
                             # The instances in http://grafo.etsii.urjc.es/optsicom/lolib/#instances and best sols try to maximize the superdiagonal.
                             # We minimize the subdiagonal, which is equivalent, but the best sol needs to be updated
                             best_fitness = instance.sum() - int(value)
-                            print(f"Reading best solution {best_fitness} from {opt_filename}")
+                            print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
                             break
+                    if best_fitness == None:
+                        print(f"Instance {filename} not found in {opt_filename}")
             return LOP(n, instance, best_fitness = best_fitness, instance_name = filename)
 
     # Methods
@@ -61,7 +64,7 @@ class LOP(Problem):
         self.instance = instance
         super().__init__(best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name, best_fitness = best_fitness)
 
-        print("identity, reverse and best know fitnesses",self.fitness_nosave(np.arange(n)),self.fitness_nosave(np.arange(n)[::-1]),best_fitness)
+        print("identity, reverse and best-known fitnesses",self.fitness_nosave(np.arange(n)),self.fitness_nosave(np.arange(n)[::-1]), best_fitness)
 
     def fitness_nosave(self, x):
         # In case it is not numpy array.

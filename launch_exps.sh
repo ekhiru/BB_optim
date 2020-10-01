@@ -80,7 +80,7 @@ budget=400
 nruns=10
 
 LAUNCHER=qsub_job
-LAUNCHER=launch_local
+#LAUNCHER=launch_local
 
 cego_m_ini=10
 budgetGA=4 # Actually, 10**budgetGA

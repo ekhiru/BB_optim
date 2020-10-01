@@ -23,10 +23,7 @@ def get_problem(instance_name):
     elif "lop" in instance_name:
         import lop as lop
         reload(lop)
-
         from lop import LOP
-
-
         return LOP
     elif "pfsp" in instance_name:
         from pfsp import PFSP
@@ -49,8 +46,6 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
 
     problem = get_problem(instance_name)
     instance = problem.read_instance(instance_name)
-    # return instance
-
 
     timer = Timer()
     df = algo(instance, seed, **algo_params)
