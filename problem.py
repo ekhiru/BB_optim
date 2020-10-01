@@ -5,7 +5,8 @@ import rpy2.rinterface as ri
 from mallows_kendall import kendallTau
 
 class Problem:
-    def __init__(self, best_sol = None, worst_sol = None, instance_name = None, best_fitness=None):
+    def __init__(self, best_sol = None, worst_sol = None, instance_name = None,
+                 best_fitness = None):
         self.best_sol = best_sol
         self.worst_sol = worst_sol
         self.instance_name = instance_name
@@ -13,10 +14,14 @@ class Problem:
             self.best_fitness = best_fitness
         else:
             self.best_fitness = self.fitness_nosave(best_sol)
+            if best_finess != None:
+                assert self.best_fitness == best_fitness
         if worst_sol is None:
             self.worst_fitness = None
         else:
             self.worst_fitness = self.fitness_nosave(worst_sol)
+            if worst_finess != None:
+                assert self.worst_fitness == worst_fitness
         self.reset()
 
     def reset(self):

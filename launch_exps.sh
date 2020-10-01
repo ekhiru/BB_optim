@@ -54,26 +54,33 @@ INSTANCES="\
 lop/IO/* \
 "
 
-LOP_n=20
-LOP_m=200
-LOP_seed=123456
-LOP_phi="0.5 0.7 0.9"
 
-for n in $LOP_n; do
-    for m in $LOP_m; do
-        for seed in $LOP_seed; do
-            for phi in $LOP_phi; do
-                INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+# Generate LOP synthetic
+gen_lop_synthetic() {
+    INSTANCES=$@
+    LOP_n=20
+    LOP_m=200
+    LOP_seed=123456
+    LOP_phi="0.5 0.7 0.9"
+
+    for n in $LOP_n; do
+        for m in $LOP_m; do
+            for seed in $LOP_seed; do
+                for phi in $LOP_phi; do
+                    INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+                done
             done
         done
     done
-done
+    echo $INSTANCES
+}
+#INSTANCES=$(gen_lop_synthetic $INSTANCES)
 
 budget=400
 nruns=10
 
 LAUNCHER=qsub_job
-#LAUNCHER=launch_local
+LAUNCHER=launch_local
 
 cego_m_ini=10
 budgetGA=4 # Actually, 10**budgetGA
