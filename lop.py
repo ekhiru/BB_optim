@@ -2,7 +2,38 @@ from problem import Problem
 import mallows_kendall as mk
 import numpy as np
 import re
+import os
 
+
+
+def find_in_lop_folder(instance_name, ret_value='instance'):
+    for fol in os.listdir("lop"):
+        subdir = "lop/" + fol
+        if os.path.isdir(subdir):
+            for file in os.listdir(subdir):
+                if instance_name == file:
+                    path = subdir + "/" + file
+                    with open(path) as f:
+                        n = int(f.readline().strip())
+                        instance = np.loadtxt(f, max_rows=n)
+                    if ret_value == 'instance' : return instance
+                    if ret_value == 'path': return path
+    return None
+
+def read_best_known(opt_filename, instance_name):
+    with open(opt_filename) as f:
+        for line in f:
+            name, value = line.strip().split("\t")
+            if filename.find(name) >= 0:
+                # The instances in http://grafo.etsii.urjc.es/optsicom/lolib/#instances and best sols try to maximize the superdiagonal.
+                # We minimize the subdiagonal, which is equivalent, but the best sol needs to be updated
+                best_fitness = instance.sum() - int(value)
+                print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
+                return best_fitness
+
+    print(f"Instance {filename} not found in {opt_filename}")
+    return None
+            
 def synthetic_LOP(n, m, phi):
     instance = np.zeros((n,n))
     s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
@@ -42,19 +73,9 @@ class LOP(Problem):
                 n = int(f.readline().strip())
                 instance = np.loadtxt(f, max_rows=n)
             best_fitness = None
-      
             if opt_filename is not None:
-                with open(opt_filename) as f:
-                    for line in f:
-                        name, value = line.strip().split("\t")
-                        if filename.find(name) >= 0:
-                            # The instances in http://grafo.etsii.urjc.es/optsicom/lolib/#instances and best sols try to maximize the superdiagonal.
-                            # We minimize the subdiagonal, which is equivalent, but the best sol needs to be updated
-                            best_fitness = instance.sum() - int(value)
-                            print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
-                            break
-                    if best_fitness == None:
-                        print(f"Instance {filename} not found in {opt_filename}")
+                best_fitness = read_best_known(opt_filename, filename)
+                
             return LOP(n, instance, best_fitness = best_fitness, instance_name = filename)
 
     # Methods
