@@ -82,7 +82,7 @@ LAUNCHER=qsub_job
 #LAUNCHER=launch_local
 
 cego_m_ini=10
-budgetGA=4 # Actually, 10**budgetGA
+budgetGA=3 # Actually, 10**budgetGA
 
 RESULTS=results-loplib
 mkdir -p $RESULTS

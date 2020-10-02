@@ -31,14 +31,12 @@ def read_best_known(opt_filename, instance_name):
     with open(opt_filename) as f:
         for line in f:
             name, value = line.strip().split("\t")
-            if filename.find(name) >= 0:
+            if instance_name.find(name) >= 0:
                 # The instances in http://grafo.etsii.urjc.es/optsicom/lolib/#instances and best sols try to maximize the superdiagonal.
                 # We minimize the subdiagonal, which is equivalent, but the best sol needs to be updated
-                best_fitness = instance.sum() - int(value)
-                print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
-                return best_fitness
-
-    print(f"Instance {filename} not found in {opt_filename}")
+                return int(value)
+                
+    print(f"Instance {instance_name} not found in {opt_filename}")
     return None
             
 def synthetic_LOP(n, m, phi):
@@ -82,7 +80,10 @@ class LOP(Problem):
             best_fitness = None
             if opt_filename is not None:
                 best_fitness = read_best_known(opt_filename, filename)
-                
+                if best_fitness != None:
+                    best_fitness = instance.sum() - best_fitness
+                    print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
+                    
             return LOP(n, instance, best_fitness = best_fitness, instance_name = filename)
 
     # Methods
