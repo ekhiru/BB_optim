@@ -40,31 +40,40 @@ launch_local() {
     $@
 }
 
-INSTANCES="\
-qap/kra32.dat \
-qap/nug12.dat \
-qap/nug30.dat \
-qap/tho30.dat \
-pfsp/rec05.txt \
-pfsp/rec13.txt \
-pfsp/rec19.txt \
-pfsp/rec31.txt \
-"
+# Generate LOP synthetic
+gen_lop_synthetic() {
+    INSTANCES=$@
+    LOP_n=20
+    LOP_m=200
+    LOP_seed=123456
+    LOP_phi="0.5 0.7 0.9"
 
-LOP_n=20
-LOP_m=200
-LOP_seed=123456
-LOP_phi="0.5 0.7 0.9"
-
-for n in $LOP_n; do
-    for m in $LOP_m; do
-        for seed in $LOP_seed; do
-            for phi in $LOP_phi; do
-                INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+    for n in $LOP_n; do
+        for m in $LOP_m; do
+            for seed in $LOP_seed; do
+                for phi in $LOP_phi; do
+                    INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+                done
             done
         done
     done
-done
+    echo $INSTANCES
+}
+
+# INSTANCES="\
+# qap/kra32.dat \
+# qap/nug12.dat \
+# qap/nug30.dat \
+# qap/tho30.dat \
+# pfsp/rec05.txt \
+# pfsp/rec13.txt \
+# pfsp/rec19.txt \
+# pfsp/rec31.txt \
+# "
+#INSTANCES=$(gen_lop_synthetic $INSTANCES)
+INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
+
+
 
 budget=400
 nruns=10
@@ -73,14 +82,15 @@ LAUNCHER=qsub_job
 #LAUNCHER=launch_local
 
 cego_m_ini=10
-budgetGA=3 # Actually, 10**budgetGA
+budgetGA=4 # Actually, 10**budgetGA
 
-mkdir -p results
+RESULTS=results-loplib
+mkdir -p $RESULTS
 counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
     for run in $(seq 1 $nruns); do
-	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output results/cego-$counter-$run
+	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output $RESULTS/cego-$counter-$run
 
         rsl=0.15
 	wml=0.84
