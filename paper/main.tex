@@ -142,7 +142,7 @@ Our contribution: Ekhine
 
 \citep{LopDubPerStuBir2016irace}
 
-\section{Background}
+\section{Background}\label{sec:backgroud}
 
 Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the inverse permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
 
@@ -163,6 +163,7 @@ The exact maximum likelihood estimation is computationally hard~\cite{Dwork:2001
 
 This process of sample $S$ is as follows: first, compute $\hat\sigma0$ with the Borda count algorithm. Borda orders the items $[n]$ by their \textit{Borda score} increasingly, where the Borda score $B(i)$ is the average of each position $i$, $B(i) \propto \sum_{t\in S}  \sigma_t(i)$. Second, the computation of $\theta$ is casted as a numerical optimization problem~\cite{Irurozki2016b}. 
 
+\subsection{Unbalanced Borda}\label{sec:uborda}
 Recently, it has been proposed an extension of Borda by the name of uBorda. uBorda considers a sample of permutations $S$ along with a weight $w(\sigma)$ for each permutation $\sigma$~\cite{}. Intuitively it is equivalent to replicating the permutations in the sample proportionally to their weight. It has been used to learn a MM in an evolving preference context. In this paper, we propose to use uBorda where each permutation in the sample $\sigma\in S$ is weighted by its fitness function $w(\sigma)=f(\sigma)$.
 
 
@@ -217,8 +218,41 @@ Essentially, the algorithm  considers a sample of permutations along with the fi
 Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual. 
 
 
-\section{Learning stage}
-In this section
+\section{UMM }
+In this section we describe our main contribution: a novel algorithm for the optimization of a black box function over permutation spaces. This algorithm is called Unbalanced Mallows model (UMM) since it a probabilistic method based on a well-known probability distribution for permutations: the Mallows model. 
+
+
+The high-level behavior of UMM is as follows. It starts with an \textit{small} sample of $m'$ permutations that are randomly generated. UMM also keeps a probability distribution of a transformation of the sample. Then, for $m$ iterations, it generates a random, promising candidate solution and includes it in the sample. Each time a new permutation is included its fitness is computed and the internal probabilistic model is updated. 
+
+The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be smaller.\footnote{We assume a minimization problem.} The main contribution of our approach is that the distribution does not represent the current sample considered by the algorithm but instead, represents a variation of it. This variation is abstractly equivalent to replicating in the sample the permutations inversely proportionally to their fitness values. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question os how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}
+
+At each iteration of the algorithm the following steps take place: (1) randomly generate a permutation and include it in the sample and (2) evaluate the new permutation and update the probabilistic model. These steps correspond to two statistical operations: (1) sample a probability distribution and (2) learn a probability distribution of the transformation of the sample. Both are describe in the subsequent sections. 
+
+\subsection{Learning step}\label{sec:learning}
+
+As shown in Section~\ref{sec:backgroud}, MM can be approximately learnt in two steps (1) estimating the location parameter $\sigma_0$, usually done with Borda algorithm, and (2) computing the scale parameter $\theta$. Since the scale parameter is set automatically, we focus on learning the first step. 
+
+%In order to minimize the number of permutations in the sample (and consequently the number of function evaluations) our proposed UMM learns the distribution of a transformation of the sample rather than the sample. This transformation consists on replicating the best fitted permutations. However, this is done abstractly: 
+The location parameter can be shown to be the permutation in $S_n$ that minimizes the sum of the distances to the permutations in the sample~\cite{gMallows}, which is usually approximated with the Borda algorithm. Since we are interested on biasing the location towards the regions of the space where the fitness function is smaller, we would like to replicate the permutations a number of times that is inversely proportionally to their fitness values.
+We can simulate the replication of the best fitted individuals by using uBorda, described in Section~\ref{sec:uborda} and setting $w(\sigma)=\rho^{f(\sigma)}$. This generalization requires setting a value for parameter $\rho$. We show how to choose this value in the experimental section. 
+
+
+\subsection{Sampling step}
+The Mallows model is defined by two parameters. The location $\sigma_0$ is the permutation with the largest probability value, and in our problem, the permutation that is supposed to be the global optimum. The scale parameter $\theta$ controls both the variance and the expected distance of a random permutation. Given these two parameters, sampling a MM has been studied in \cite{Collas}\cite{Irurozki2016b}\cite{Regenwetter2004} where the computational complexities are $O(n\log n)$ and $O(n^2)$.
+
+
+At each iteration of UMM $\sigma_0$ is given by the permutation obtained as a solution in the previous learning step. The scale $\theta$, in the other hand, is set automatically by the algorithm to control the diversification and intensification trade off: At the first iteration it is set so that the expected distance equals  ${n\choose 4}$ (half of the distance of the uniform distribution), and then it linearly decrease until the last iteration where the expected distance equals 1. Similar approaches have been taken in different contexts~\cite{arza2019approaching}.
+
+This setting reflects the fact that, despite beliving that the best global optimum at each iteration is $\sigma_0$, the uncertainty at the fisrt stages of the algorithm is high and
+
+
+\subsection{Probavle convergence}
+
+\subsection{Comparison to standard probabilistic approaches.}
+UMM is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs). Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration. 
+
+
+
 
 
 
