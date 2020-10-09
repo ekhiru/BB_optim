@@ -224,7 +224,7 @@ In this section we describe our main contribution: a novel algorithm for the opt
 
 The high-level behavior of UMM is as follows. It starts with an \textit{small} sample of $m'$ permutations that are randomly generated. UMM also keeps a probability distribution of a transformation of the sample. Then, for $m$ iterations, it generates a random, promising candidate solution and includes it in the sample. Each time a new permutation is included its fitness is computed and the internal probabilistic model is updated. 
 
-The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be smaller.\footnote{We assume a minimization problem.} The main contribution of our approach is that the distribution does not represent the current sample considered by the algorithm but instead, represents a variation of it. This variation is abstractly equivalent to replicating in the sample the permutations inversely proportionally to their fitness values. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question os how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}
+The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be smaller.\footnote{We assume a minimization problem.} The main contribution of our approach is that the distribution does not represent the current sample considered by the algorithm but instead, represents a variation of it. This variation is abstractly equivalent to replicating in the sample the permutations inversely proportionally to their fitness values, i.e., there will be many copies of the good solutions and few of the bad ones. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question os how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}
 
 At each iteration of the algorithm the following steps take place: (1) randomly generate a permutation and include it in the sample and (2) evaluate the new permutation and update the probabilistic model. These steps correspond to two statistical operations: (1) sample a probability distribution and (2) learn a probability distribution of the transformation of the sample. Both are describe in the subsequent sections. 
 
@@ -243,12 +243,11 @@ The Mallows model is defined by two parameters. The location $\sigma_0$ is the p
 
 At each iteration of UMM $\sigma_0$ is given by the permutation obtained as a solution in the previous learning step. The scale $\theta$, in the other hand, is set automatically by the algorithm to control the diversification and intensification trade off: At the first iteration it is set so that the expected distance equals  ${n\choose 4}$ (half of the distance of the uniform distribution), and then it linearly decrease until the last iteration where the expected distance equals 1. Similar approaches have been taken in different contexts~\cite{arza2019approaching}.
 
-This setting reflects the fact that, despite beliving that the best global optimum at each iteration is $\sigma_0$, the uncertainty at the fisrt stages of the algorithm is high and
+This setting reflects the fact that, despite believing that the best global optimum at each iteration is $\sigma_0$, the uncertainty at the fisrt stages of the algorithm is high and
 
 
-\subsection{Probavle convergence}
 
-\subsection{Comparison to standard probabilistic approaches.}
+\subsection{Comparison to standard probabilistic optimization approaches.}
 UMM is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs). Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration. 
 
 
