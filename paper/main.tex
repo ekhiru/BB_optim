@@ -8,11 +8,11 @@
 \usepackage{xspace}
 %% Useful packages
 \usepackage{graphicx}
-\usepackage{pdflscape}
+\usepackage{pdflscape,adjustbox}
 \usepackage{multirow}
 \usepackage{booktabs} % For formal tables
 \usepackage{enumitem}
-\usepackage{afterpage}
+\usepackage{afterpage,tabularx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage[square,numbers,sort]{natbib}
 % Fixes for using natbib and llncs
@@ -329,30 +329,29 @@ PFSF, rec05, en un problema muy pequeno ninguno hace nada
 
 Table~\ref{tab:results} shows
 
-\begin{table}
-\caption{Results\label{tab:results}}
-\begin{tabular}{llrrr}
+\begin{adjustbox}{angle=90}
+\begin{tabular}{lllrrrrrrr}
 \toprule
-Problem &                instance &  Fitness CEGO &  Fitness UMM &  Improvement \\
+{} & Problem &                instance &  Fitness\_CEGO\_mean &  Fitness\_CEGO\_std &  Fitness\_UMM\_mean &  Fitness\_UMM\_std &  Improvement &  ttest statistic &  ttest pvalue \\
 \midrule
-    LOP &  lop/RandA1/N-t1d100.01 &       78696.6 &      76119.6 &     0.032746 \\
-    LOP &  lop/RandA1/N-t1d100.02 &       79686.5 &      76827.7 &     0.035876 \\
-    LOP &  lop/RandA1/N-t1d150.01 &      187605.5 &     179508.3 &     0.043161 \\
-    LOP &  lop/RandA1/N-t1d150.02 &      184320.9 &     177592.8 &     0.036502 \\
-    LOP &  lop/RandA1/N-t1d200.01 &      335391.1 &     323513.6 &     0.035414 \\
-    LOP &  lop/RandA1/N-t1d200.02 &      333149.5 &     319675.8 &     0.040443 \\
-    LOP &  lop/RandA2/N-t2d150.01 &       24682.7 &      15297.7 &     0.380226 \\
-    LOP &  lop/RandA2/N-t2d150.02 &       24250.8 &      14724.9 &     0.392808 \\
-   PFSP &          pfsp/rec05.txt &        1317.9 &       1330.7 &    -0.009712 \\
-   PFSP &          pfsp/rec13.txt &        2128.2 &       2158.7 &    -0.014331 \\
-   PFSP &          pfsp/rec19.txt &        2398.6 &       2405.1 &    -0.002710 \\
-    QAP &           qap/kra32.dat &      115907.0 &     116320.0 &    -0.003563 \\
-    QAP &           qap/nug12.dat &         624.2 &        660.4 &    -0.057994 \\
-    QAP &           qap/nug30.dat &        7486.8 &       7474.0 &     0.001710 \\
-    QAP &           qap/tho30.dat &      192416.0 &     191482.0 &     0.004854 \\
+0  &     LOP &  lop/RandA1/N-t1d100.01 &            78696.6 &        811.368145 &           76119.6 &       915.392836 &     0.032746 &         6.662091 &  2.989433e-06 \\
+1  &     LOP &  lop/RandA1/N-t1d100.02 &            79686.5 &        367.876262 &           76827.7 &       890.969391 &     0.035876 &         9.378614 &  2.374606e-08 \\
+2  &     LOP &  lop/RandA1/N-t1d150.01 &           187605.5 &       1906.941953 &          179508.3 &      1647.878437 &     0.043161 &        10.159726 &  6.994357e-09 \\
+3  &     LOP &  lop/RandA1/N-t1d150.02 &           184320.9 &        973.457920 &          177592.8 &      1196.159298 &     0.036502 &        13.795848 &  5.183671e-11 \\
+4  &     LOP &  lop/RandA1/N-t1d200.01 &           335391.1 &       2288.960096 &          323513.6 &      1371.235712 &     0.035414 &        14.076557 &  3.714220e-11 \\
+5  &     LOP &  lop/RandA1/N-t1d200.02 &           333149.5 &       2497.207474 &          319675.8 &      2242.631629 &     0.040443 &        12.694417 &  2.029610e-10 \\
+6  &     LOP &  lop/RandA2/N-t2d150.01 &            24682.7 &        976.639596 &           15297.7 &       563.527787 &     0.380226 &        26.320561 &  8.038269e-16 \\
+7  &     LOP &  lop/RandA2/N-t2d150.02 &            24250.8 &       1354.897110 &           14724.9 &       667.454276 &     0.392808 &        19.944373 &  1.010663e-13 \\
+8  &    PFSP &          pfsp/rec05.txt &             1317.9 &         25.075220 &            1330.7 &        17.901272 &    -0.009712 &        -1.313790 &  2.054160e-01 \\
+9  &    PFSP &          pfsp/rec13.txt &             2128.2 &         24.965754 &            2158.7 &        29.533597 &    -0.014331 &        -2.494040 &  2.258601e-02 \\
+10 &    PFSP &          pfsp/rec19.txt &             2398.6 &         19.839355 &            2405.1 &        12.582616 &    -0.002710 &        -0.874932 &  3.931359e-01 \\
+11 &     QAP &           qap/kra32.dat &           115907.0 &       4663.427566 &          116320.0 &      4673.468852 &    -0.003563 &        -0.197816 &  8.454055e-01 \\
+12 &     QAP &           qap/nug12.dat &              624.2 &         26.288147 &             660.4 &        17.276831 &    -0.057994 &        -3.639054 &  1.876810e-03 \\
+13 &     QAP &           qap/nug30.dat &             7486.8 &         40.411220 &            7474.0 &        83.910005 &     0.001710 &         0.434612 &  6.690098e-01 \\
+14 &     QAP &           qap/tho30.dat &           192416.0 &       2584.174401 &          191482.0 &      4419.722264 &     0.004854 &         0.576896 &  5.711548e-01 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{adjustbox}
 
 
 \section{Conclusions}
