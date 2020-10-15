@@ -115,16 +115,19 @@ Efficient Global Optimization
 ruggedness of combinatorial landscapes, which makes local search particularly
 effective in the white-box context, lessens the effectiveness of global
 surrogate models~\citep{EriPeaGar2019scalable}. Moreover, surrogate models are
-expensive to train and optimize. Unless each function evaluation requires a day
-or more, the time required by the Bayesian optimizer itself may impose a
-significant overhead in computation time. \citet{PerLopStu2015si} recently
-showed that ant colony optimization (ACO)~\citep{DorStu2004:book} is
-competitive with CEGO on a black-box version of the travelling salesman problem
-under a budget of $1\,000$ function evaluations. ACO basically builds a
-probability distribution model from which solutions are sampled with a bias
-towards the best solutions evaluated so far. As such, ACO may be considered a
-type of estimation-of-distribution algorithm (EDA) for combinatorial
-optimization.
+expensive to train and optimize. The additional time required by the Bayesian
+optimizer may impose a significant overhead in computation time, specially if
+computation time of each function evaluation is measured in ``few'' minutes or
+hours rather than days and when ``expensive'' refers to resources or economical
+cost rather than wall-clock time. \citet{PerLopStu2015si} recently showed that
+ant colony optimization (ACO)~\citep{DorStu2004:book} is competitive with CEGO
+on a black-box version of the travelling salesman problem under a budget of
+$1\,000$ function evaluations. ACO basically builds a probability distribution
+model from which solutions are sampled with a bias towards the best solutions
+evaluated so far. As such, ACO may be considered a type of
+estimation-of-distribution algorithm (EDA) for combinatorial optimization. On
+the other hand, $1\,000$ evaluations is a relatively large budget for CEGO and
+ACO was not designed for such short budgets.
 
 In this work, we propose and analyze uMM, an EDA specifically designed for
 black-box combinatorial optimization under a limited budget. The proposed uMM \ldots\MANUEL{what is the inspiration}
@@ -315,12 +318,6 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 
 \section{Experimental analysis}
 
-Bayesian optimization methods using a global GP model, such as CEGO, are known
-to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
-intuition is that this problem becomes worse in rugged combinatorial
-landscapes, where small steps may produce drastic changes.
-
-Te dejo aqui un comentario argumentando por qué he elegido estas instancias, puedes ver todas las graficas en el github
 
 LOP syntéticas, todas en una gráfica. 
 
@@ -330,7 +327,10 @@ kra32 es el unico del QAP en el que hay un comportaiento no random (considera di
 
 PFSF, rec05, en un problema muy pequeno ninguno hace nada
 
+Table~\ref{tab:results} shows
 
+\begin{table}
+\caption{Results\label{tab:results}}
 \begin{tabular}{llrrr}
 \toprule
 Problem &                instance &  Fitness CEGO &  Fitness UMM &  Improvement \\
@@ -352,10 +352,15 @@ Problem &                instance &  Fitness CEGO &  Fitness UMM &  Improvement 
     QAP &           qap/tho30.dat &      192416.0 &     191482.0 &     0.004854 \\
 \bottomrule
 \end{tabular}
-
+\end{table}
 
 
 \section{Conclusions}
+
+Bayesian optimization methods using a global GP model, such as CEGO, are known
+to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
+intuition is that this problem becomes worse in rugged combinatorial
+landscapes, where small steps may produce drastic changes.
 
 Open questions:
 \begin{itemize}
