@@ -319,17 +319,20 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 \section{Experimental analysis}
 
 
-LOP syntéticas, todas en una gráfica. 
+Fig.~\ref{fig:lop_synth}: LOP syntéticas, todas en una gráfica. 
 
-LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
+Fig.~\ref{fig:loplib}: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
 
-kra32 es el unico del QAP en el que hay un comportaiento no random (considera distancia euclidea)
+kra32 es el unico del QAP en el que hay un comportaiento no random (considera distancia euclidea) Fig~\ref{fig:kra32}
 
-PFSF, rec05, en un problema muy pequeno ninguno hace nada
+PFSF, rec05, en un problema muy pequeno ninguno hace nada Fig.~\ref{fig:rec05}
 
 Table~\ref{tab:results} shows
 
-\begin{adjustbox}{angle=90}
+\begin{table}
+  \caption{Results.\label{tab:results}}
+%\begin{adjustbox}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lllrrrrrrr}
 \toprule
 {} & Problem &                instance &  Fitness\_CEGO\_mean &  Fitness\_CEGO\_std &  Fitness\_UMM\_mean &  Fitness\_UMM\_std &  Improvement &  ttest statistic &  ttest pvalue \\
@@ -350,8 +353,36 @@ Table~\ref{tab:results} shows
 13 &     QAP &           qap/nug30.dat &             7486.8 &         40.411220 &            7474.0 &        83.910005 &     0.001710 &         0.434612 &  6.690098e-01 \\
 14 &     QAP &           qap/tho30.dat &           192416.0 &       2584.174401 &          191482.0 &      4419.722264 &     0.004854 &         0.576896 &  5.711548e-01 \\
 \bottomrule
-\end{tabular}
-\end{adjustbox}
+\end{tabular}}
+% \end{adjustbox}
+ \end{table}
+
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/synthetic_LOP_combined}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
+\end{figure}
+
+
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d100_01}\\
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d150_01}\\
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d200_01}\\
+    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on three instances from LOPLIB.\label{fig:loplib}}
+  \end{figure}
+  
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_pfsp_rec05_txt}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
+\end{figure}
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_qap_kra32_dat}
+    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
+\end{figure}
+
 
 
 \section{Conclusions}
