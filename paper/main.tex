@@ -270,14 +270,18 @@ the GA that optimizes the surrogate models uses a population size of 20,
 crossover rate of 0.5, mutation rate of 1, tournament selection of size 2 and
 probability of 0.9, interchange mutation (i.e., exchanging two randomly
 selected elements of the permutation) and cycle crossover for permutations. The
-budget of each run of the GA is \textcolor{red}{$10^4$} evaluations using the
-surrogate-model. Although it is never stated in the original paper, the	`
-implementation of CEGO generates a set of initial solutions of size
-$\minit=10$ by means of a max-min-distance sequential design: new solutions
-are added to the set sequentially by maximizing the minimum distance to
-solutions already in the set. These initial solutions are then evaluated on the
-actual objective function and the result is used to build the initial surrogate
-model.% \citet{ZaeStoBar2014:ppsn} uses 10 
+authors of CEGO used a budget of $10^4$ evaluations using the surrogate-model
+for each run of the GA, however, with such setting, each run of CEGO requires
+more than a week of computation time, which was infeasible for us, hence, we
+set a value of \textcolor{red}{$10^3$}.
+
+Although it is never stated in the original paper, the implementation of CEGO
+generates a set of initial solutions of size $\minit=10$ by means of a
+max-min-distance sequential design: new solutions are added to the set
+sequentially by maximizing the minimum distance to solutions already in the
+set. These initial solutions are then evaluated on the actual objective
+function and the result is used to build the initial surrogate
+model.% \citet{ZaeStoBar2014:ppsn} uses 10
 
 The CPU time required for a single run of CEGO using these settings is larger
 than a week.  For simplicity, we use Kendall Tau distance~\citep{?} in all
@@ -335,18 +339,104 @@ gives an estimation of the mean fitness of the best-so-far solution up to that
 point in the run. The algorithms do not return the final solution shown but
 rather the best one (minimum fitness) of each run.
 
-When we compare the behaviour of CEGO and uMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}).
 
- we 
-: LOP syntéticas, todas en una gráfica. 
+%: LOP syntéticas, todas en una gráfica. 
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/synthetic_LOP_combined}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
+\end{figure}
 
-Fig.~\ref{fig:loplib}: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
+When we compare the behaviour of CEGO and uMM on synthetic LOP instances
+(Fig.~\ref{fig:lop_synth}), we observe a clear pattern independently of the
+uniformity of the instances. In particular, CEGO starts with a random sampling
+of X solutions, with are quite poor as expected, followed by building and
+updating the Kriging model based new evaluations, which leads to an impressive
+improvement in less than 50 evaluations. However, progress is more or less
+halted at this point and the model seems to have trouble generating better
+solutions. Lower uniformity values (e.g., $\mu=5$) show worsening evaluations
+despite the increase in solutions used to build the model.
 
-kra32 es el unico del QAP en el que hay un comportaiento no random (considera distancia euclidea) Fig~\ref{fig:kra32}
+On the other hand, uMM converges much more slowly than CEGO, only reaching the
+same fitness values around evaluation 250. Yet, uMM is able to keep the rate of
+improvement and completely overtake CEGO around evaluation 350. As in the case
+of CEGO, lower uniformity values lead to worse performance, although the
+difference is much smaller for uMM than it was for CEGO.
 
-PFSF, rec05, en un problema muy pequeno ninguno hace nada Fig.~\ref{fig:rec05}
+In summary, the Kriging model clearly helps CEGO to quickly identify good
+solutions in very few evaluations. However, for some reason, CEGO is not able to
+further improve those solutions given more data. This may due to the
+model not being able to produce accurate predictions or the underlying
+optimizer not being able to find improved solutions using the model.\MANUEL{perhaps we should measure the prediction error and see if it grows or decreases. That would answer this question.}
 
-Table~\ref{tab:results} shows
+\newcommand{\supplement}{\citep{Supplementary}}
+
+
+%: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d100_01}\\
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d150_01}\\
+  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d200_01}\\
+    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on three instances from LOPLIB.\label{fig:loplib}}
+  \end{figure}
+
+
+The fast initial convergence of CEGO for synthetic LOP instances does not seem
+to translate to the instances available in LOPLIB~\citep{}. We show in
+Fig.~\ref{fig:loplib} three examples with different permutation size, however,
+the results are consistent for other LOPLIB instances (complete results
+available as supplementary material \supplement). Due to extremely long
+runtimes of CEGO and constraints in our computing system, we set a maximum
+wall-clock time of 5 days for each run of CEGO. On these instances, the
+behaviour of CEGO and uMM is much more similar (at least up to the termination
+point of CEGO). It appears that our synthetic LOP instances have a fitness
+landscape that is very amenable to CEGO's Kriging model, whereas the LOPLIB
+instances do not present such landscape. Comparing CEGO and uMM results, the
+differences get smaller, in favour of uMM, with larger instance size. Our
+conjecture is that building an accurate Bayesian model and searching for good
+solutions on it becomes harder for larger fitness landscapes. 
+
+In the case of the PFSP, none of the algorithms are able to achieve a
+  progress better than a random search would, as illustrated by the results
+  (Fig.~\ref{fig:rec05}) obtained on \texttt{rec05}, which is the smallest PFSP
+  instance considered here. The lack of any apparent convergence suggests that
+  the models (both Bayesian and probabilistic) are not learning anything about
+  the fitness landscape. Results for larger PFSP corroborate this conclusions
+  (\supplement). Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
+  that other distance measures are more suited than Kendall's-$\tau$ distance
+  for the PFSP, the reported fitness differences between various distance
+  metrics are small, hence, we conjecture that the same behaviour will be
+  observed with other distance metrics.
+  
+
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_pfsp_rec05_txt}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
+\end{figure}
+
+The situation is very similar for the QAP, where both algorithms show the same
+behaviour as in the PFSP for all instances tested, except for
+\texttt{kra32}. As shown in Fig~\ref{fig:kra32}, in this instance both
+algorithms are able to improve over the number of evaluations, although not
+with ease. As in the synthetic LOP instances, we again observe that CEGO does
+improve faster than UMM initially, yet, around evaluation 250, it appears to
+get stuck and around evaluation 300, UMM overtakes it. We believe the reason is
+the same as before, that is, the model is not able to adequately reflect the
+ruggedness of the actual landscape and, hence, the best solutions found by the
+GA searching the model are not improved solutions for the actual problem. Interestingly, \texttt{kra32} is rectangular
+whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!!}
+
+\begin{figure}
+  \centering%
+  \includegraphics[width=\textwidth]{img/fitness_real_qap_kra32_dat}
+    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
+\end{figure}
+
+In terms of best fitness achieved on each run, and taking into account the
+random behaviour observed in some instances and discussed above,
+Table~\ref{tab:results} shows\MANUEL{TODO}
 
 \begin{table}
   \caption{Results.\label{tab:results}}
@@ -375,33 +465,6 @@ Table~\ref{tab:results} shows
 \end{tabular}}
 % \end{adjustbox}
  \end{table}
-
-\begin{figure}
-  \centering%
-  \includegraphics[width=\textwidth]{img/synthetic_LOP_combined}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
-\end{figure}
-
-
-\begin{figure}
-  \centering%
-  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d100_01}\\
-  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d150_01}\\
-  \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d200_01}\\
-    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on three instances from LOPLIB.\label{fig:loplib}}
-  \end{figure}
-  
-\begin{figure}
-  \centering%
-  \includegraphics[width=\textwidth]{img/fitness_real_pfsp_rec05_txt}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
-\end{figure}
-\begin{figure}
-  \centering%
-  \includegraphics[width=\textwidth]{img/fitness_real_qap_kra32_dat}
-    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
-\end{figure}
-
 
 
 \section{Conclusions}
