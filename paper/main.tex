@@ -318,8 +318,27 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 
 \section{Experimental analysis}
 
+Ekhine: How many runs do we do? 10 20?
 
-Fig.~\ref{fig:lop_synth}: LOP syntéticas, todas en una gráfica. 
+To better understand the behaviour of the algorithms, we record the fitness of
+the solution evaluated at each step of each run and we average those values
+over X runs on the same problem instances.  As an example, Fig.~\ref{fig:kra32}
+shows the mean fitness of the solutions evaluated by uMM and CEGO on one QAP
+instance. The shaded area shows one standard deviation around the
+mean. Ideally, each solution evaluated helps to refine the model and leads to a
+better solution being evaluated in the next step.  However, the plot shows that
+the fitness of the solutions does not improve monotonically and new solutions
+are often worse than their predecessors. Nevertheless, in this example, there
+is a clear overall improvement as more evaluations are performed. The minimum
+values achieved in the plot up to a particular number of function evaluations
+gives an estimation of the mean fitness of the best-so-far solution up to that
+point in the run. The algorithms do not return the final solution shown but
+rather the best one (minimum fitness) of each run.
+
+When we compare the behaviour of CEGO and uMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}).
+
+ we 
+: LOP syntéticas, todas en una gráfica. 
 
 Fig.~\ref{fig:loplib}: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
 
