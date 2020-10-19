@@ -46,6 +46,7 @@
   \expandafter\newcommand\csname#2\endcsname[1]{\RevComment[#1]{#2}{##1}}%%
 }
 \newrevisor{manuel}{MANUEL}{Purple}
+\newrevisor{ekhine}{EKHINE}{red}
 
 \hyphenation{%%% Merriam-Webster
   di-men-sion-al %%
@@ -322,16 +323,16 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 
 \section{Experimental analysis}
 
-Ekhine: How many runs do we do? 10 20? 10, cambio el texto
 
 To better understand the behaviour of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
-over 10 runs on the same problem instances.  As an example, Fig.~\ref{fig:kra32} \textcolor{red}{por qué no mepezamos con la fig1?}
-shows the mean fitness of the solutions evaluated by uMM and CEGO on one QAP
+over 10 runs on the same problem instances.  As an example, each line in Fig.~\ref{fig:lop_synth} 
+shows the mean fitness of the solutions evaluated by either uMM or CEGO on one synthetic LOP
 instance. The shaded area shows one standard deviation around the
-mean. Ideally, each solution evaluated helps to refine the model and leads to a
-better solution being evaluated in the next step.  However, the plot shows that \textcolor{red}{yo diría solo que lo esperable es que baje monotonically, sin entrar a valorar un ejemplo concreto}
-the fitness of the solutions does not improve monotonically and new solutions
+mean. Ideally, each new evaluation will monotonically improve in fitness, since each solution evaluated helps to refine the model and leads to a
+better solution being evaluated in the next step.  However, it is often the case that  \EKHINE{yo diría solo que lo esperable es que baje monotonically, sin entrar a valorar un ejemplo concreto}\MANUEL{Así está mejor? Quiero llamar la atención porque normalmente se muestra la evolución de la mejor solución encontrada pero nosotros estamos mostrando el fitness de cada solución evaluada}
+% the fitness of the solutions does not improve monotonically and
+new solutions
 are often worse than their predecessors. Nevertheless, in this example, there
 is a clear overall improvement as more evaluations are performed. The minimum
 values achieved in the plot up to a particular number of function evaluations
@@ -355,25 +356,28 @@ updating the Kriging model based new evaluations, which leads to an impressive
 improvement in less than 50 evaluations. However, progress is more or less
 halted at this point and the model seems to have trouble generating better
 solutions. Lower uniformity values (e.g., $\mu=5$) show worsening evaluations
-despite the increase in solutions used to build the model.
+despite the increase in solutions used to build the model. In summary, the
+Kriging model clearly helps CEGO to quickly identify good solutions in very few
+evaluations. However, for some reason, CEGO is not able to further improve
+those solutions given more data. This may due to the model not being able to
+produce accurate predictions or the underlying optimizer not being able to find
+improved solutions using the model.\MANUEL{perhaps we should measure the
+  prediction error and see if it grows or decreases. That would answer this
+  question.}
+
 
 On the other hand, uMM converges much more slowly than CEGO, only reaching the
 same fitness values around evaluation 250. Yet, uMM is able to keep the rate of
 improvement and completely overtake CEGO around evaluation 350. As in the case
 of CEGO, lower uniformity values lead to worse performance, although the
-difference is much smaller for uMM than it was for CEGO.
+difference is much smaller for uMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
 
-In summary, the Kriging model clearly helps CEGO to quickly identify good
-solutions in very few evaluations. However, for some reason, CEGO is not able to
-further improve those solutions given more data. This may due to the
-model not being able to produce accurate predictions or the underlying
-optimizer not being able to find improved solutions using the model.\MANUEL{perhaps we should measure the prediction error and see if it grows or decreases. That would answer this question.}
 
 \newcommand{\supplement}{\citep{Supplementary}}
 
 
 %: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
-\begin{figure}
+\begin{figure}[tb]
   \centering%
   \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d100_01}\\
   \includegraphics[width=\textwidth]{img/fitness_real_lop_RandA1_N-t1d150_01}\\
@@ -382,8 +386,10 @@ optimizer not being able to find improved solutions using the model.\MANUEL{perh
   \end{figure}
 
 
-The fast initial convergence of CEGO for synthetic LOP instances does not seem
-to translate to the instances available in LOPLIB~\citep{}. We show in
+Results are quite different on the 
+%The fast initial convergence of CEGO for synthetic LOP instances does not seem
+%to translate to the
+instances available in LOPLIB~\citep{}. We show in
 Fig.~\ref{fig:loplib} three examples with different permutation size, however,
 the results are consistent for other LOPLIB instances (complete results
 available as supplementary material \supplement). Due to extremely long
@@ -395,23 +401,25 @@ landscape that is very amenable to CEGO's Kriging model, whereas the LOPLIB
 instances do not present such landscape. Comparing CEGO and uMM results, the
 differences get smaller, in favour of uMM, with larger instance size. Our
 conjecture is that building an accurate Bayesian model and searching for good
-solutions on it becomes harder for larger fitness landscapes. 
-\textcolor{red}{Parece que el paper va del CEGO en vez del UMM :p. Yo diría que tanto UMM como CEGO encuentran soluciones que mejoran según avanzan, pero con diferencias de comportamiento: (1) las los optimos de UMM son '3 veces mejor', y esto yo creo que es importante, aunque en gran parte se debe a que (2) UMM hace 400 ejecuciones en 3, 6 y 11 horas y CEGO entre 50 y 130 en 5 dias (3) cego empeora segun n aumenta (y n=200 tampoco es enorme)}
+solutions on it becomes harder for larger fitness landscapes.
+\EKHINE{Parece que el paper va del CEGO en vez del UMM :p. Yo diría que tanto UMM como CEGO encuentran soluciones que mejoran según avanzan, pero con diferencias de comportamiento: (1) las los optimos de UMM son '3 veces mejor', y esto yo creo que es importante, aunque en gran parte se debe a que (2) UMM hace 400 ejecuciones en 3, 6 y 11 horas y CEGO entre 50 y 130 en 5 dias (3) cego empeora segun n aumenta (y n=200 tampoco es enorme)}
+\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
+\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
-In the case of the PFSP, none of the algorithms are able to achieve a
-  progress better than a random search would, as illustrated by the results
-  (Fig.~\ref{fig:rec05}) obtained on \texttt{rec05}, which is the smallest PFSP
-  instance considered here. The lack of any apparent convergence suggests that
-  the models (both Bayesian and probabilistic) are not learning anything about
-  the fitness landscape. Results for larger PFSP corroborate this conclusions
-  (\supplement). Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
-  that other distance measures are more suited than Kendall's-$\tau$ distance
-  for the PFSP, the reported fitness differences between various distance
-  metrics are small, hence, we conjecture that the same behaviour will be
-  observed with other distance metrics.
+In the case of the PFSP, none of the algorithms are able to achieve a progress
+better than a random search would, as illustrated by the results
+(Fig.~\ref{fig:rec05}) obtained on \texttt{rec05}, which is the smallest PFSP
+instance considered here. The lack of any apparent convergence suggests that
+the models (both Bayesian and probabilistic) are not learning anything about
+the fitness landscape. Results for larger PFSP corroborate this conclusions
+(\supplement). Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
+that other distance measures are more suited than Kendall's-$\tau$ distance for
+the PFSP, the reported fitness differences between various distance metrics are
+small, hence, we conjecture that the same behaviour will be observed with other
+distance metrics.
   
 
-\begin{figure}
+\begin{figure}[tb]
   \centering%
   \includegraphics[width=\textwidth]{img/fitness_real_pfsp_rec05_txt}
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
@@ -427,7 +435,7 @@ get stuck and around evaluation 300, UMM overtakes it. We believe the reason is
 the same as before, that is, the model is not able to adequately reflect the
 ruggedness of the actual landscape and, hence, the best solutions found by the
 GA searching the model are not improved solutions for the actual problem. Interestingly, \texttt{kra32} is rectangular
-whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!!}
+whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!! What is the difference then? Ask Thomas?}
 
 \begin{figure}
   \centering%
