@@ -149,20 +149,23 @@ Our contribution: Ekhine
 
 \citep{LopDubPerStuBir2016irace}
 
+\newcommand{\Prob}{\ensuremath{p}}
+
 \section{Background}\label{sec:backgroud}
 
-Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
+Permutations are defined as bijections of the set $[n]$ \manuel{integer}{of integers} onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=\manuel{}{(}1, 2, 3, \dotsc,n\manuel{}{)}$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds. 
 
-Distributions over permutations~\cite{critchlow91} are functions that assign a probability value to each of the permutations in $S_n$, $p(\sigma)\in[0,1]$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma$ as follows:
-
+Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma$ as follows:
+%
 \begin{equation}
-p(\sigma)=\frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi}
+\Prob(\sigma)=\frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi}
 \end{equation}
-with two parameters, $\theta$ and $\sigma_0$, Permutation $\sigma_0$ a reference permutation that has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and $\theta$, the dispersion parameter controls this decay. The distance $d(\sigma,\sigma_0)$ is the Kendall's-$\tau$ distance. The normalization constant $\psi$ can be easily computed for the Kendall's-$\tau$ distance as well as for the Hamming, Cayley and Ulam distance~\cite{Irurozki2016b}. 
+%
+with two parameters, $\theta$ and $\sigma_0$, \manuel{Permutation $\sigma_0$ a reference}{where $\sigma_0$ is the}  permutation that has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay. The distance $d(\sigma,\sigma_0)$ is the Kendall's $\tau$ distance. The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}. 
 
-The learning process is divide in two stages: first, we estimate the central permutation of the distribution, $\hat\sigma0$ and, second, compute the dispersion parameter, $\hat\theta$~\cite{Irurozki2016b}. 
+The learning process\MANUEL{what learning process?} is divide in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, \manuel{compute}{estimate} the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
 
-The exact maximum likelihood estimator (MLE) for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{Dwork:2001:RAM:371920.372165}. Unfortunately,  obteinig such ranking is NP-hard~\cite{Dwork:2001:RAM:371920.372165}. An alternative to the Kemeny ranking is the Borda ranking~\cite{Ali2011}, which has several advantages. First, Borda requires polynomial computational time. Second, Borda as an estimator for the MM is guarantied to obtain high quality parameters~\cite{Caragiannis2013}. Finally, in a general optimization perspective, Borda error is bounded~\cite{Coppersmith:2010}.
+The exact maximum likelihood estimator (MLE) for $\sigma_0$\MANUEL{for $\sigma_0$ o for $\hat{\sigma}_0$?} is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obteinig such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{Ali2011}, which has several advantages. First, Borda requires polynomial computational time. Second, Borda as an estimator for the MM is guarantied to obtain high quality parameters~\cite{Caragiannis2013}. Finally, in a general optimization perspective, Borda error is bounded~\cite{Coppersmith:2010}.
 
 The Borda ranking of sample $S$ is computed as follows: first, for each item $i$ compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign rank 1 to the item with the smallest Borda score, rank 2 to the item with the second smallest score and so on, i.e., order the items by Borda score increasingly. 
 
@@ -272,7 +275,7 @@ We can simulate the replication of the best fitted individuals by using uBorda, 
 
 
 \subsection{Sampling step}
-Sampling can be done efficiently~\cite{Irurozki2016b} given the parameters that describe the model, i.e., $\sigma_0$ and $\theta$. Given these two parameters, sampling a MM has been studied in \cite{Collas}\cite{Irurozki2016b}\cite{Regenwetter2004} where the computational complexities are $O(n\log n)$ and $O(n^2)$.
+Sampling can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters that describe the model, i.e., $\sigma_0$ and $\theta$. Given these two parameters, sampling a MM has been studied in \cite{Collas}\cite{IruCalLoz2016permallows}\cite{Regenwetter2004} where the computational complexities are $O(n\log n)$ and $O(n^2)$.
 
 
 At each iteration of UMM $\sigma_0$ is the permutation obtained as a solution in the previous learning step,~\ref{sec:learning}. The scale $\theta$, in the other hand, is set automatically by the algorithm to control the diversification and intensification trade off: At the first iteration it is set so that the expected distance equals  ${n\choose 4}$ (half of the distance of the uniform distribution), and then it linearly decrease until the last iteration where the expected distance equals 1. Similar approaches consisting of changing the variance to control the exploration-explotation tradeoff have been taken in different contexts~\cite{arza2019approaching}.
