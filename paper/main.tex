@@ -355,7 +355,7 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 
 To better understand the behaviour of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
-over 10 runs on the same problem instances.  As an example, each line in Fig.~\ref{fig:lop_synth} 
+over 10 runs with different random seeds on the same problem instance.  As an example, each line in Fig.~\ref{fig:lop_synth} 
 shows the mean fitness of the solutions evaluated by either uMM or CEGO on one synthetic LOP
 instance. The shaded area shows one standard deviation around the
 mean. Ideally, each new evaluation will monotonically improve in fitness, since each solution evaluated helps to refine the model and leads to a
@@ -472,74 +472,46 @@ whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \te
     \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
 \end{figure}
 
+Table~\ref{tab:results} shows overall results over all instances evaluated (excluding the synthetic LOP instances). In particular, the mean fitness (and standard deviation) of the best solution found at the end of each run,
+\MANUEL{is the CI for CEGO $-$ UMM or UMM $-$ CEGO? I would prefer}
 In terms of best fitness achieved on each run, and taking into account the
 random behaviour observed in some instances and discussed above,
-Table~\ref{tab:results} shows\MANUEL{TODO}
 
 
-%
-%    \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
-%\begin{table}
-%  \caption{Results.\label{tab:results}}
-%  \resizebox{\textwidth}{!}{%
-%\begin{tabular}{*{6}{r}c*{3}{r}}
-%  \toprule
-%            &                  & \mcolc{4}{Mean fitness (sd)} &                 & \mcolc{2}{Mean runtime}             & \bf     Mean FE\\\cmidrule{3-6}\cmidrule(lr){8-9}
-%\bf Problem & \bf     Instance & \mcolc{2}{UMM}               & \mcolc{2}{CEGO} & \bf 95\% CI for the mean difference & \bf UMM  & \bf CEGO                                  & \bf CEGO           \\\midrule
-%    LOP     & N-t1d100.01      & 76119.6                      & (915.4)         & 78696.6                             & (811.4)  & (1763.4904574743996, 3390.5095425256004)  & 11436.2 & 260954.5 & 111.8 \\
-%    LOP     & N-t1d100.02      & 76827.7                      & (891.0)         & 79686.5                             & (367.9)  & (2194.5410893080507, 3523.058910691955)   & 11353.3 & 262421.6 & 110.7 \\
-%    LOP     & N-t1d150.01      & 179508.3                     & (1647.9)        & 187605.5                            & (1906.9) & (6420.259663264915, 9774.140336735109)    & 23395.6 & 261712.4 & 73.9  \\
-%    LOP     & N-t1d150.02      & 177592.8                     & (1196.2)        & 184320.9                            & (973.5)  & (5700.461476832616, 7755.738523167395)    & 23361.2 & 263389.9 & 74.1  \\
-%    LOP     & N-t1d200.01      & 323513.6                     & (1371.2)        & 335391.1                            & (2289.0) & (10076.07401989604, 13678.92598010396)    & 38476.8 & 263467.5 & 55.6  \\
-%    LOP     & N-t1d200.02      & 319675.8                     & (2242.6)        & 333149.5                            & (2497.2) & (11241.971680405779, 15705.428319594244)  & 38268.3 & 265217.5 & 56.5  \\
-%    LOP     & N-t2d150.01      & 15297.7                      & (563.5)         & 24682.7                             & (976.6)  & (8622.206776092156, 10147.793223907844)   & 25318.6 & 262324.3 & 74.6  \\
-%    LOP     & N-t2d150.02      & 14724.9                      & (667.5)         & 24250.8                             & (1354.9) & (8495.057408450935, 10556.742591549064)   & 25425.6 & 262079.2 & 74.8  \\
-%    LOP     & N-t2d200.01      & 33465.2                      & (2001.0)        & 57098.6                             & (4452.8) & (20284.508914101127, 26982.291085898876)  & 40340.9 & 263908.9 & 56.3  \\
-%    LOP     & N-t2d200.02      & 35901.8                      & (2077.5)        & 58123.0                             & (2334.9) & (9515.181030361815, 34927.21896963818)    & 40153.1 & 261723.6 & 55.0  \\\midrule
-%   PFSP     & rec05            & 1330.7                       & (17.9)          & 1317.9                              & (25.1)   & (-33.424760001214985, 7.8247600012150755) & 506.1   & 139893.0 & 400.0 \\
-%   PFSP     & rec13            & 2158.7                       & (29.5)          & 2128.2                              & (25.0)   & (-56.24362499249925, -4.756375007500754)  & 506.8   & 140167.2 & 400.0 \\
-%   PFSP     & rec19            & 2405.1                       & (12.6)          & 2398.6                              & (19.8)   & (-22.313869704790818, 9.313869704790818)  & 1078.3  & 295442.7 & 400.0 \\\midrule
-%    QAP     & kra32            & 116320.0                     & (4673.5)        & 115907.0                            & (4663.4) & (-4799.295389697205, 3973.295389697205)   & 1194.8  & 344766.2 & 400.0 \\
-%    QAP     & nug12            & 660.4                        & (17.3)          & 624.2                               & (26.3)   & (-57.337505259978144, -15.06249474002172) & 180.0   & 53149.3  & 400.0 \\
-%    QAP     & nug30            & 7474.0                       & (83.9)          & 7486.8                              & (40.4)   & (-50.84533806724974, 76.4453380672501)    & 1073.5  & 303352.6 & 400.0 \\
-%    QAP     & tho30            & 191482.0                     & (4419.7)        & 192416.0                            & (2584.2) & (-2527.0213832396516, 4395.021383239651)  & 1066.5  & 306451.3 & 400.0 \\
-%\bottomrule
-%\end{tabular}}
-%\end{table}
 
    \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
-\begin{table}
- \caption{Results.\label{tab:results}}
+\begin{table}[tb]
+ \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean of the difference between the fitness of UMM minus the one of CEGO. Mean runtime is measured in seconds. If a run of  CEGO was not able to reach 400 function evaluations (FEs) in 3 days, it was terminated earlier. This was the case for all LOP instances shown.\label{tab:results}}
  \resizebox{\textwidth}{!}{%
 \begin{tabular}{*{6}{r}rl*{3}{r}}
  \toprule
-           &                  & \mcolc{4}{Mean fitness (sd)} &  \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI for the\\mean difference}}}         & \mcolc{2}{Mean runtime}             & \bf \multirow[b]{2.45}{*}{\shortstack{Mean FE\\CEGO}}\\\cmidrule{3-6}\cmidrule(lr){9-10}
-\bf Problem & \bf     Instance & \mcolc{2}{UMM}               & \mcolc{2}{CEGO} & & & \bf UMM  & \bf CEGO                                  & \bf            \\\midrule
-    LOP &    N-t1d100.01 &       76119.6&(915.4) &        78696.6&(811.4) &       $[$1763.5,&3390.5$]$ &          3.2 &          72.5 &                111.8 \\
-    LOP &    N-t1d100.02 &       76827.7&(891.0) &        79686.5&(367.9) &       $[$2194.5,&3523.1$]$ &          3.2 &          72.9 &                110.7 \\
-    LOP &    N-t1d150.01 &     179508.3&(1647.9) &      187605.5&(1906.9) &       $[$6420.3,&9774.1$]$ &          6.5 &          72.7 &                 73.9 \\
-    LOP &    N-t1d150.02 &     177592.8&(1196.2) &       184320.9&(973.5) &       $[$5700.5,&7755.7$]$ &          6.5 &          73.2 &                 74.1 \\
-    LOP &    N-t1d200.01 &     323513.6&(1371.2) &      335391.1&(2289.0) &     $[$10076.1,&13678.9$]$ &         10.7 &          73.2 &                 55.6 \\
-    LOP &    N-t1d200.02 &     319675.8&(2242.6) &      333149.5&(2497.2) &     $[$11242.0,&15705.4$]$ &         10.6 &          73.7 &                 56.5 \\
-    LOP &    N-t2d150.01 &       15297.7&(563.5) &        24682.7&(976.6) &      $[$8622.2,&10147.8$]$ &          7.0 &          72.9 &                 74.6 \\
-    LOP &    N-t2d150.02 &       14724.9&(667.5) &       24250.8&(1354.9) &      $[$8495.1,&10556.7$]$ &          7.1 &          72.8 &                 74.8 \\
-    LOP &    N-t2d200.01 &      33465.2&(2001.0) &       57098.6&(4452.8) &     $[$20284.5,&26982.3$]$ &         11.2 &          73.3 &                 56.3 \\
-    LOP &    N-t2d200.02 &      35901.8&(2077.5) &       54895.6&(4589.7) &     $[$15539.1,&22448.5$]$ &         11.2 &          73.5 &                 55.6 \\
-    LOP &       N-p50-01 &       21027.6&(711.8) &        21431.2&(299.5) &        $[$-128.1,&935.3$]$ &          0.9 &          72.3 &                219.9 \\
-    LOP &       N-p50-02 &       21613.6&(596.4) &        22021.1&(275.6) &         $[$-42.5,&857.5$]$ &          0.9 &          72.3 &                217.3 \\
-    LOP &       N-atp111 &          594.0&(15.4) &           693.1&(10.3) &          $[$86.7,&111.5$]$ &          4.1 &          72.5 &                 98.7 \\
-    LOP &       N-atp134 &          756.3&(21.3) &           880.5&(18.6) &         $[$105.4,&143.0$]$ &          5.7 &          72.8 &                 83.0 \\
-    LOP &  N-be75eec\_150 &   1415208.5&(58593.5) &    1666193.1&(72310.8) &   $[$188960.6,&313008.6$]$ &          6.9 &          72.9 &                 74.0 \\
-    LOP &  N-be75eec\_250 &  4431271.0&(109756.7) &   5214413.0&(166701.4) &   $[$649040.8,&917243.2$]$ &         15.5 &          73.7 &                 44.9 \\
-    LOP &   N-be75np\_150 &   3204878.3&(80704.1) &    3742444.0&(88500.2) &   $[$457944.2,&617187.2$]$ &          6.9 &          72.9 &                 74.2 \\
-    LOP &   N-be75np\_250 &  9544754.9&(260523.9) &  10887427.8&(159642.5) & $[$1136635.8,&1548710.0$]$ &         15.5 &          74.0 &                 45.3 \\
-   PFSP &      rec05.txt &         1330.7&(17.9) &          1317.9&(25.1) &           $[$-33.4,&7.8$]$ &          0.1 &          38.9 &                400.0 \\
-   PFSP &      rec13.txt &         2158.7&(29.5) &          2128.2&(25.0) &          $[$-56.2,&-4.8$]$ &          0.1 &          38.9 &                400.0 \\
-   PFSP &      rec19.txt &         2405.1&(12.6) &          2398.6&(19.8) &           $[$-22.3,&9.3$]$ &          0.3 &          82.1 &                400.0 \\
-    QAP &      kra32.dat &     116320.0&(4673.5) &      115907.0&(4663.4) &      $[$-4799.3,&3973.3$]$ &          0.3 &          95.8 &                400.0 \\
-    QAP &      nug12.dat &          660.4&(17.3) &           624.2&(26.3) &         $[$-57.3,&-15.1$]$ &          0.0 &          14.8 &                400.0 \\
-    QAP &      nug30.dat &         7474.0&(83.9) &          7486.8&(40.4) &          $[$-50.8,&76.4$]$ &          0.3 &          84.3 &                400.0 \\
-    QAP &      tho30.dat &     191482.0&(4419.7) &      192416.0&(2584.2) &      $[$-2527.0,&4395.0$]$ &          0.3 &          85.1 &                400.0 \\
+            &                  & \mcolc{4}{Mean fitness (sd)} & \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI for the\\mean difference}}} & \bf \multirow[b]{2.45}{*}{\shortstack{Mean FE\\CEGO}} & \mcolc{2}{Mean runtime} \\\cmidrule{3-6}\cmidrule(lr){9-10}
+\bf Problem & \bf     Instance & \mcolc{2}{CEGO} & \mcolc{2}{UMM}   &                         &            & \bf & \bf CEGO       & \bf UMM                       \\\midrule
+    LOP     & N-t1d100.01      & (915.4)         & 76119.6          & 78696.6                 & (811.4)    & $[$1763.5,    & 3390.5$]$     & 111.8& 72.5 & 3.2  \\
+    LOP     & N-t1d100.02      & (891.0)         & 76827.7          & 79686.5                 & (367.9)    & $[$2194.5,    & 3523.1$]$     & 110.7& 72.9 & 3.2  \\
+    LOP     & N-t1d150.01      & (1647.9)        & 179508.3         & 187605.5                & (1906.9)   & $[$6420.3,    & 9774.1$]$     & 73.9 & 72.7 & 6.5  \\
+    LOP     & N-t1d150.02      & (1196.2)        & 177592.8         & 184320.9                & (973.5)    & $[$5700.5,    & 7755.7$]$     & 74.1 & 73.2 & 6.5  \\
+    LOP     & N-t1d200.01      & (1371.2)        & 323513.6         & 335391.1                & (2289.0)   & $[$10076.1,   & 13678.9$]$    & 55.6 & 73.2 & 10.7 \\
+    LOP     & N-t1d200.02      & (2242.6)        & 319675.8         & 333149.5                & (2497.2)   & $[$11242.0,   & 15705.4$]$    & 56.5 & 73.7 & 10.6 \\
+    LOP     & N-t2d150.01      & (563.5)         & 15297.7          & 24682.7                 & (976.6)    & $[$8622.2,    & 10147.8$]$    & 74.6 & 72.9 & 7.0  \\
+    LOP     & N-t2d150.02      & (667.5)         & 14724.9          & 24250.8                 & (1354.9)   & $[$8495.1,    & 10556.7$]$    & 74.8 & 72.8 & 7.1  \\
+    LOP     & N-t2d200.01      & (2001.0)        & 33465.2          & 57098.6                 & (4452.8)   & $[$20284.5,   & 26982.3$]$    & 56.3 & 73.3 & 11.2 \\
+    LOP     & N-t2d200.02      & (2077.5)        & 35901.8          & 54895.6                 & (4589.7)   & $[$15539.1,   & 22448.5$]$    & 55.6 & 73.5 & 11.2 \\
+    LOP     & N-p50-01         & (711.8)         & 21027.6          & 21431.2                 & (299.5)    & $[$-128.1,    & 935.3$]$      & 219.9& 72.3 & 0.9  \\
+    LOP     & N-p50-02         & (596.4)         & 21613.6          & 22021.1                 & (275.6)    & $[$-42.5,     & 857.5$]$      & 217.3& 72.3 & 0.9  \\
+    LOP     & N-atp111         & (15.4)          & 594.0            & 693.1                   & (10.3)     & $[$86.7,      & 111.5$]$      & 98.7 & 72.5 & 4.1  \\
+    LOP     & N-atp134         & (21.3)          & 756.3            & 880.5                   & (18.6)     & $[$105.4,     & 143.0$]$      & 83.0 & 72.8 & 5.7  \\
+    LOP     & N-be75eec\_150   & (58593.5)       & 1415208.5        & 1666193.1               & (72310.8)  & $[$188960.6,  & 313008.6$]$   & 74.0 & 72.9 & 6.9  \\
+    LOP     & N-be75eec\_250   & (109756.7)      & 4431271.0        & 5214413.0               & (166701.4) & $[$649040.8,  & 917243.2$]$   & 44.9 & 73.7 & 15.5 \\
+    LOP     & N-be75np\_150    & (80704.1)       & 3204878.3        & 3742444.0               & (88500.2)  & $[$457944.2,  & 617187.2$]$   & 74.2 & 72.9 & 6.9  \\
+    LOP     & N-be75np\_250    & (260523.9)      & 9544754.9        & 10887427.8              & (159642.5) & $[$1136635.8, & 1548710.0$]$  & 45.3 & 74.0 & 15.5 \\
+   PFSP     & rec05.txt        & (17.9)          & 1330.7           & 1317.9                  & (25.1)     & $[$-33.4,     & 7.8$]$        & 400.0& 38.9 & 0.1  \\
+   PFSP     & rec13.txt        & (29.5)          & 2158.7           & 2128.2                  & (25.0)     & $[$-56.2,     & -4.8$]$       & 400.0& 38.9 & 0.1  \\
+   PFSP     & rec19.txt        & (12.6)          & 2405.1           & 2398.6                  & (19.8)     & $[$-22.3,     & 9.3$]$        & 400.0& 82.1 & 0.3  \\
+    QAP     & kra32.dat        & (4673.5)        & 116320.0         & 115907.0                & (4663.4)   & $[$-4799.3,   & 3973.3$]$     & 400.0& 95.8 & 0.3  \\
+    QAP     & nug12.dat        & (17.3)          & 660.4            & 624.2                   & (26.3)     & $[$-57.3,     & -15.1$]$      & 400.0& 14.8 & 0.0  \\
+    QAP     & nug30.dat        & (83.9)          & 7474.0           & 7486.8                  & (40.4)     & $[$-50.8,     & 76.4$]$       & 400.0& 84.3 & 0.3  \\
+    QAP     & tho30.dat        & (4419.7)        & 191482.0         & 192416.0                & (2584.2)   & $[$-2527.0,   & 4395.0$]$     & 400.0& 85.1 & 0.3  \\
 \bottomrule
 \end{tabular}}
 \end{table}
