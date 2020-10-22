@@ -330,6 +330,55 @@ Assignment with Controllable Processing Times},
   doi =          {10.1145/2996355}
 }
 
+@inproceedings{CarProSha2013votes,
+  title =        {When Do Noisy Votes Reveal the Truth?},
+  author =       {Ioannis Caragiannis and Ariel D. Procaccia and Nisarg Shah},
+  doi =          {10.1145/2482540.2482570},
+  keywords =     {computer social choice, mallows model, sample complexity},
+  pages =        {143--160},
+  crossref =     "EC2013",
+  abstract =     {A well-studied approach to the design of voting rules views
+                  them as maximum likelihood estimators; given votes that are
+                  seen as noisy estimates of a true ranking of the
+                  alternatives, the rule must reconstruct the most likely true
+                  ranking. We argue that this is too stringent a requirement,
+                  and instead ask: How many votes does a voting rule need to
+                  reconstruct the true ranking? We define the family of
+                  pairwise-majority consistent rules, and show that for all
+                  rules in this family the number of samples required from the
+                  Mallows noise model is logarithmic in the number of
+                  alternatives, and that no rule can do asymptotically better
+                  (while some rules like plurality do much worse). Taking a
+                  more normative point of view, we consider voting rules that
+                  surely return the true ranking as the number of samples tends
+                  to infinity (we call this property accuracy in the limit);
+                  this allows us to move to a higher level of abstraction. We
+                  study families of noise models that are parametrized by
+                  distance functions, and find voting rules that are accurate
+                  in the limit for all noise models in such general
+                  families. We characterize the distance functions that induce
+                  noise models for which pairwise-majority consistent rules are
+                  accurate in the limit, and provide a similar result for
+                  another novel family of position-dominance consistent
+                  rules. These characterizations capture three well-known
+                  distance functions.},
+}
+
+@article{AliMei2011kemeny,
+  annote =       {Computational Foundations of Social Choice},
+  year =         2012,
+  month =        jul,
+  publisher =    {Elsevier {BV}},
+  volume =       64,
+  number =       1,
+  pages =        {28--40},
+  author =       {Alnur Ali and Marina Meil{\u{a}}},
+  doi =          {10.1016/j.mathsocsci.2011.08.008},
+  journal =      mss,
+  title =        {Experiments with {K}emeny ranking: What Works When?},
+  keywords =     "Borda ranking, Kemeny ranking"
+}
+
 @inproceedings{AliSimHar2019,
   author =       {Alissa, Mohamad and Sim, Kevin} #and# Hart_E,
   title =        {Algorithm Selection Using Deep Learning without Feature Extraction},
@@ -4744,6 +4793,22 @@ Los Angeles, CA},
   doi =          "10.1007/978-3-319-91908-9_3"
 }
 
+@article{CopFleRur2010ordering,
+  title =        {Ordering by Weighted Number of Wins Gives a Good Ranking for
+                  Weighted Tournaments},
+  author =       {Coppersmith, Don and Fleischer, Lisa K. and Rurda, Atri},
+  doi =          {10.1145/1798596.1798608},
+  journal =      acm-talgo,
+  keywords =     {Approximation algorithms,Borda's method,feedback arc set
+                  problem,rank aggregation,tournaments},
+  month =        jul,
+  number =       3,
+  volume =       6,
+  pages =        {1--13},
+  publisher =    {ACM},
+  year =         2010
+}
+
 @Article{CorDam2006,
   author =       Cordon #and# {Sergio Damas},
   title =        {Image Registration with Iterated Local Search},
@@ -6579,6 +6644,18 @@ doi =           {10.1007/978-3-642-38516-2_16},
                   and Alba, Enrique},
   pages =        {183-197}
 }
+
+@inCollection{DwoKumNao2001rank,
+  title =        {Rank aggregation methods for the Web},
+  author =       {Dwork, Cynthia and Kumar, Ravi and Naor, Moni and Sivakumar,
+                  D.},
+  doi =          {10.1145/371920.372165},
+  crossref =     "WWW2001",
+  keywords =     {Kemeny ranking,multi-word queries,rank aggregation,ranking
+                  functions,spam},
+  pages =        {613--622},
+}
+
 
 @Manual{EPANET2Manual,
   title =        "{EPANET} 2 Users Manual",
@@ -10845,6 +10922,30 @@ Traveling Salesman Heuristic},
   pages = 	 {270--287}
 }
 
+@article{IruCalLoz2016permallows,
+  abstract =     {In this paper we present the R package PerMallows, which is a
+                  complete toolbox to work with permutations, distances and
+                  some of the most popular probability models for permutations:
+                  Mallows and the Generalized Mallows models. The Mallows model
+                  is an exponential location model, considered as analogous to
+                  the Gaussian distribution. It is based on the definition of a
+                  distance between permutations. The Generalized Mallows model
+                  is its best-known extension. The package includes functions
+                  for making inference, sampling and learning such
+                  distributions. The distances considered in PerMallows are
+                  Kendall's $\tau$, Cayley, Hamming and Ulam.},
+  author =       {Irurozki, Ekhine and Calvo, Borja and Lozano, Jose A.},
+  doi =          {10.18637/jss.v071.i12},
+  issn =         15487660,
+  journal =      jss,
+  keywords =     {Cayley,Generalized Mallows,Hamming,Kendall's
+                  $\tau$,Learning,Mallows,Permutation,R,Ranking,Sampling,Ulam},
+  title =        {{\Rpackage{PerMallows}}: An \proglang{R} Package for Mallows
+                  and Generalized Mallows Models},
+  volume =       71,
+  year =         2019
+}
+
 @article{Ish1998,
   author =       Ishibuchi #and# Murata,
   title =        "A multi-objective genetic local search algorithm and its
@@ -13047,13 +13148,9 @@ Traveling Salesman Heuristic},
 
 @InCollection{LeyPeaSho2000acmec,
   author =       Leyton-Brown #and# " M. Pearson and Y. Shoham",
-  title =        "Towards a Universal Test Suite for Combinatorial
-                  Auction Algorithms",
-  booktitle =    "ACM Conference on Electronic Commerce (EC-00)",
-  year =         2000,
-  publisher =    acm-pub,
-  address =      acm-ad,
-  editor =       "Anant Jhingran and others",
+  title =        "Towards a Universal Test Suite for Combinatorial Auction
+                  Algorithms",
+  crossref =     "EC2000",
   pages =        "66--76",
   doi =          "10.1145/352871.352879",
   annote =       {CPLEX-regions200 benchmark set,
@@ -23012,7 +23109,6 @@ Integer Algorithm Parameters of Swarm Intelligence Algorithms},
   note =         {Version visited last on July 2017},
   year =         2017
 }
-
 @Article{vanZyl04,
   author =       vanZyl # and # Savic # and # Walters,
   title =        {Operational Optimization of Water Distribution
