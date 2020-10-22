@@ -158,8 +158,6 @@ Our contribution: Ekhine
 
 \citep{LopDubPerStuBir2016irace}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 \section{Background}\label{sec:backgroud}
 
 Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
@@ -191,16 +189,22 @@ and, the same as Borda, orders the items increasingly by their score.
 Intuitively, the uBorda ranking of sample $S$ is equivalent to the Borda ranking of $S'$, being $S'$ an extension of $S$ where each each $\sigma\in S$ has been replicated proportionally to its weight $w(\sigma)$. In this paper, we would like to replicate each permutation $\sigma$ a number of times that is proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. 
 
 By setting $\rho=1$ the original Borda is recovered. However, for $\rho<1$ uBorda ranking will be closer to the rankings in $S$ with smaller value of $f(\sigma)$. Interestingly, Borda is computed in polynomial time. Clearly, the choice of the weight depends on the relevant property of a ranking in a particular domain. For example, it has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift. 
-=======
+%======= creo que me liado con el **** git y esto sera por eso
+%\newcommand{\Prob}{\ensuremath{p}}
+%\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
+%\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
+%>>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
+%=======
+%\newcommand{\Prob}{\ensuremath{p}}
+%\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
+%\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
+%>>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
+%
+
+
 \newcommand{\Prob}{\ensuremath{p}}
 \newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
 \newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
->>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
-=======
-\newcommand{\Prob}{\ensuremath{p}}
-\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
-\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
->>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
 
 
 \section{Background}\label{sec:backgroud}
@@ -209,7 +213,7 @@ By setting $\rho=1$ the original Borda is recovered. However, for $\rho<1$ uBord
 
 \subsection{Black-box Combinatorial Optimization under a limited budget}
 
-Permutations are defined as bijections of the set $[n]$ \manuel{integer}{of integers} onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=\manuel{}{(}1, 2, 3, \dotsc,n\manuel{}{)}$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds. 
+Permutations are defined as bijections of the set $[n]$ \manuel{integer}{of integers} onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=\manuel{}{(}1, 2, 3, \dotsc,n\manuel{}{)}$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds. For their strong importance in the preference domain, we will say that $\sigma(i)=j$
 
 Let us assume a black-box ``fitness'' function that must be minimized over a
 space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
@@ -288,18 +292,15 @@ LOP: Ekhine
 
 Quizás luego: PFSP y QAP
 
-
+\ekhine{
 cosas de intro : 
 This new methodology relies on the assumption that the fitness landscatpe is correlated with a distribution over the same space. 
 Previous paper have confirmed this point
 For this case study, we show that this case for the Mallows model under the Kendall distance and 
-
-
-
 In this section, we introduce our main contribution: We present a new methodology for the optimization of black box functions with a minimal number of queries. This methodology is a probabilistic, population-based algorithm. 
-
 Essentially, the algorithm  considers a sample of permutations along with the fitness of each of them. It is an iterative process in which the number of iterations is fixed. 
-Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual. \MANUEL{Hay un poco de duplicación entre lo anterior y lo siguiente, no?}
+Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual.}{aqui ha habido mas magia de git, esta seccion empieza en el siguiere paraafo} \MANUEL{Hay un poco de duplicacion entre lo anterior y lo siguiente, no?}
+
 
 
 In this section we describe our main contribution: a novel algorithm for the optimization of a black box function over permutation spaces. This algorithm is called Unbalanced Mallows model (UMM) since it a probabilistic method based on a well-known probability distribution for permutations: the Mallows model.\MANUEL{this sounds as if this was the first time you talk about MM, but you already described it above, no? } 
