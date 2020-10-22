@@ -10,7 +10,9 @@
 \usepackage{graphicx}
 \usepackage{pdflscape,adjustbox}
 \usepackage{multirow}
-\usepackage[]{algorithm2e}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 \usepackage{booktabs} % For formal tables
 \usepackage{enumitem}
 \usepackage{afterpage,tabularx}
@@ -29,6 +31,13 @@
 % to display URLs in blue roman font according to Springer's eBook style:
 \renewcommand\UrlFont{\color{blue}\rmfamily}
 
+\newcommand{\true}{\textsc{true}}
+\newcommand{\false}{\textsc{false}}
+\newcommand{\NULL}{\textsc{null}}
+\newcommand{\NA}{---}
+\newcommand{\assign}{\ensuremath{:=}}
+\newcommand{\procedure}[1]{\textsf{#1}}
+\newcommand{\Inf}{\ensuremath{\infty}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
 %% Revision documents
@@ -162,6 +171,19 @@ Our contribution: Ekhine
 
 Permutations are defined as bijections of the set $[n]$ \manuel{integer}{of integers} onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=\manuel{}{(}1, 2, 3, \dotsc,n\manuel{}{)}$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds. 
 
+Let us assume a black-box ``fitness'' function that must be minimized over a
+space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
+we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
+$f(\sigma)$, however, we do not know anything else about the form of
+$f$. Moreover, the evaluation of $f$ is expensive in computation time or
+resources and, thus, limits the budget of candidate permutations that we can
+evaluate to a relatively low number. Here, we will study budgets lower than
+400. Such expensive black-box combinatorial problems arise in
+manufacturing~\citep{FerAlvDiaIglEna2014ants}, where the evaluation function
+may involve expensive simulations for which no closed-form mathematical
+description is available.
+
+
 \subsection{CEGO}
 
 Combinatorial Efficient Global Optimization
@@ -194,7 +216,7 @@ Distributions over permutations~\cite{critchlow91} are functions that assign a p
 \Prob(\sigma)=\frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi}
 \end{equation}
 %
-with two parameters, $\theta$ and $\sigma_0$, \manuel{Permutation $\sigma_0$ a reference}{where $\sigma_0$ is the}  permutation that has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay. The distance $d(\sigma,\sigma_0)$ is the Kendall's $\tau$ distance. The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}. 
+with two parameters, $\theta$ and $\sigma_0$, \manuel{Permutation $\sigma_0$ a reference}{where $\sigma_0$ is the}  permutation that has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay. The distance $d(\sigma,\sigma_0)$ is the Kendall's $\tau$ distance.\MANUEL{Can we define briefly Kendall's tau?} The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}. 
 
 The learning process\MANUEL{what learning process?} is divide in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, \manuel{compute}{estimate} the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
 
@@ -219,6 +241,9 @@ Intuitively, the uBorda ranking of sample $S$\MANUEL{What is $S$?} is equivalent
 By setting $\rho=1$ the original Borda is recovered. However, for $\rho<1$ uBorda ranking will be closer to the rankings in $S$ with smaller value of $f(\sigma)$.\MANUEL{by ``with smaller value'' do you mean ranking for increasing values of $f(\sigma)$?} Interestingly, Borda is computed in polynomial time. Clearly, the choice of the weight\MANUEL{by weight you mean $\rho$?} depends on the relevant property of a ranking in a particular domain. For example, it has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift.\MANUEL{where? Do we miss a citation here?} 
 
 
+
+\section{Unbalanced Mallows model: probabilistic BB optimization}
+
 LOP: Ekhine
 
 Quizás luego: PFSP y QAP
@@ -234,32 +259,30 @@ For this case study, we show that this case for the Mallows model under the Kend
 In this section, we introduce our main contribution: We present a new methodology for the optimization of black box functions with a minimal number of queries. This methodology is a probabilistic, population-based algorithm. 
 
 Essentially, the algorithm  considers a sample of permutations along with the fitness of each of them. It is an iterative process in which the number of iterations is fixed. 
-Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual. 
+Then, at each iteration, UMM (i) estimates a surrogate distribution of the fitness function and (ii) proposes a good fitted individual. \MANUEL{Hay un poco de duplicación entre lo anterior y lo siguiente, no?}
 
 
-\section{Unbalanced Mallows model: probabilistic BB optimization}
-In this section we describe our main contribution: a novel algorithm for the optimization of a black box function over permutation spaces. This algorithm is called Unbalanced Mallows model (UMM) since it a probabilistic method based on a well-known probability distribution for permutations: the Mallows model. 
+In this section we describe our main contribution: a novel algorithm for the optimization of a black box function over permutation spaces. This algorithm is called Unbalanced Mallows model (UMM) since it a probabilistic method based on a well-known probability distribution for permutations: the Mallows model.\MANUEL{this sounds as if this was the first time you talk about MM, but you already described it above, no? } 
 
 \begin{algorithm}[t]
- \KwData{$n$, $m$,}
- \KwResult{how to write algorithm with \LaTeX2e }
- $S$\;
- $F$\;
- $\hat\sigma_0$ = uBorda($S, F,\rho$)\;
- \For{$m$ \text{iterations}}{
-  linear decrease on $\theta$\;
-  $\sigma$ = sample from a $MM(\hat\sigma_0, \theta)$\;
-  Append $\sigma$ and $f(\sigma)$ to $S$ and $F$\;
-   $\hat\sigma_0$ = uBorda($S, F,\rho$)\;
- }
- \Return $S, F$
- \caption{Unbalanced Mallows model for black box optimization}
+ \caption{UMM: Unbalanced Mallows Model for Black-Box Optimization}
  \label{alg:umm}
+  \begin{algorithmic}[1]
+    \Require $n$: ?, $m$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
+    \For{$i \assign 1$ \textbf{to} $m$ \text{evaluations}}
+    \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$
+    \State linear decrease on $\theta$
+    \State $\sigma \assign$ sample from a $MM(\hat\sigma_0, \theta)$
+    \State $S \assign S \cup \{\sigma\}$
+    \State $F \assign F \cup \{f(\sigma)\}$
+    \EndFor 
+    \State \Return $S$, $F$
+  \end{algorithmic}
 \end{algorithm}
 
 
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $m'$ permutations,\MANUEL{but the algorithm requires $m$, no $m'$?} $S=\{\sigma_1, \dotsc,  \sigma_{m'}\}$ that are randomly generated. UMM also keeps the function evaluation of each solution, $F=\{f(\sigma_1), \ldots, f(\sigma_{m'})\}$.  Then, for $m$ iterations\EKHINE{esto es exactamente así o es $m-m'$?}, UMM generates a random, promising candidate solution $\sigma$ from a probabilistic model and includes it in the sample $S$ while $f(\sigma)$ is included in $F$. At each iteration, the internal probabilistic model is updated. 
 
-The high-level behavior of UMM is shown in Algorithm~\ref{alg:umm}. It starts with an \textit{small} sample of $m'$ permutations, $S=\{\sigma_1, \ldots,  \sigma_{m'}\}$ that are randomly generated. UMM also keeps the function evaluation of each solution, $F=\{f(\sigma_1), \ldots, f(\sigma_{m'})\}$. An probabilistic model is used internally to guide the search. Then, for $m$ iterations\EKHINE{esto es exactamente así o es $m-m'$?}, UMM generates a random, promising candidate solution $\sigma$ and includes it in the sample $S$ while $f(\sigma)$ in included in $F$. At each iteration, the internal probabilistic model is updated. 
 
 The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be smaller.\footnote{We assume a minimization problem.} The main contribution of our approach is that the distribution does not represent the current sample $S$ considered by the algorithm but instead, represents a variation of it. This variation is based on the uBorda algorithm in Section~\ref{sec:uBorda} and is abstractly equivalent to replicating in the sample the permutations inversely proportionally to their fitness values, i.e., there will be many copies of the good solutions and few of the bad ones. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question os how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}.
 
