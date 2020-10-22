@@ -159,6 +159,7 @@ Our contribution: Ekhine
 \citep{LopDubPerStuBir2016irace}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 \section{Background}\label{sec:backgroud}
 
 Permutations are defined as bijections of the set $[n]$ integer onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=1, 2, 3, \ldots,n$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma_{-1}=e$ always holds. 
@@ -190,6 +191,11 @@ and, the same as Borda, orders the items increasingly by their score.
 Intuitively, the uBorda ranking of sample $S$ is equivalent to the Borda ranking of $S'$, being $S'$ an extension of $S$ where each each $\sigma\in S$ has been replicated proportionally to its weight $w(\sigma)$. In this paper, we would like to replicate each permutation $\sigma$ a number of times that is proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. 
 
 By setting $\rho=1$ the original Borda is recovered. However, for $\rho<1$ uBorda ranking will be closer to the rankings in $S$ with smaller value of $f(\sigma)$. Interestingly, Borda is computed in polynomial time. Clearly, the choice of the weight depends on the relevant property of a ranking in a particular domain. For example, it has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift. 
+=======
+\newcommand{\Prob}{\ensuremath{p}}
+\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
+\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
+>>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
 =======
 \newcommand{\Prob}{\ensuremath{p}}
 \newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
@@ -317,9 +323,15 @@ In this section we describe our main contribution: a novel algorithm for the opt
 
 As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $m'$ permutations,\MANUEL{but the algorithm requires $m$, no $m'$?} $S=\{\sigma_1, \dotsc,  \sigma_{m'}\}$ that are randomly generated. UMM also keeps the function evaluation of each solution, $F=\{f(\sigma_1), \ldots, f(\sigma_{m'})\}$.  Then, for $m$ iterations\EKHINE{esto es exactamente así o es $m-m'$?}, UMM generates a random, promising candidate solution $\sigma$ from a probabilistic model and includes it in the sample $S$ while $f(\sigma)$ is included in $F$. At each iteration, the internal probabilistic model is updated. 
 
+<<<<<<< HEAD
 
 The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be minimized. The main contribution of our approach is that the distribution does not represent the current sample $S$ considered by the algorithm but instead, represents a variation of it. This variation is based on the uBorda algorithm described in Section~\ref{sec:uBorda} and is abstractly equivalent to replicating in the sample the permutations \manuel{inversely proportionally}{a number of times inversely proportional} to their fitness values, i.e., there will be many copies of the good solutions and few of the bad ones. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question of how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}.\MANUEL{is this $\rho$ the same we explained earlier?}
 
+=======
+
+The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be minimized. The main contribution of our approach is that the distribution does not represent the current sample $S$ considered by the algorithm but instead, represents a variation of it. This variation is based on the uBorda algorithm described in Section~\ref{sec:uBorda} and is abstractly equivalent to replicating in the sample the permutations \manuel{inversely proportionally}{a number of times inversely proportional} to their fitness values, i.e., there will be many copies of the good solutions and few of the bad ones. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question of how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}.\MANUEL{is this $\rho$ the same we explained earlier?}
+
+>>>>>>> a940b6e14db49ed2a1764c0475f43374e74b6f31
 At each iteration of the algorithm the following steps take place: (1) randomly
 generate a permutation distributed according to the internal model and include
 it in the sample and (2) evaluate the new permutation and update the
