@@ -146,7 +146,7 @@ ACO was not designed for such short budgets.
 
 In this work, we propose and analyze UMM, an EDA specifically designed for
 black-box combinatorial optimization under a limited budget. The proposed UMM 
-is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs). Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration.
+is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs)~\citep{???}. Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration.
 
 \ldots\MANUEL{what is the inspiration}
 \EKHINE{we propose a probabilistic algrithm that (like cego?) (1) iteratively adds solutions to the sample and (2) fits a surrogate model for every new sample obtained. However,  different fom cego, our surrogate model is an estimation of the predicted fitness function at each point. CEGO controls the  intensification-explotation balance with the expected improvement??? We mimic the intensification-explotation balance by automatically controllong the variance of our surrogate model.}
@@ -208,17 +208,6 @@ Our contribution: Ekhine
 
 Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
 
-Let us assume a black-box ``fitness'' function that must be minimized over a
-space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
-we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
-$f(\sigma)$, however, we do not know anything else about the form of
-$f$. Moreover, the evaluation of $f$ is expensive in computation time or
-resources and, thus, limits the budget of candidate permutations that we can
-evaluate to a relatively low number. Here, we will study budgets lower than
-400. Such expensive black-box combinatorial problems arise, for example, in
-manufacturing~\citep{FerAlvDiaIglEna2014ants}, where the fitness function
-may involve expensive simulations for which no closed-form mathematical
-description is available.
 
 Distances in permutation space can be measured in various ways.  Kendall's $\tau$ distance counts the number of items ranked in different order in both permutations:
 %
@@ -231,6 +220,19 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
 \end{equation}
 %
 An alternative\MANUEL{Alternative or equivalent? That is, it is the same numbers or it will produce a different result?} definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
+
+Let us assume a black-box ``fitness'' function that must be minimized over a
+space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
+we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
+$f(\sigma)$, however, we do not know anything else about the form of
+$f$. Moreover, the evaluation of $f$ is expensive in computation time or
+resources and, thus, we can only evaluate a limited budget of candidate
+permutations. Here, we will study budgets lower than 400. Such expensive
+black-box combinatorial problems arises in diverse contexts, for example,
+protein folding~\citep{RomKraArn2012protein} and industrial
+production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
+involve expensive simulations for which no closed-form mathematical description
+is available.
 
 \subsection{CEGO}
 
@@ -382,7 +384,7 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained as
 \end{equation}
 
 
-A purely explotation approach\ekhine{esto se dice asi? uno greedy igual esta mejor dicho} would systematically generate $\sigma_0$ in the sampling stage.\MANUEL{I'm not sure what ``systematically generate $\sigma_0$'' means.} However, this setting\MANUEL{which setting? $\theta$?}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference\ekhine{}{qué le pasa?} Don't you see a complete mess of the authors list? It looks like it has 20 authors.}
+A purely explotation approach\ekhine{esto se dice asi? uno greedy igual esta mejor dicho} would systematically generate $\sigma_0$ in the sampling stage.\MANUEL{I'm not sure what ``systematically generate $\sigma_0$'' means in this context.} However, this setting\MANUEL{which setting? $\theta$?}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference\ekhine{}{qué le pasa?} Don't you see a complete mess of the authors list? It looks like it has 20 authors.}
 
 \subsubsection{Learning step.}
 As explained above, the parameter $\theta$ is updated deterministically at the
@@ -399,11 +401,6 @@ is controlled by parameter $\rho \in (0,1)$, which currently is user-defined. Hi
 \ekhine{bayesian optim}{ff}
 \EKHINE{subir a arxiv uBorda}
 
-
-
-LOP: Ekhine
-
-Quizás luego: PFSP y QAP
 
 
 
@@ -449,11 +446,30 @@ here for the black-box context is extremely limited.
 
 We implemented UMM in Python 3. The parameter settings that we use are...
 
-Complete this with details of UMM: MANUEL
 
 \manuel{Computing system details: MANUEL}{%
   All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at 2.60\,GHz, 64\,GB RAM
   running CentOS Linux release 7.4.1708 (Core).  }
+
+\subsubsection{Benchmark problems.} Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
+
+The \textbf{LOP} \ldots
+
+The \emph{Quadratic Assignment Problem (QAP)} is defined by:
+\begin{equation}\label{eq:qap}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^n \sum_{j=1}^n a_{i,j} b_{\sigma(i), \sigma(j)}
+\end{equation}
+%
+where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
+
+The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
+\begin{equation}\label{eq:qap}
+  \begin{split}
+    \min_{\sigma \in S_n}\quad& f(\sigma) = C_{n,M}\\
+    \text{s.t.}\quad & C_{1,j} = 0 \quad j\in [M], \qquad C_{i,1} = 0\quad i \in [n]\\
+    &C_{i,j} = p_{\sigma(i),j} + \max\{C_{i-1, j}, C_{i, j-1}\}  \ \  i \in \{2,\dotsc,n\},\ j \in\{2,\dotsc, M\}\\
+\end{split}
+\end{equation}
 
 
 Describir como se generan las intancias de LOP: Ekhine
@@ -465,7 +481,7 @@ For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
 \texttt{nug12},\texttt{nug30},\texttt{tho30} and \texttt{kra32} for the QAP,
-with $n$ equal to the number in the instance name, and \texttt{reC05},
+with $n$ (the permutation length) equal to the number in the instance name, and \texttt{reC05},
 \texttt{reC13}, \texttt{reC19}, \texttt{reC31} for the PFSP, with
 $n \in \{20, 20, 30, 50\}$, respectively.
 
@@ -604,37 +620,37 @@ random behaviour observed in some instances and discussed above,
 
    \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
 \begin{table}[tb]
- \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean of the difference between the fitness of UMM minus the one of CEGO. Mean runtime is measured in hours. If a run went over 72 hours, of  CEGO was not able to reach 400 function evaluations (FEs) in 72 hours, it was terminated earlier. This was the case for all LOP instances shown.\label{tab:results}}
+ \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean of the difference between the fitness of UMM minus the one of CEGO. Mean runtime is measured in hours. If a run went over 72 hours, of  CEGO was not able to reach 400 function evaluations (FEs) in 72 hours, it was terminated earlier. This was the case for all LOP instances shown.\manuel{}{Don't we have results for rec31?}\label{tab:results}}
  \resizebox{\textwidth}{!}{%
-\begin{tabular}{*{6}{r}rl*{3}{r}}
+\begin{tabular}{r@{\hskip -2ex}*{5}{r}rl*{3}{r}}
  \toprule
-            &                  & \mcolc{4}{Mean fitness (sd)} & \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI for the\\mean difference}}} & \bf \multirow[b]{2.45}{*}{\shortstack{Mean FE\\CEGO}} & \mcolc{2}{Mean runtime} \\\cmidrule{3-6}\cmidrule(lr){10-11}
+            &                  & \mcolc{4}{Mean fitness (sd)} & \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI for the\\mean difference}}} & \bf \multirow[b]{2.45}{*}{\shortstack{Mean FE\\CEGO}} & \mcolc{2}{Mean runtime} \\\cmidrule(lr){3-6}\cmidrule(lr){10-11}
 \bf Problem & \bf     Instance & \mcolc{2}{CEGO} & \mcolc{2}{UMM}   &                         &            & \bf & \bf CEGO       & \bf UMM                       \\\midrule
     LOP     & N-t1d100.01      & 78696.6                 & (811.4)    & 76119.6   & (915.4)                & $[$1763.5,    & 3390.5$]$     & 111.8& 72.5 & 3.2  \\
-    LOP     & N-t1d100.02      & 79686.5                 & (367.9)    & 76827.7   & (891.0)                & $[$2194.5,    & 3523.1$]$     & 110.7& 72.9 & 3.2  \\
-    LOP     & N-t1d150.01      & 187605.5                & (1906.9)   & 179508.3  & (1647.9)               & $[$6420.3,    & 9774.1$]$     & 73.9 & 72.7 & 6.5  \\
-    LOP     & N-t1d150.02      & 184320.9                & (973.5)    & 177592.8  & (1196.2)               & $[$5700.5,    & 7755.7$]$     & 74.1 & 73.2 & 6.5  \\
-    LOP     & N-t1d200.01      & 335391.1                & (2289.0)   & 323513.6  & (1371.2)               & $[$10076.1,   & 13678.9$]$    & 55.6 & 73.2 & 10.7 \\
-    LOP     & N-t1d200.02      & 333149.5                & (2497.2)   & 319675.8  & (2242.6)               & $[$11242.0,   & 15705.4$]$    & 56.5 & 73.7 & 10.6 \\
-    LOP     & N-t2d150.01      & 24682.7                 & (976.6)    & 15297.7   & (563.5)                & $[$8622.2,    & 10147.8$]$    & 74.6 & 72.9 & 7.0  \\
-    LOP     & N-t2d150.02      & 24250.8                 & (1354.9)   & 14724.9   & (667.5)                & $[$8495.1,    & 10556.7$]$    & 74.8 & 72.8 & 7.1  \\
-    LOP     & N-t2d200.01      & 57098.6                 & (4452.8)   & 33465.2   & (2001.0)               & $[$20284.5,   & 26982.3$]$    & 56.3 & 73.3 & 11.2 \\
-    LOP     & N-t2d200.02      & 54895.6                 & (4589.7)   & 35901.8   & (2077.5)               & $[$15539.1,   & 22448.5$]$    & 55.6 & 73.5 & 11.2 \\
-    LOP     & N-p50-01         & 21431.2                 & (299.5)    & 21027.6   & (711.8)                & $[$-128.1,    & 935.3$]$      & 219.9& 72.3 & 0.9  \\
-    LOP     & N-p50-02         & 22021.1                 & (275.6)    & 21613.6   & (596.4)                & $[$-42.5,     & 857.5$]$      & 217.3& 72.3 & 0.9  \\
-    LOP     & N-atp111         & 693.1                   & (10.3)     & 594.0     & (15.4)                 & $[$86.7,      & 111.5$]$      & 98.7 & 72.5 & 4.1  \\
-    LOP     & N-atp134         & 880.5                   & (18.6)     & 756.3     & (21.3)                 & $[$105.4,     & 143.0$]$      & 83.0 & 72.8 & 5.7  \\
-    LOP     & N-be75eec\_150   & 1666193.1               & (72310.8)  & 1415208.5 & (58593.5)              & $[$188960.6,  & 313008.6$]$   & 74.0 & 72.9 & 6.9  \\
-    LOP     & N-be75eec\_250   & 5214413.0               & (166701.4) & 4431271.0 & (109756.7)             & $[$649040.8,  & 917243.2$]$   & 44.9 & 73.7 & 15.5 \\
-    LOP     & N-be75np\_150    & 3742444.0               & (88500.2)  & 3204878.3 & (80704.1)              & $[$457944.2,  & 617187.2$]$   & 74.2 & 72.9 & 6.9  \\
-    LOP     & N-be75np\_250    & 10887427.8              & (159642.5) & 9544754.9 & (260523.9)             & $[$1136635.8, & 1548710.0$]$  & 45.3 & 74.0 & 15.5 \\
-   PFSP     & rec05.txt        & 1317.9                  & (25.1)     & 1330.7    & (17.9)                 & $[$-33.4,     & 7.8$]$        & 400.0& 38.9 & 0.1  \\
-   PFSP     & rec13.txt        & 2128.2                  & (25.0)     & 2158.7    & (29.5)                 & $[$-56.2,     & -4.8$]$       & 400.0& 38.9 & 0.1  \\
-   PFSP     & rec19.txt        & 2398.6                  & (19.8)     & 2405.1    & (12.6)                 & $[$-22.3,     & 9.3$]$        & 400.0& 82.1 & 0.3  \\
-    QAP     & kra32.dat        & 115907.0                & (4663.4)   & 116320.0  & (4673.5)               & $[$-4799.3,   & 3973.3$]$     & 400.0& 95.8 & 0.3  \\
-    QAP     & nug12.dat        & 624.2                   & (26.3)     & 660.4     & (17.3)                 & $[$-57.3,     & -15.1$]$      & 400.0& 14.8 & 0.0  \\
-    QAP     & nug30.dat        & 7486.8                  & (40.4)     & 7474.0    & (83.9)                 & $[$-50.8,     & 76.4$]$       & 400.0& 84.3 & 0.3  \\
-    QAP     & tho30.dat        & 192416.0                & (2584.2)   & 191482.0  & (4419.7)               & $[$-2527.0,   & 4395.0$]$     & 400.0& 85.1 & 0.3  \\
+     & N-t1d100.02      & 79686.5                 & (367.9)    & 76827.7   & (891.0)                & $[$2194.5,    & 3523.1$]$     & 110.7& 72.9 & 3.2  \\
+     & N-t1d150.01      & 187605.5                & (1906.9)   & 179508.3  & (1647.9)               & $[$6420.3,    & 9774.1$]$     & 73.9 & 72.7 & 6.5  \\
+     & N-t1d150.02      & 184320.9                & (973.5)    & 177592.8  & (1196.2)               & $[$5700.5,    & 7755.7$]$     & 74.1 & 73.2 & 6.5  \\
+     & N-t1d200.01      & 335391.1                & (2289.0)   & 323513.6  & (1371.2)               & $[$10076.1,   & 13678.9$]$    & 55.6 & 73.2 & 10.7 \\
+     & N-t1d200.02      & 333149.5                & (2497.2)   & 319675.8  & (2242.6)               & $[$11242.0,   & 15705.4$]$    & 56.5 & 73.7 & 10.6 \\
+     & N-t2d150.01      & 24682.7                 & (976.6)    & 15297.7   & (563.5)                & $[$8622.2,    & 10147.8$]$    & 74.6 & 72.9 & 7.0  \\
+     & N-t2d150.02      & 24250.8                 & (1354.9)   & 14724.9   & (667.5)                & $[$8495.1,    & 10556.7$]$    & 74.8 & 72.8 & 7.1  \\
+     & N-t2d200.01      & 57098.6                 & (4452.8)   & 33465.2   & (2001.0)               & $[$20284.5,   & 26982.3$]$    & 56.3 & 73.3 & 11.2 \\
+     & N-t2d200.02      & 54895.6                 & (4589.7)   & 35901.8   & (2077.5)               & $[$15539.1,   & 22448.5$]$    & 55.6 & 73.5 & 11.2 \\
+     & N-p50-01         & 21431.2                 & (299.5)    & 21027.6   & (711.8)                & $[$-128.1,    & 935.3$]$      & 219.9& 72.3 & 0.9  \\
+     & N-p50-02         & 22021.1                 & (275.6)    & 21613.6   & (596.4)                & $[$-42.5,     & 857.5$]$      & 217.3& 72.3 & 0.9  \\
+     & N-atp111         & 693.1                   & (10.3)     & 594.0     & (15.4)                 & $[$86.7,      & 111.5$]$      & 98.7 & 72.5 & 4.1  \\
+     & N-atp134         & 880.5                   & (18.6)     & 756.3     & (21.3)                 & $[$105.4,     & 143.0$]$      & 83.0 & 72.8 & 5.7  \\
+     & N-be75eec\_150   & 1666193.1               & (72310.8)  & 1415208.5 & (58593.5)              & $[$188960.6,  & 313008.6$]$   & 74.0 & 72.9 & 6.9  \\
+     & N-be75eec\_250   & 5214413.0               & (166701.4) & 4431271.0 & (109756.7)             & $[$649040.8,  & 917243.2$]$   & 44.9 & 73.7 & 15.5 \\
+     & N-be75np\_150    & 3742444.0               & (88500.2)  & 3204878.3 & (80704.1)              & $[$457944.2,  & 617187.2$]$   & 74.2 & 72.9 & 6.9  \\
+     & N-be75np\_250    & 10887427.8              & (159642.5) & 9544754.9 & (260523.9)             & $[$1136635.8, & 1548710.0$]$  & 45.3 & 74.0 & 15.5 \\\midrule
+   PFSP     & rec05        & 1317.9                  & (25.1)     & 1330.7    & (17.9)                 & $[$-33.4,     & 7.8$]$        & 400.0& 38.9 & 0.1  \\
+       & rec13        & 2128.2                  & (25.0)     & 2158.7    & (29.5)                 & $[$-56.2,     & -4.8$]$       & 400.0& 38.9 & 0.1  \\
+       & rec19        & 2398.6                  & (19.8)     & 2405.1    & (12.6)                 & $[$-22.3,     & 9.3$]$        & 400.0& 82.1 & 0.3  \\\midrule
+    QAP     & kra32        & 115907.0                & (4663.4)   & 116320.0  & (4673.5)               & $[$-4799.3,   & 3973.3$]$     & 400.0& 95.8 & 0.3  \\
+        & nug12        & 624.2                   & (26.3)     & 660.4     & (17.3)                 & $[$-57.3,     & -15.1$]$      & 400.0& 14.8 & 0.0  \\
+        & nug30        & 7486.8                  & (40.4)     & 7474.0    & (83.9)                 & $[$-50.8,     & 76.4$]$       & 400.0& 84.3 & 0.3  \\
+        & tho30        & 192416.0                & (2584.2)   & 191482.0  & (4419.7)               & $[$-2527.0,   & 4395.0$]$     & 400.0& 85.1 & 0.3  \\
 \bottomrule
 \end{tabular}}
 \end{table}
