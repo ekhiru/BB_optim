@@ -347,15 +347,22 @@ We can simulate the replication of the best fitted individuals by using uBorda a
 
 
 \subsubsection{Sampling step.}
-Sampling can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters that describe the model, i.e., $\sigma_0$ and $\theta$. Given these two parameters, sampling a MM has been studied in \cite{Collas}\cite{IruCalLoz2016permallows}\cite{Regenwetter2004}\MANUEL{You call this Regenwetter, but the author is Doignon?} where the computational complexities are $O(n\log n)$ and $O(n^2)$.
+Sampling can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters that describe the model, i.e., $\sigma_0$ and $\theta$. Given these two parameters, sampling a MM has been studied in \cite{Collas}\cite{IruCalLoz2016permallows}\cite{Regenwetter2004}\MANUEL{You call this Regenwetter, but the author is Doignon? \ekhine{}{he is another coauthor}} where the computational complexities are $O(n\log n)$ and $O(n^2)$.
 %
-At each iteration of UMM, $\sigma_0$ is the permutation obtained as a solution in the previous learning step. The scale $\theta$, in the other hand, is set automatically by the algorithm to control the diversification and intensification trade off: At the first iteration it is set so that the expected distance equals  ${n\choose 4}$ (half of the distance of the uniform distribution), and then it linearly decrease until the last iteration where the expected distance equals 1. Similar approaches consisting of changing the variance to control the exploration-explotation tradeoff have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference}
-%
-This setting reflects the fact that, despite believing that the best global optimum at each iteration is $\sigma_0$, the uncertainty at the first stages of the algorithm is high and\MANUEL{and?}
+At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained as a solution in the previous learning step. The scale $\theta$ controls the variance and expected distance $\mathbb{E}[D]$ of the MM. It is set automatically by the algorithm to control the diversification and intensification trade off: At the first iteration it is set so that the expected distance $\mathbb{E}[D]$ equals  ${n\choose 4}$ (half of the distance of the uniform distribution), and then the expected distance linearly decrease until the last iteration where the expected distance equals 1. The expected distance, shown in the next line, does not have a closed-form as function of $\theta$ but its monotonicity guarantees low-cost, high-quality approximations. 
+
+\begin{equation}
+\begin{split}
+\mathbb{E}[D] = \frac{k \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=n-k+1}^{n}  \frac{j \exp(-j \theta)}{1-\exp(-j\theta)}
+\label{eq:expectation}
+\end{split}
+\end{equation}
 
 
+A purely explotation approach\ekhine{esto se dice asi? uno greedy igual esta mejor dicho} would systematically generate $\sigma_0$ in the sampling stage. However, this setting  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference\ekhine{}{qué le pasa?}}
 
-\subsection{Comparison to standard probabilistic optimization approaches.}
+
+\subsection{Comparison to standard probabilistic optimization approaches.}\ekhine{esto lo dejamos para el final? intro, discussion...}{}
 UMM is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs). Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration.\MANUEL{I would suggest to move this subsection to the intro, is that OK?} 
 \ekhine{bayesian optim}{ff}
 \EKHINE{subir a arxiv uBorda}
@@ -427,6 +434,10 @@ with $n$ equal to the number in the instance name, and \texttt{reC05},
 $n \in \{20, 20, 30, 50\}$, respectively.
 
 \section{Experimental analysis}
+
+\ekhine{}{In prev sections we say that we show here how to tune $rho$. Le ves sitio? con los heatmaps? al principio de la sección? an outline here}
+\ekhine{}{recall that $w(\sigma) = \rho^{f(sigma)}$. We select $\rho$in such a way that the 100$r\%$ of the samples have the 100$w\%$ of the weight}
+
 
 
 To better understand the behaviour of the algorithms, we record the fitness of
