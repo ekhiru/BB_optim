@@ -2,7 +2,7 @@
 \usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
-
+\usepackage{relsize}
 \usepackage{amsmath,amssymb}
 %\usepackage[square,numbers,sort&compress]{natbib}
 \usepackage{xspace}
@@ -111,14 +111,12 @@
 
 \section{Introduction}
 
-Motivation: Manuel
-
 In many practical optimization problems, the objective function is not
 explicitly available and solutions are evaluated by means of expensive
 prediction models, simulations or physical experiments. When decision variables
-are continuous, the use of Bayesian surrogate-models, e.g., Gaussian processes,
-in optimization has become
-widespread~\citep{JonSchWel98go,ForKea2009surrogate}. Motivated by this
+are continuous, the use of Bayesian surrogate-models (e.g., Gaussian processes)
+is widespread in
+optimization~\citep{JonSchWel98go,ForKea2009surrogate}. Motivated by this
 success, there have been attempts at adapting such Bayesian optimization
 algorithms to the combinatorial case, a notable example being Combinatorial
 Efficient Global Optimization
@@ -133,32 +131,46 @@ hours rather than days and when ``expensive'' refers to resources or economical
 cost rather than wall-clock time. \citet{PerLopStu2015si} recently showed that
 ant colony optimization (ACO)~\citep{DorStu2004:book} is competitive with CEGO
 on a black-box version of the travelling salesman problem under a budget of
-$1\,000$ function evaluations. ACO basically builds a probability distribution
-model from which solutions are sampled with a bias towards the best solutions
-evaluated so far. As such, ACO may be considered a type of
-estimation-of-distribution algorithm (EDA) for combinatorial optimization. On
-the other hand, $1\,000$ evaluations is a relatively large budget for CEGO and
-ACO was not designed for such short budgets.
+$1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
+still a relatively large budget for CEGO, whereas ACO was not designed for such
+short budgets.
 
+In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
+population-based probabilistic algorithm specifically designed for black-box
+combinatorial optimization under a limited budget. There exists a wide body of
+research on probabilistic algorithms~\citep{???},\MANUEL{what can we cite from
+  that body of research?} with the most prominent examples being estimation of
+distribution algorithms (EDAs)~\citep{???}.\MANUEL{what would be the best work
+  to cite about EDAs for combinatorial optimization?} ACO may also be
+considered a type of EDA, since it builds a probability distribution model from
+which solutions are sampled with a bias towards the best solutions evaluated so
+far. The proposed UMM drastically differs from EDAs since EDAs assume that
+function evaluations are cheap and they can do many of them. On the contrary,
+UMM aims at learning as much as possible with a limited number of function
+evaluations. Moreover, unlike EDAs, UMM does not rely on a fixed-size
+population of solutions that evolves over ``generations''. Instead, taking
+inspiration from Bayesian optimizers, UMM considers a sample of permutations
+during the whole execution that is increased iteratively by one new permutation
+each iteration. Finally, the balance between intensification and exploration is
+dynamically adapted by controlling the variance of the probabilistic Mallows model.
+\manuel{}{
+  \begin{itemize}
+  \item Who else has used Mallows model for black-box optimization?
+  \item Who else has used unbalanced borda for optimization?
+  \end{itemize}
+}
 
+% \ldots\MANUEL{what is the inspiration}
+% \EKHINE{we propose a probabilistic algrithm that (like cego?) (1) iteratively adds solutions to the sample and (2) fits a surrogate model for every new sample obtained. However,  different fom cego, our surrogate model is an estimation of the predicted fitness function at each point. CEGO controls the  intensification-explotation balance with the expected improvement??? We mimic the intensification-explotation balance by automatically controllong the variance of our surrogate model.}
 
+% % minimize the uncertainty in the final solutions or
 
+% Related work: Ekhine
 
-In this work, we propose and analyze UMM, an EDA specifically designed for
-black-box combinatorial optimization under a limited budget. The proposed UMM 
-is a population based algorithm. There exists a wide body of research on population based probabilistic algorithms, where most prominent examples are Estimation of Distribution Algorithms (EDAs)~\citep{???}. Our approach drastically differs from EDAs since EDAs assume that function evaluations are cheap and they can do many of them. On the contrary, UMM minimizes the number of function evaluations. Moreover, UMM does not rely on an evolving sequence of samples (called generations in evolutionary approaches). Instead, UMM considers a single sample of permutations during the whole execution that is increased iteratively, with one permutation each iteration.
-
-\ldots\MANUEL{what is the inspiration}
-\EKHINE{we propose a probabilistic algrithm that (like cego?) (1) iteratively adds solutions to the sample and (2) fits a surrogate model for every new sample obtained. However,  different fom cego, our surrogate model is an estimation of the predicted fitness function at each point. CEGO controls the  intensification-explotation balance with the expected improvement??? We mimic the intensification-explotation balance by automatically controllong the variance of our surrogate model.}
-
-% minimize the uncertainty in the final solutions or
-
-Related work: Ekhine
-
-Our contribution: Ekhine
-\begin{itemize}
-\item 
-\end{itemize}
+% Our contribution: Ekhine
+% \begin{itemize}
+% \item 
+% \end{itemize}
 
 %
 %\citep{LopDubPerStuBir2016irace}
@@ -480,7 +492,7 @@ For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\
 
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
-\texttt{nug12},\texttt{nug30},\texttt{tho30} and \texttt{kra32} for the QAP,
+\texttt{nug12}, \texttt{nug30}, \texttt{tho30} and \texttt{kra32} for the QAP,
 with $n$ (the permutation length) equal to the number in the instance name, and \texttt{reC05},
 \texttt{reC13}, \texttt{reC19}, \texttt{reC31} for the PFSP, with
 $n \in \{20, 20, 30, 50\}$, respectively.
@@ -671,11 +683,13 @@ Open questions:
 \item Can we plot the posterior probability of the optimal solution?
 \end{itemize}
 
+\begin{smaller}
 \paragraph*{Acknowledgements.}
-
+M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
+%
 Thanks to Hao Wang (Leiden University) for pointing us to the arguments of
 \citet{EriPeaGar2019scalable}.
-
+\end{smaller}
 
 
 
