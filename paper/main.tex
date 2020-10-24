@@ -40,6 +40,12 @@
 \newcommand{\Inf}{\ensuremath{\infty}}
 \DeclareMathOperator*{\argmax}{arg\,max}
 
+
+\newcommand{\Prob}{\ensuremath{p}}
+\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
+%\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
+\newcommand{\FEmax}{\ensuremath{m}}
+
 %% Revision documents
 \usepackage[dvipsnames]{xcolor}
 \usepackage[normalem]{ulem}
@@ -207,10 +213,6 @@ dynamically adapted by controlling the variance of the probabilistic Mallows mod
 %
 %By setting $\rho=1$ the original Borda is recovered. However, for $\rho<1$ uBorda ranking will be closer to the rankings in $S$ with smaller value of $f(\sigma)$. Interestingly, Borda is computed in polynomial time. Clearly, the choice of the weight depends on the relevant property of a ranking in a particular domain. For example, it has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift. 
 %
-\newcommand{\Prob}{\ensuremath{p}}
-\newcommand{\minit}{\ensuremath{m_\text{ini}}\xspace}
-\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
-
 
 \section{Background}\label{sec:backgroud}
 
@@ -328,11 +330,11 @@ Mallows model and uBorda learning.
  \caption{UMM: Unbalanced Mallows Model for Black-Box Optimization}
  \label{alg:umm}
   \begin{algorithmic}[1]
-    \Require $\minit$: number of initial permutations, $m$: total budget, $\rho$: learning rate
-    %\\ ?, $m$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
+    \Require $\minit$: number of initial permutations, $\FEmax$: total budget, $\rho$: learning rate
+    %\\ ?, $\FEmax$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
     \State $S \assign $ generate $\minit$ permutations uniformly at random
     \State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
-    \For{$i \assign \minit$ \textbf{to} $m$ \text{evaluations}}
+    \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}
     \State linear decrease on $\theta$
     \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
@@ -352,7 +354,7 @@ Mallows model and uBorda learning.
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). Together with the parameter $\theta$, they define a Mallows model (Eq.~\ref{eq:MM}) from which we sample a new candidate permutation (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $m$.\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?}
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). Together with the parameter $\theta$, they define a Mallows model (Eq.~\ref{eq:MM}) from which we sample a new candidate permutation (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -424,36 +426,42 @@ is controlled by parameter $\rho \in (0,1)$, which currently is user-defined. Hi
 \subsubsection{CEGO.}
 We use the implementation of GECO provided by the
 authors.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
-Following the authors of
-CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
-the surrogate models, with population size of 20, crossover rate of 0.5,
-mutation rate of 1, tournament selection of size 2 and probability of 0.9,
-interchange mutation (i.e., exchanging two randomly selected elements) and
-cycle crossover for permutations. To generate each new solution, CEGO runs the
-GA using the model as a surrogate of the true fitness function.  The authors of
-CEGO used a budget of $10^4$ evaluations of the surrogate-model for each run of
-the GA. However, with such a setting, one run of CEGO with a budget of $m=400$
-evaluations of the true fitness function requires more than a week of
-computation time, which was infeasible for our study. Hence, we set the budget of the GA to $10^3$. Although this means that the results of CEGO reported here could, in principle, improved with a higher GA budget  we believe
-
 Although it is never stated in the original paper, the implementation of CEGO
 generates a set of initial solutions of size $\minit=10$ by means of a
 max-min-distance sequential design: new solutions are added to the set
 sequentially by maximizing the minimum distance to solutions already in the
-set. These initial solutions are then evaluated on the actual objective
-function and the result is used to build the initial surrogate
-model.% \citet{ZaeStoBar2014:ppsn} uses 10
+set. These initial solutions are then evaluated on the true fitness function
+and the result is used to build the initial surrogate
+model.% \citet{ZaeStoBar2014:ppsn} uses \minit=10
+Following the authors of
+CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
+the surrogate models with population size of 20, crossover rate of 0.5,
+mutation rate of $1/n$, tournament selection of size 2 with probability of 0.9,
+interchange mutation (i.e., exchanging two randomly selected elements) and
+cycle crossover for permutations. To generate each new solution, CEGO runs the
+GA using the model as a surrogate of the true fitness function.  The authors of
+CEGO used a budget of $10^4$ surrogate-model evaluations for each run of the
+GA. However, with such a setting, a single run of CEGO with a budget of $\FEmax=400$
+true fitness evaluations requires \emph{more than a week} of computation time,
+which was infeasible for our study. Hence, we set the budget of the GA to
+$10^3$. Although a higher GA budget could improve the results of CEGO reported
+here, our results are similar (and sometimes better) than the ones reported in
+the original papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to
+running CEGO with $\FEmax=400$ instead of $\FEmax=200$. In fact, we found that the
+increase in runtime caused by doubling $\FEmax$ is much smaller than by increasing
+the GA budget by a factor of $10$. Nevertheless, we caution that choosing a
+different trade-off may lead to different conclusions and more work is needed
+to understand CEGO parameters.
 
-The CPU time required for a single run of CEGO using these settings is larger
-than a week.  For simplicity, we use Kendall's $\tau$ distance~(Eq.~\ref{eq:kendall_decomp}) in all
+
+\subsubsection{Other}.  For simplicity, we use Kendall's $\tau$
+distance~(Eq.~\ref{eq:kendall_decomp}) in all
 experiments\MANUEL{\citet{ZaeStoBar2014:ppsn} claims this is called Swap
   distance, could you double-check?}. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
 when using Hamming distance. We plan to extend our analysis of UMM to other
 distance measures and to the dynamic selection of distance
-measures~\citep{ZaeStoBar2014:ppsn}.
-
-In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
+measures~\citep{ZaeStoBar2014:ppsn}. xIn all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
 algorithms for the problems considered here typically evaluate
 \textcolor{red}{hundreds? thousands?} of solutions, thus, the budget considered
@@ -491,7 +499,7 @@ Describir como se generan las intancias de LOP: Ekhine
 
 Describir las instancias: Ekhine
 
-For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$?}
+For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$ here? We already use $\FEmax$ for the budget, but we could change it. }
 
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
