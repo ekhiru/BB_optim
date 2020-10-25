@@ -223,17 +223,17 @@ dynamically adapted by controlling the variance of the probabilistic Mallows mod
 Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
 
 
-Distances in permutation space can be measured in various ways.  Kendall's $\tau$ distance counts the number of items ranked in different order in both permutations:
+Distances in permutation space can be measured in various ways.  Kendall's-$\tau$ distance counts the number of items ranked in different order in both permutations:
 %
 \begin{equation}
 \begin{split}
 d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
- &\bigl(\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\
+ &\bigl(\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\.
  \end{split}
  \label{eq:kendall_decomp}
 \end{equation}
-%
-An alternative\MANUEL{Alternative or equivalent? That is, it is the same numbers or it will produce a different result?} definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
+
+An equivalent\MANUEL{X Alternative or equivalent? That is, it is the same numbers or it will produce a different result?} definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
 
 Let us assume a black-box ``fitness'' function that must be minimized over a
 space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
@@ -273,19 +273,19 @@ function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
 
 
 \subsection{Distributions over permutations}
-Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:\MANUEL{Could you check this? I wanted to introduce the notation $MM(\sigma_0, \theta)$ that we use later}
+Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:\MANUEL{X Could you check this? I wanted to introduce the notation $MM(\sigma_0, \theta)$ that we use later}
 %
 \begin{equation}\label{eq:MM}
 \Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
 \end{equation}
 %
-with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance (Eq.~\ref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
+with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
 
-\manuel{One of the fundamental problems in statistics is to learn the parameters that best fit a given sample of data.}{}\MANUEL{I think we don't need to emphasize this, it is known} %
+
 We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
 The MLE process is divided in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, compute the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
 
-The exact MLE for $\hat\sigma_0$\MANUEL{MLE for $\sigma_0$ or for $\hat{\sigma}_0$?} is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters as an estimator for the MM~\cite{CarProSha2013votes}; and (iii) in a general optimization perspective, Borda error is bounded~\cite{CopFleRur2010ordering}.\MANUEL{I'm not sure what the latter means}
+The exact MLE for $\sigma_0$\MANUEL{X MLE for $\sigma_0$ or for $\hat{\sigma}_0$?} is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters as an estimator for the MM~\cite{CarProSha2013votes}; and (iii) in a general optimization perspective, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.\MANUEL{X I'm not sure what the latter means}
 
 The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
 First, for each position $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the position with the smallest Borda score, label 2 to the position with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
@@ -297,10 +297,9 @@ We introduce now the core for our probabilistic algorithm, the uBorda algorithm.
 B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
 \end{equation}
 %
-and, the same as Borda, orders the \ekhine{positions}{items}\MANUEL{why items? we talk about positions above. We could talk about decision variables if that is clearer} increasingly by their score.
+and, the same as Borda, orders the \ekhine{items}{positions}\MANUEL{X why items? we talk about positions above. We could talk about decision variables if that is clearer} increasingly by their score.
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
-%Intuitively, the uBorda ranking a given sample of permutations $S$\MANUEL{X What is $S$?} is equivalent to the Borda ranking of $S'$, being $S'$ an extension of $S$ where each each $\sigma\in S$ has been replicated proportionally to its weight $w(\sigma)$.\MANUEL{X so $w$ is a weight function from $w\colon S_n \to \mathbb{R}$?} %
 Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
 
 In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. Interestingly, uBorda is computed in polynomial time.
@@ -336,7 +335,7 @@ Mallows model and uBorda learning.
     \State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}
-    \State linear decrease on $\theta$
+    \State decrease on $\theta$\label{line:theta}
     \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     \State $S \assign S \cup \{\sigma\}$, $\quad F \assign F \cup \{f(\sigma)\}$
     \EndFor 
@@ -354,7 +353,7 @@ Mallows model and uBorda learning.
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). Together with the parameter $\theta$, they define a Mallows model (Eq.~\ref{eq:MM}) from which we sample a new candidate permutation (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?}
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), more details in Section~\ref{sec:sampling}. Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -366,8 +365,8 @@ $f(\sigma)$, i.e., it behaves as if there were many copies of the best
 solutions and few of the bad ones. A crucial property of UMM is that the
 computational complexity of working with the original sample and with the
 transformed sample is the same, i.e., polynomial. The most important steps are
-the sampling of a new permutation from $MM(\sigma_0,\rho)$ and the update
-(\emph{learning}) of the parameters $\sigma_0$ and $\rho$.\MANUEL{Is
+the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sample} in Algorithm~\ref{alg:umm}) and the update
+(\emph{learning}) of the parameters $\sigma_0$ $\theta$ and $\rho$ (line~\ref{line:uborda} in Algorithm~\ref{alg:umm}).\MANUEL{X Is
   this $\rho$ the same we explained earlier for the weights?}
 
 
@@ -386,36 +385,42 @@ probabilistic model. These steps correspond to two statistical operations: (1)
 sample a probability distribution and (2) learn a probability distribution of
 the transformation of the sample. Both are describe in the subsequent sections.}{}\MANUEL{I don't think we need this, it is said above (if some detail is missing we should integrate it the paragraph above)}
 
-\newcommand{\Edist}{\ensuremath{\text{E}[D]}}
-
-\subsubsection{Sampling step.}
-Sampling from $MM(\sigma_0,\rho)$  can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{Collas,IruCalLoz2016permallows,Regenwetter2004}\MANUEL{Which paper is Collas? It is not found.}\MANUEL{You call this Regenwetter, but the author is Doignon? \ekhine{}{he is another coauthor} But the entry shows only 1 author.} where the computational complexities are $O(n\log n)$ and $O(n^2)$.\MANUEL{respectively?}
-%
-At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained as a solution in the previous learning step. The scale $\theta$ controls the variance and expected distance $\Edist$ of the MM.\MANUEL{I'm not sure what is $D$, distance from where to where?} It is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, it is set so that the expected distance $\Edist$ equals  $\binom{n}{4}$ (half of the distance of the uniform distribution), and then the expected distance linearly decrease until the last iteration where the expected distance equals 1. The expected distance, shown in the next line, does not have a closed-form as function of $\theta$ but its monotonicity guarantees low-cost, high-quality approximations:\MANUEL{I don't understand this sentence, sorry. You say it does not have a closed-form, but you show a closed-form. Do you mean that the formula below is only an approximation of $\Edist$? What is low-cost here? what is high-quality?}\MANUEL{What is $k$ in the equation?}
-%
-\begin{equation}\label{eq:expectation}
-\Edist = \frac{k \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=n-k+1}^{n}  \frac{j \exp(-j \theta)}{1-\exp(-j\theta)}
-\end{equation}
+\newcommand{\Edist}{\ensuremath{\mathbb{E}[D]}}
 
 
-A purely explotation approach\ekhine{esto se dice asi? uno greedy igual esta mejor dicho} would systematically generate $\sigma_0$ in the sampling stage.\MANUEL{I'm not sure what ``systematically generate $\sigma_0$'' means in this context.} However, this setting\MANUEL{which setting? $\theta$?}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference\ekhine{}{qué le pasa?} Don't you see a complete mess of the authors list? It looks like it has 20 authors.}
-
-\subsubsection{Learning step.}
-As explained above, the parameter $\theta$ is updated deterministically at the
-sampling step. The parameter $\sigma_0$, however, is learned from the current
+\subsubsection{Learning step.}\ekhine{ }{conceptuaplemet sampling va después}
+\ekhine{As explained above, the parameter $\theta$ is updated deterministically at the
+sampling step.}{At each iteration we start by fitting a MM to the sample $S$, which implies estimating $\hat\sigma_0$ and $\theta$. $\theta$ is updated deterministically at the sampling step.} 
+The parameter $\sigma_0$, however, is learned from the current
 sample $S$ by using the uBorda algorithm with a weight
 $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate
-is controlled by parameter $\rho \in (0,1)$, which currently is user-defined. Higher values or $\rho$ bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
+is controlled by parameter $\rho \in (0,1)$. \ekhine{, which currently is user-defined. Higher values or $\rho$ bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning. }{}
+In this paper, the value of $\rho$ is set at each iteration and depends on the set of function evaluations $F$. Parameter $\rho$ is set such that the largest $r_1$\% of the mass of the weights is concentrated in the best $r_2$\% of the solutions in $S$, i.e., 
+\begin{equation}
+\begin{split}
+r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma\in S'}\rho^{f(\sigma)} \text{where} |S'| = r_2|S| \land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\geq f(\sigma)
+\end{split}
+\end{equation}
 
 % As shown in Section~\ref{sec:backgroud}, MM can be approximately learnt in two steps (1) estimating the location parameter $\sigma_0$ and (2) computing the scale parameter $\theta$. Since the scale parameter $\theta$ is set in the sampling step,\MANUEL{X How is it set?} we focus on estimating $\sigma_0$.
 
 % The location parameter of a MM is usually approximated with the Borda algorithm. Since we are interested on biasing the model towards the regions of the space where the fitness function is smaller, we would like to replicate the permutations a number of times that is inversely proportionally to their fitness values.
 % We can simulate the replication of the best fitted individuals by using uBorda and setting $w(\sigma)=\rho^{f(\sigma)}$, as described in . This generalization requires setting a value for parameter $\rho$. We show how to choose this value in the experimental section.\MANUEL{I thought we select it automatically now?\ekhine{that is $\theta$}} 
 
-\ekhine{bayesian optim}{ff}
-\EKHINE{subir a arxiv uBorda}
 
 
+\subsubsection{Sampling step.}\label{sec:sampling}
+Sampling from $MM(\sigma_0,\theta)$  can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{Collas,IruCalLoz2016permallows,Regenwetter2004}\MANUEL{Which paper is Collas? It is not found.}\MANUEL{You call this Regenwetter, but the author is Doignon? \ekhine{}{he is another coauthor} But the entry shows only 1 author.} where the computational complexities are $O(n\log n)$ and $O(n^2)$.\MANUEL{respectively?}
+%
+At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained as a solution in the previous learning step. The scale $\theta$ controls the variance and expected distance of the MM $\Edist$, i.e., the distance of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$.
+\MANUEL{X I'm not sure what is $D$, distance from where to where?} It is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, it is set so that the expected distance $\Edist$ equals  $\binom{n}{4}$ (half of the distance of the uniform distribution), and then the expected distance linearly decrease until the last iteration where the expected distance equals 1. Despite it is not possible to isolate $\theta$ in the $\Edist$ expression, Equation~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficient solution approximations. \MANUEL{X I don't understand this sentence, sorry. You say it does not have a closed-form, but you show a closed-form. Do you mean that the formula below is only an approximation of $\Edist$? What is low-cost here? what is high-quality?}\MANUEL{X What is $k$ in the equation?}
+%
+\begin{equation}\label{eq:expectation}
+\Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j \exp(-j \theta)}{1-\exp(-j\theta)}
+\end{equation}
+
+
+A purely explotation approach would always generate $\sigma_0$ in the sampling stage.\MANUEL{X I'm not sure what ``systematically generate $\sigma_0$'' means in this context.} However, the setting of a decreasing variance \MANUEL{X which setting? $\theta$?}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{arza2019approaching}.\MANUEL{there is something wrong with this reference\ekhine{}{en mi mendeley esta bien :s que puede ser?} }
 
 
 
@@ -511,8 +516,23 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 \section{Experimental analysis}
 
 \ekhine{}{In prev sections we say that we show here how to tune $rho$. Le ves sitio? con los heatmaps? al principio de la sección? an outline here}
-\ekhine{}{recall that $w(\sigma) = \rho^{f(sigma)}$. We select $\rho$ in such a way that the 100$r\%$ of the samples have the 100$w\%$ of the weight}
+\ekhine{}{recall that $w(\sigma) = \rho^{f(sigma)}$. We select $\rho$ in such a way that the 100$r_1\%$ of the samples have the 100$w\%$ of the weight}
 
+The first part of the experimental analysis concerns the tunning of parameter $\rho$. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the 100$r_1\%$ of the samples have the 100$r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances. Figure~\ref{fig:heatmaps} shows the best solution (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the PFSP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. 
+
+\begin{figure}[H]
+  \centering%
+  \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d100_01}
+  \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d150_01}
+  \includegraphics[width=0.24\textwidth]{../img/heatmap_rec05}
+  \includegraphics[width=0.24\textwidth]{../img/heatmap_kra32_dat}
+  \label{fig:heatmaps}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
+\end{figure}
+
+Overall the instances we see that the configuration $(r_1, r_2)=(0.1, 0.9)$ has good performance. Therefore, for the lack consistency along the experimental part, we use this configuration. Moreover, we recommend this configuration as a first approach with UMM. 
+
+Moreover, we can see that the behavior of the  two left figures differs from the two in the right: while the two in the left appear to be increase homogeneously from the top right corner to the bottom left one, the two in the right appear to be closer to randomness. We point out that this performance is related to the adequacy of UMM to the problem: homogeneousness is associated to the problem (not to the particular instances) and the more homogeneous the plot, the better performance of UMM. We elaborate this argument in the following sections with detail. 
 
 
 To better understand the behaviour of the algorithms, we record the fitness of
