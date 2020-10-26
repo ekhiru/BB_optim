@@ -4,7 +4,6 @@
 \usepackage[T1]{fontenc}
 \usepackage{relsize}
 \usepackage{amsmath,amssymb}
-%\usepackage[square,numbers,sort&compress]{natbib}
 \usepackage{xspace}
 %% Useful packages
 \usepackage{graphicx}
@@ -437,7 +436,7 @@ max-min-distance sequential design: new solutions are added to the set
 sequentially by maximizing the minimum distance to solutions already in the
 set. These initial solutions are then evaluated on the true fitness function
 and the result is used to build the initial surrogate
-model.% \citet{ZaeStoBar2014:ppsn} uses \minit=10
+model. % \citet{ZaeStoBar2014:ppsn} uses \minit=10
 Following the authors of
 CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
 the surrogate models with population size of 20, crossover rate of 0.5,
@@ -458,26 +457,26 @@ the GA budget by a factor of $10$. Nevertheless, we caution that choosing a
 different trade-off may lead to different conclusions and more work is needed
 to understand CEGO parameters.
 
+\subsubsection{UMM}. UMM uses the same budget of evaluation ($\FEmax$) as CEGO
+and initially samples $\minit=10$ solutions uniformly. The other two parameters
+of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
+exploitation. In the experimental section we will study their impact. We
+implemented UMM using Python 3.
+
 
 \subsubsection{Other}.  For simplicity, we use Kendall's $\tau$
 distance~(Eq.~\ref{eq:kendall_decomp}) in all
 experiments\MANUEL{\citet{ZaeStoBar2014:ppsn} claims this is called Swap
   distance, could you double-check?}. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-when using Hamming distance. We plan to extend our analysis of UMM to other
-distance measures and to the dynamic selection of distance
-measures~\citep{ZaeStoBar2014:ppsn}. In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
+when using Hamming distance.  We plan to extend UMM to other distance measures
+and to the dynamic selection of distance measures~\citep{ZaeStoBar2014:ppsn}.
+In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
 algorithms for the problems considered here typically evaluate
 \textcolor{red}{hundreds? thousands?} of solutions, thus, the budget considered
 here for the black-box context is extremely limited.
 
-We implemented UMM in Python 3. The parameter settings that we use are...
-
-
-\manuel{Computing system details: MANUEL}{%
-  All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at 2.60\,GHz, 64\,GB RAM
-  running CentOS Linux release 7.4.1708 (Core).  }
 
 \subsubsection{Benchmark problems.} Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
 
@@ -512,6 +511,12 @@ In the case of the QAP and PFSP, we consider the same instances as
 with $n$ (the permutation length) equal to the number in the instance name, and \texttt{reC05},
 \texttt{reC13}, \texttt{reC19}, \texttt{reC31} for the PFSP, with
 $n \in \{20, 20, 30, 50\}$, respectively.
+
+\subsubsection{Computing environment.}
+All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at
+2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core).
+\MANUEL{This may need updating since you ran some experiments? didn't you?}
+
 
 \section{Experimental analysis}
 
