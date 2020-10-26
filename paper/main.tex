@@ -141,24 +141,24 @@ still a relatively large budget for CEGO, whereas ACO was not designed for such
 short budgets.
 
 In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
-population-based probabilistic algorithm specifically designed for black-box
-combinatorial optimization under a limited budget. There exists a wide body of
-research on probabilistic algorithms~\citep{???},\MANUEL{what can we cite from
-  that body of research?} with the most prominent examples being estimation of
-distribution algorithms (EDAs)~\citep{???}.\MANUEL{what would be the best work
-  to cite about EDAs for combinatorial optimization?} ACO may also be
-considered a type of EDA, since it builds a probability distribution model from
-which solutions are sampled with a bias towards the best solutions evaluated so
-far. The proposed UMM drastically differs from EDAs since EDAs assume that
-function evaluations are cheap and they can do many of them. On the contrary,
-UMM aims at learning as much as possible with a limited number of function
-evaluations. Moreover, unlike EDAs, UMM does not rely on a fixed-size
-population of solutions that evolves over ``generations''. Instead, taking
-inspiration from Bayesian optimizers, UMM considers a sample of permutations
-during the whole execution that is increased iteratively by one new permutation
-each iteration. Finally, the balance between intensification and exploration is
-dynamically adapted by controlling the variance of the probabilistic Mallows model.
-\manuel{}{
+population-based probabilistic algorithm specifically designed for optimizing
+black-box problems over a permutation landscape under a limited budget. There
+exists a wide body of research on probabilistic
+algorithms~\citep{???},\MANUEL{what can we cite from that body of research?}
+with the most prominent examples being estimation of distribution algorithms
+(EDAs)~\citep{???}.\MANUEL{what would be the best work to cite about EDAs for
+  combinatorial optimization?} ACO may also be considered a type of EDA, since
+it builds a probability distribution model from which solutions are sampled
+with a bias towards the best solutions evaluated so far. The proposed UMM
+drastically differs from EDAs since EDAs assume that function evaluations are
+cheap and they can do many of them. On the contrary, UMM aims at learning as
+much as possible with a limited number of function evaluations. Moreover,
+unlike EDAs, UMM does not rely on a fixed-size population of solutions that
+evolves over ``generations''. Instead, taking inspiration from Bayesian
+optimizers, UMM considers a sample of permutations during the whole execution
+that is increased by one new permutation at each iteration. Finally,
+the balance between intensification and exploration is dynamically adapted by
+controlling the variance of the probabilistic Mallows model.  \manuel{}{
   \begin{itemize}
   \item Who else has used Mallows model for black-box optimization?
   \item Who else has used unbalanced borda for optimization?
