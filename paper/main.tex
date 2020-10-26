@@ -136,7 +136,8 @@ optimizer may impose a significant overhead in computation time, specially if
 computation time of each function evaluation is measured in ``few'' minutes or
 hours rather than days and when ``expensive'' refers to resources or economical
 cost rather than wall-clock time. \citet{PerLopStu2015si} recently showed that
-ant colony optimization (ACO)~\citep{DorStu2004:book} is competitive with CEGO
+ant colony optimization (ACO) %~\citep{DorStu2004:book}
+is competitive with CEGO
 on a black-box version of the travelling salesman problem under a budget of
 $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
@@ -243,11 +244,15 @@ $f(\sigma)$, however, we do not know anything else about the form of
 $f$. Moreover, the evaluation of $f$ is expensive in computation time or
 resources and, thus, we can only evaluate a limited budget of candidate
 permutations. Here, we will study budgets lower than 400. Such expensive
-black-box combinatorial problems arises in diverse contexts, for example,
+black-box combinatorial problems arise in diverse contexts, for example,
 protein folding~\citep{RomKraArn2012protein} and industrial
 production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
 involve expensive simulations for which no closed-form mathematical description
-is available.
+is available. The black-box formulation and limited budget preclude most of the
+optimization techniques that are successful in combinatorial optimization, such
+as constructive and perturbation heuristics and local search, which makes this
+a particularly challenging scenario, perhaps even more than its continuous
+counter-part.
 
 \subsection{CEGO}
 
@@ -397,8 +402,8 @@ learned from the current sample $S$ by using the uBorda algorithm with a weight
 $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
 controlled by parameter $\rho \in (0,1)$. %
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
-and it is set at each iteration such that the largest $r_1$\% of the mass of
-the weights is concentrated in the best $r_2$\% of the solutions in $S$, i.e.,
+and it is set at each iteration such that the largest $100r_1$\% of the mass of
+the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,
 \MANUEL{Let's talk about this Equation tomorrow}
 %
 \begin{equation}
@@ -484,7 +489,7 @@ and to the dynamic selection of distance measures~\citep{ZaeStoBar2014:ppsn}.
 In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
 algorithms for the problems considered here typically evaluate
-\textcolor{red}{hundreds? thousands?} of solutions, thus, the budget considered
+thousands of solutions, thus, the budget considered
 here for the black-box context is extremely limited.
 
 
@@ -530,25 +535,51 @@ All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at
 
 \section{Experimental analysis}
 
+\subsection{Analysis of $r_1$ and $r_2$ parameters}
+
 \ekhine{}{In prev sections we say that we show here how to tune $rho$. Le ves sitio? con los heatmaps? al principio de la sección? an outline here}
 \ekhine{}{recall that $w(\sigma) = \rho^{f(sigma)}$. We select $\rho$ in such a way that the 100$r_1\%$ of the samples have the 100$w\%$ of the weight}
 
-The first part of the experimental analysis concerns the tunning of parameter $\rho$. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the 100$r_1\%$ of the samples have the 100$r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances. Figure~\ref{fig:heatmaps} shows the best solution (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the PFSP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. 
+The first part of the experimental analysis concerns the \manuel{tunning}{analyses} of parameter $\rho$. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. \MANUEL{The caption says synthetic instances}
 
-\begin{figure}[H]
+\begin{figure}[htb]
   \centering%
   \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d100_01}
   \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d150_01}
   \includegraphics[width=0.24\textwidth]{../img/heatmap_rec05}
   \includegraphics[width=0.24\textwidth]{../img/heatmap_kra32_dat}
-  \label{fig:heatmaps}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
+    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:heatmaps}}
 \end{figure}
 
-Overall the instances we see that the configuration $(r_1, r_2)=(0.1, 0.9)$ has good performance. Therefore, for the lack consistency along the experimental part, we use this configuration. Moreover, we recommend this configuration as a first approach with UMM. 
+The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
+$r_2$, yet, low values of $r_1$ and high values of $r_2$ almost always produce
+the best results, independently of the problem. Nevertheless, there are a few
+cases where an interaction seems to occur and particular combinations perform
+remarkably well.\MANUEL{why?}  In particular, we observe that the pattern on
+the two left-most figures differs from the two right-most ones. While on the
+left the fitness gets worse homogeneously from the top right corner to the
+bottom left one, the pattern on the right is not as homogeneous, yet still
+fitness gets worse with decreasing $r_2$.  We observe that this behavior is
+related to the adequacy of UMM to the problem: the homogeneous behavior of
+parameters $r_1$ and $r_2$ depends on the problem (not to the particular
+instances) and the more homogeneous the behavior, the better performance of
+UMM. We elaborate this argument in the following sections with detail.
 
-Moreover, we can see that the behavior of the  two left figures differs from the two in the right: while the two in the left appear to be increase homogeneously from the top right corner to the bottom left one, the two in the right appear to be closer to randomness. We point out that this performance is related to the adequacy of UMM to the problem: homogeneousness is associated to the problem (not to the particular instances) and the more homogeneous the plot, the better performance of UMM. We elaborate this argument in the following sections with detail. 
+Over all the instances \MANUEL{(which instances we tested? all synthetic?)} we
+see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
+performance\MANUEL{how do you define this? The best mean?}. From this
+preliminary experiment, it is not obvious how the best settings are related to
+problem features, such as permutation length ($n$). On the other hand, given
+the sharp transitions in the plots, it is clear that further fine-tuning may
+improve performance and uncover further patterns.  Although automatic parameter
+tuning may likely provide even more fine-tuned settings, our goal here is to
+understand how UMM performs in comparison to an existing Bayesian method (CEGO)
+and automatically tuning the parameters of CEGO is not computationally
+feasible.  For consistency, in the following sections, we run UMM with this
+parameter configuration. Moreover, we recommend this configuration as the
+current default of UMM.
 
+\subsection{Analysis of UMM and CEGO}
 
 To better understand the behaviour of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
@@ -603,7 +634,7 @@ difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anyt
 
 
 %: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
-\begin{figure}[tb]
+\begin{figure}[tbp]
   \centering%
   \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d100_01}\\
   \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d150_01}\\
@@ -663,7 +694,7 @@ ruggedness of the actual landscape and, hence, the best solutions found by the
 GA searching the model are not improved solutions for the actual problem. Interestingly, \texttt{kra32} is rectangular
 whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!! What is the difference then? Ask Thomas?}
 
-\begin{figure}
+\begin{figure}[tp]
   \centering%
   \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
     \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
@@ -717,20 +748,55 @@ random behaviour observed in some instances and discussed above,
 
 \section{Conclusions}
 
-Bayesian optimization methods using a global GP model, such as CEGO, are known
-to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
-intuition is that this problem becomes worse in rugged combinatorial
-landscapes, where small steps may produce drastic changes.
+In this paper, we have introduced UMM, a population-based probabilistic
+algorithm based on an unbalanced Mallows model. The algorithm is designed for
+black-box combinatorial problems on permutation landscapes and when the budget
+of fitness evaluations is severely limited (up to $1000$ or less).  UMM is
+specially well-suited for budget-limited scenarios that are still
+time-sensitive, e.g., when the overhead incurred by the optimizer should be no
+more than a few minutes added to each fitness evaluation. As shown by our
+results, a Bayesian optimizer such as CEGO may sometimes require more than hour
+per fitness evaluation. The time required to train the surrogate-model of CEGO
+also sharply increases with permutation length, hence, UMM would be a
+computationally feasible alternative for relatively large problem sizes.
 
-Open questions:
-\begin{itemize}
-\item How difficult is to extend UMM to other distance metrics?
-\item Can we plot the posterior probability of the optimal solution?
-\end{itemize}
+Although we were inspired by previous work on ACO for expensive black-box
+combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
+knowledge, the first EDA specifically designed for such problems that is able
+to obtain competitive results when compared with Bayesian optimizers. The
+results presented here show that, despite the intrinsic difficulty of this scenario, there are still significant advances yet to be made. Thus, we hope
+that this paper will motivate further research. % on such problems.
 
+A somewhat surprising result was that the behavior of UMM (and the same for
+CEGO) on the PFSP is close to random. This result may be due to the distance
+metric used, but further analysis is needed to corroborate this
+conjecture. Here, we have focused on Kendall's $\tau$ distance, however, it is
+possible to extend UMM to other distance metrics, which will allow us to
+dynamically select among various distance metrics for an unknown black-box
+permutation landscape~\citep{ZaeStoBar2014:ppsn}. Also, as shown by our
+experiments, the behavior of the parameters ($r_1$ and $r_2$) of UMM is not
+always obvious, thus a more detailed analysis would be needed to provide either
+generally good static values or an online adaptation approach. Finally, we have
+used here three very different combinatorial problems (LOP, PFSP and QAP) as
+black-box benchmarks. However, an even more diverse range of problems would be
+needed to understand the behavior of UMM on real-world black-box combinatorial
+landscapes.
+
+% Bayesian optimization methods using a global GP model, such as CEGO, are known
+% to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
+% intuition is that this problem becomes worse in rugged combinatorial
+% landscapes, where small steps may produce drastic changes.
+
+% Open questions:
+% \begin{itemize}
+% \item How difficult is to extend UMM to other distance metrics?
+% \item Can we plot the posterior probability of the optimal solution?
+% \end{itemize}
+
+%% MANUEL: Blind, so no acknowledgments yet.
 \begin{smaller}
 \paragraph*{Acknowledgements.}
-M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
+% M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
 %
 Thanks to Hao Wang (Leiden University) for pointing us to the arguments of
 \citet{EriPeaGar2019scalable}.
