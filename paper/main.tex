@@ -479,13 +479,11 @@ exploitation. In the experimental section we will study their impact. We
 implemented UMM using Python 3.
 
 
-\subsubsection{Other}.  For simplicity, we use Kendall's $\tau$
+\subsubsection{Other settings}.  For simplicity, we use Kendall's $\tau$
 distance~(Eq.~\ref{eq:kendall_decomp}) in all
-experiments\MANUEL{\citet{ZaeStoBar2014:ppsn} claims this is called Swap
-  distance, could you double-check?\ekhine{}{es la kendall among the inverses en realidad}}. Nevertheless,
+experiments. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-when using Hamming distance.  We plan to extend UMM to other distance measures
-and to the dynamic selection of distance measures~\citep{ZaeStoBar2014:ppsn}.
+when using Hamming distance.  We plan to extend UMM to other distance measures.
 In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
 algorithms for the problems considered here typically evaluate
