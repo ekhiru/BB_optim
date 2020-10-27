@@ -539,7 +539,7 @@ Infiniband network}
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{?? why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material. \MANUEL{The caption says synthetic instances}
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{?? why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material.
 
 \begin{figure}[htb]
   \centering%
@@ -550,13 +550,15 @@ The first part of the experimental analysis concerns the {analyses} of the learn
   \begin{minipage}{0.49\linewidth}\centering
     \texttt{N-t1d50.01} (LOP)\\[-0.2ex]
  \includegraphics[width=\textwidth]{../img/heatmap_N-t1d150_01}
-\end{minipage}\\
-\begin{minipage}{0.49\linewidth}\centering
-  \texttt{reC05} (PFSP)\\[-0.2ex]
+\end{minipage}\\\vspace{1ex}
+\begin{minipage}{0.49\linewidth}
+  \centering
+  \texttt{reC05} (PFSP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/heatmap_rec05}
 \end{minipage}
-\begin{minipage}{0.49\linewidth}\centering
-  \texttt{kra32} (QAP)\\[-0.2ex]
+\begin{minipage}{0.49\linewidth}
+  \centering
+  \texttt{kra32} (QAP)\\[-0.5ex]
 \includegraphics[width=\textwidth]{../img/heatmap_kra32_dat}
 \end{minipage}
 \caption{Mean fitness  for different configuration for the learning rate (darker is better). \label{fig:heatmaps}}
