@@ -219,26 +219,6 @@ This paper structured as follows \MANUEL{Mío}
 
 \section{Background}\label{sec:backgroud}
 
-
-\subsection{Black-box Combinatorial Optimization under a limited budget}
-
-Let us assume a black-box ``fitness'' function that must be minimized over a
-space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
-we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
-$f(\sigma)$, however, we do not know anything else about the form of
-$f$. Moreover, the evaluation of $f$ is expensive in computation time or
-resources and, thus, we can only evaluate a limited budget of candidate
-permutations. Here, we will study budgets lower than 400. Such expensive
-black-box combinatorial problems arise in diverse contexts, for example,
-protein folding~\citep{RomKraArn2012protein} and industrial
-production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
-involve expensive simulations for which no closed-form mathematical description
-is available. The black-box formulation and limited budget preclude most of the
-optimization techniques that are successful in combinatorial optimization, such
-as constructive and perturbation heuristics and local search, which makes this
-a particularly challenging scenario, perhaps even more than its continuous
-counter-part.
-
 \subsection{Permutations}
 
 Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
@@ -286,8 +266,30 @@ and, the same as Borda, orders the \ekhine{items}{positions}\MANUEL{X why items?
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
 Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
+%
+% In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$.
+Interestingly, uBorda is computed in polynomial time.
 
-In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. Interestingly, uBorda is computed in polynomial time.
+
+
+\subsection{Black-box Combinatorial Optimization under a limited budget}
+
+Let us assume a black-box ``fitness'' function that must be minimized over a
+space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
+we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
+$f(\sigma)$, however, we do not know anything else about the form of
+$f$. Moreover, the evaluation of $f$ is expensive in computation time or
+resources and, thus, we can only evaluate a limited budget of candidate
+permutations. Here, we will study budgets lower than 400. Such expensive
+black-box combinatorial problems arise in diverse contexts, for example,
+protein folding~\citep{RomKraArn2012protein} and industrial
+production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
+involve expensive simulations for which no closed-form mathematical description
+is available. The black-box formulation and limited budget preclude most of the
+optimization techniques that are successful in combinatorial optimization, such
+as constructive and perturbation heuristics and local search, which makes this
+a particularly challenging scenario, perhaps even more than its continuous
+counter-part.
 
 \subsection{CEGO}
 
