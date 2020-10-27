@@ -221,7 +221,7 @@ This paper structured as follows \MANUEL{Mío}
 
 \subsection{Permutations}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
 
 
 Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
@@ -253,7 +253,7 @@ The MLE process is divided in two stages: first, we estimate the central permuta
 The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters for a sample distributed according to the MM~\cite{CarProSha2013votes}; and (iii) and also when no distribution is assumed, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.
 
 The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
-First, for each position $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the position with the smallest Borda score, label 2 to the position with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
+First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
 We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
