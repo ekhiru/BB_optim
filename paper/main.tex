@@ -256,13 +256,13 @@ The Borda ranking of a sample of permutations $S \subset S_n$ is computed as fol
 First, for each position $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the position with the smallest Borda score, label 2 to the position with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
-We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of \manuel{item}{position} $i$ is defined as follows:
+We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
 %
 \begin{equation}\label{eq:uborda_score}
 B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
 \end{equation}
 %
-and, the same as Borda, orders the \ekhine{items}{positions}\MANUEL{X why items? we talk about positions above. We could talk about decision variables if that is clearer\ekhine{}{id rather use the simplest possible notation. In statistical literature you ll see items/rankings. }} increasingly by their score.
+and, the same as Borda, orders the items $i \in [n]$ increasingly by their score.
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
 Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
