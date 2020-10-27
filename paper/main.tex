@@ -219,23 +219,7 @@ controlling the variance of the probabilistic Mallows model.  \manuel{}{
 \section{Background}\label{sec:backgroud}
 
 
-
 \subsection{Black-box Combinatorial Optimization under a limited budget}
-
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
-
-
-Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
-%
-\begin{equation}
-\begin{split}
-d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
- &\bigl(\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\
- \end{split}
- \label{eq:kendall_decomp}
-\end{equation}
-
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
 
 Let us assume a black-box ``fitness'' function that must be minimized over a
 space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
@@ -253,6 +237,56 @@ optimization techniques that are successful in combinatorial optimization, such
 as constructive and perturbation heuristics and local search, which makes this
 a particularly challenging scenario, perhaps even more than its continuous
 counter-part.
+
+\subsection{Permutations}
+
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ items is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, following the standard convention, we say that item $i$ is ranked at position $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
+
+
+Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
+%
+\begin{equation}
+\begin{split}
+d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
+ &\bigl(\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\
+ \end{split}
+ \label{eq:kendall_decomp}
+\end{equation}
+
+An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
+
+
+\subsection{Distributions over permutations}
+Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
+%
+\begin{equation}\label{eq:MM}
+\Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
+\end{equation}
+%
+with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
+
+
+We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
+The MLE process is divided in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, compute the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
+
+The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters for a sample distributed according to the MM~\cite{CarProSha2013votes}; and (iii) and also when no distribution is assumed, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.
+
+The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
+First, for each position $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the position with the smallest Borda score, label 2 to the position with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
+
+\subsection{Unbalanced Borda}\label{sec:uborda}
+We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of \manuel{item}{position} $i$ is defined as follows:
+%
+\begin{equation}\label{eq:uborda_score}
+B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
+\end{equation}
+%
+and, the same as Borda, orders the \ekhine{items}{positions}\MANUEL{X why items? we talk about positions above. We could talk about decision variables if that is clearer\ekhine{}{id rather use the simplest possible notation. In statistical literature you ll see items/rankings. }} increasingly by their score.
+
+Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
+Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
+
+In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. Interestingly, uBorda is computed in polynomial time.
 
 \subsection{CEGO}
 
@@ -278,39 +312,10 @@ anyway an inexact estimation of the original fitness
 function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
 
 
-\subsection{Distributions over permutations}
-Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
-%
-\begin{equation}\label{eq:MM}
-\Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
-\end{equation}
-%
-with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
-
-
-We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
-The MLE process is divided in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, compute the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
-
-The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters as an estimator for the MM~\cite{CarProSha2013votes}; and (iii) in a general optimization perspective, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.\MANUEL{I'm not sure ``in a general optimization perspective'' means}
-
-The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
-First, for each position $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the position with the smallest Borda score, label 2 to the position with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
-
-\subsection{Unbalanced Borda}\label{sec:uborda}
-We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of \manuel{item}{position} $i$ is defined as follows:
-%
-\begin{equation}\label{eq:uborda_score}
-B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
-\end{equation}
-%
-and, the same as Borda, orders the \ekhine{items}{positions}\MANUEL{X why items? we talk about positions above. We could talk about decision variables if that is clearer} increasingly by their score.
-
-Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
-Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
-
-In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$. Interestingly, uBorda is computed in polynomial time.
 
 \renewcommand{\subsubsection}{\smallskip{}\noindent\textbf}
+
+
 
 \section{Unbalanced Mallows model (UMM)}
 
@@ -359,8 +364,11 @@ Mallows model and uBorda learning.
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are uniformly randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{If the learning step happens later, when does it happen here?}
-\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?}
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are uniformly randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
+Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
+A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
+Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{If the learning step happens later, when does it happen here?}
+\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?\ekhine{no without explaining the expecteattions, too messy}}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -384,12 +392,6 @@ the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sam
 
 %The probabilistic model is a MM that assigns higher probability values to the permutations in which the fitness value is known or expected to be minimized. The main contribution of our approach is that the distribution does not represent the current sample $S$ considered by the algorithm but instead, represents a variation of it. This variation is based on the uBorda algorithm described in Section~\ref{sec:uBorda} and is abstractly equivalent to replicating in the sample the permutations \manuel{inversely proportionally}{a number of times inversely proportional} to their fitness values, i.e., there will be many copies of the good solutions and few of the bad ones. One key property of UMM is the computational complexity of working with the original sample and the transformed sample is the same, i.e., polynomial. However, the question of how many times should we replicate each permutation in the sample? UMM includes a parameter $\rho$ that controls this point and will be detailed in Section~\ref{sec:learning}.\MANUEL{is this $\rho$ the same we explained earlier?}
 
-\manuel{At each iteration of the algorithm the following steps take place: (1) randomly
-generate a permutation distributed according to the internal model and include
-it in the sample and (2) evaluate the new permutation and update the
-probabilistic model. These steps correspond to two statistical operations: (1)
-sample a probability distribution and (2) learn a probability distribution of
-the transformation of the sample. Both are describe in the subsequent sections.}{}\MANUEL{I don't think we need this, it is said above (if some detail is missing we should integrate it the paragraph above)}
 
 \newcommand{\Edist}{\ensuremath{\mathbb{E}[D]}}
 
@@ -412,7 +414,7 @@ r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma\in S'}\rho^{f(\sigma)} \q
 \end{split}
 \end{equation}
 %
-\MANUEL{should the $\sigma$ be the same on both sides of $=$?}
+\MANUEL{X should the $\sigma$ be the same on both sides of $=$?}
 where $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification: higher values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
 
 
@@ -424,9 +426,9 @@ where $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fit
 
 
 \subsubsection{Sampling step.}\label{sec:sampling}
-Sampling from $MM(\sigma_0,\theta)$  can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{Collas,IruCalLoz2016permallows,DoiPekReg2004rank}\MANUEL{Which paper is Collas? It is not found.} where the computational complexities are $O(n\log n)$ and $O(n^2)$.\MANUEL{respectively?}
+Sampling from $MM(\sigma_0,\theta)$  can be done efficiently~\cite{IruCalLoz2016permallows} given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{Collas,IruCalLoz2016permallows,DoiPekReg2004rank}\MANUEL{Which paper is Collas? It is not found.} where the computational complexities are $O(n\log n)$ and $O(n^2)$.\MANUEL{X respectively? more than 2}
 %
-At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in the previous learning step. The scale $\theta$ controls the variance and expected distance $\Edist$ of the MM, i.e., $D$ is the distance of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$:\MANUEL{where does this formula come from?}
+At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in the previous learning step. The scale $\theta$ controls the variance and expected distance $\Edist$ of the MM, i.e., $D$ is the distance of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$~\cite{gMallows}:\MANUEL{X where does this formula come from?\ekhine{}{}}
 %
 \begin{equation}\label{eq:expectation}
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
@@ -434,7 +436,7 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 
 Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the distance of the uniform distribution), and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
-A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance \MANUEL{But we are controlling the expectation not the variance???}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
+A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance \MANUEL{But we are controlling the expectation not the variance???\ekhine{}{both are a function of $\theta$}}  controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
 
 
 
@@ -482,7 +484,7 @@ implemented UMM using Python 3.
 \subsubsection{Other}.  For simplicity, we use Kendall's $\tau$
 distance~(Eq.~\ref{eq:kendall_decomp}) in all
 experiments\MANUEL{\citet{ZaeStoBar2014:ppsn} claims this is called Swap
-  distance, could you double-check?}. Nevertheless,
+  distance, could you double-check?\ekhine{}{es la kendall among the inverses en realidad}}. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
 when using Hamming distance.  We plan to extend UMM to other distance measures
 and to the dynamic selection of distance measures~\citep{ZaeStoBar2014:ppsn}.
@@ -531,16 +533,18 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at
 2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core).
 \MANUEL{This may need updating since you ran some experiments? didn't you?}
-
+\ekhine{}{esto es lo q se: Hipatia (Cluster)
+18 nodes (1 with Nvidia Tesla K40 GPU)
+624 cores
+4TB of RAM Memory
+Infiniband network}
 
 \section{Experimental analysis}
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-\ekhine{}{In prev sections we say that we show here how to tune $rho$. Le ves sitio? con los heatmaps? al principio de la sección? an outline here}
-\ekhine{}{recall that $w(\sigma) = \rho^{f(sigma)}$. We select $\rho$ in such a way that the 100$r_1\%$ of the samples have the 100$w\%$ of the weight}
-
-The first part of the experimental analysis concerns the \manuel{tunning}{analyses} of parameter $\rho$. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. \MANUEL{The caption says synthetic instances}
+\subsection{Setting the learning rate}
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{?? why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material. \MANUEL{The caption says synthetic instances}
 
 \begin{figure}[htb]
   \centering%
@@ -548,7 +552,7 @@ The first part of the experimental analysis concerns the \manuel{tunning}{analys
   \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d150_01}
   \includegraphics[width=0.24\textwidth]{../img/heatmap_rec05}
   \includegraphics[width=0.24\textwidth]{../img/heatmap_kra32_dat}
-    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:heatmaps}}
+    \caption{Mean fitness  for different configuration for the learning rate \label{fig:heatmaps}}
 \end{figure}
 
 The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
@@ -565,7 +569,7 @@ parameters $r_1$ and $r_2$ depends on the problem (not to the particular
 instances) and the more homogeneous the behavior, the better performance of
 UMM. We elaborate this argument in the following sections with detail.
 
-Over all the instances \MANUEL{(which instances we tested? all synthetic?)} we
+Over all the instances \MANUEL{X (which instances we tested? all synthetic?)} we
 see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
 performance\MANUEL{how do you define this? The best mean?}. From this
 preliminary experiment, it is not obvious how the best settings are related to
@@ -587,8 +591,7 @@ over 10 runs with different random seeds on the same problem instance.  As an ex
 shows the mean fitness of the solutions evaluated by either UMM or CEGO on one synthetic LOP
 instance. The shaded area shows one standard deviation around the
 mean. Ideally, each new evaluation will monotonically improve in fitness, since each solution evaluated helps to refine the model and leads to a
-better solution being evaluated in the next step.  However, it is often the case that  \EKHINE{yo diría solo que lo esperable es que baje monotonically, sin entrar a valorar un ejemplo concreto}\MANUEL{Así está mejor? Quiero llamar la atención porque normalmente se muestra la evolución de la mejor solución encontrada pero nosotros estamos mostrando el fitness de cada solución evaluada}
-% the fitness of the solutions does not improve monotonically and
+better solution being evaluated in the next step.  However, it is often the case that 
 new solutions
 are often worse than their predecessors. Nevertheless, in this example, there
 is a clear overall improvement as more evaluations are performed. The minimum
@@ -605,14 +608,27 @@ rather the best one (minimum fitness) of each run.
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
 \end{figure}
 
+\EKHINE{cambio un poco al argumento}
 When we compare the behaviour of CEGO and UMM on synthetic LOP instances
 (Fig.~\ref{fig:lop_synth}), we observe a clear pattern independently of the
-uniformity of the instances. In particular, CEGO starts with a random sampling
-of X solutions, with are quite poor as expected, followed by building and
+uniformity of the instances. In particular, we see a linear convergence to the optimal value for UMM. This is due to the linear decrease in the parameter $\theta$ (line~\ref{line:theta} in Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the internal probability model of the algorithm over the $m$ functions evaluations. Overall, UMM found the best solution in all the repetitions. 
+
+
+%UMM converges much more slowly than CEGO, only reaching the
+%same fitness values around evaluation 250. 
+
+%Yet, UMM is able to keep the rate of
+%improvement and completely overtake CEGO around evaluation 350. As in the case
+%of CEGO, lower uniformity values lead to worse performance, although the
+%difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
+
+On the other hand, \EKHINE{cambio el orden}
+CEGO starts with a random sampling
+of X\ekhine{}{10?} solutions, with are quite poor as expected, followed by building and
 updating the Kriging model based new evaluations, which leads to an impressive
-improvement in less than 50 evaluations. However, progress is more or less
+improvement in less than 50 evaluations. However, progress is %more or less 
 halted at this point and the model seems to have trouble generating better
-solutions. Lower uniformity values (e.g., $\mu=5$) show worsening evaluations
+solutions. Lower uniformity values (e.g., $\phi=.5$) show worsening evaluations
 despite the increase in solutions used to build the model. In summary, the
 Kriging model clearly helps CEGO to quickly identify good solutions in very few
 evaluations. However, for some reason, CEGO is not able to further improve
@@ -623,11 +639,7 @@ improved solutions using the model.\MANUEL{perhaps we should measure the
   question.}
 
 
-On the other hand, UMM converges much more slowly than CEGO, only reaching the
-same fitness values around evaluation 250. Yet, UMM is able to keep the rate of
-improvement and completely overtake CEGO around evaluation 350. As in the case
-of CEGO, lower uniformity values lead to worse performance, although the
-difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
+
 
 
 \newcommand{\supplement}{\citep{Supplementary}}
@@ -643,25 +655,30 @@ difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anyt
   \end{figure}
 
 
-Results are quite different on the 
+%Results are quite different on the 
 %The fast initial convergence of CEGO for synthetic LOP instances does not seem
 %to translate to the
-instances available in LOPLIB~\citep{}. We show in
-Fig.~\ref{fig:loplib} three examples with different permutation size, however,
-the results are consistent for other LOPLIB instances (complete results
-available as supplementary material \supplement). Due to extremely long
-runtimes of CEGO and constraints in our computing system, we set a maximum
-wall-clock time of 3 days for each run of CEGO. On these instances, the
-behaviour of CEGO and UMM is much more similar (at least up to the termination
-point of CEGO). It appears that our synthetic LOP instances have a fitness
-landscape that is very amenable to CEGO's Kriging model, whereas the LOPLIB
-instances do not present such landscape. Comparing CEGO and UMM results, the
-differences get smaller, in favour of UMM, with larger instance size. Our
-conjecture is that building an accurate Bayesian model and searching for good
-solutions on it becomes harder for larger fitness landscapes.
-\EKHINE{Parece que el paper va del CEGO en vez del UMM :p. Yo diría que tanto UMM como CEGO encuentran soluciones que mejoran según avanzan, pero con diferencias de comportamiento: (1) las los optimos de UMM son '3 veces mejor', y esto yo creo que es importante, aunque en gran parte se debe a que (2) UMM hace 400 ejecuciones en 3, 6 y 11 horas y CEGO entre 50 y 130 en 5 dias (3) cego empeora segun n aumenta (y n=200 tampoco es enorme)}
-\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
-\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
+%instances available in LOPLIB~\citep{}. We show in
+%Fig.~\ref{fig:loplib} three examples with different permutation size, however,
+%the results are consistent for other LOPLIB instances (complete results
+%available as supplementary material \supplement). Due to extremely long
+%runtimes of CEGO and constraints in our computing system, we set a maximum
+%wall-clock time of 3 days for each run of CEGO. On these instances, the
+%behaviour of CEGO and UMM is much more similar (at least up to the termination
+%point of CEGO). It appears that our synthetic LOP instances have a fitness
+%landscape that is very amenable to CEGO's Kriging model, whereas the LOPLIB
+%instances do not present such landscape. Comparing CEGO and UMM results, the
+%differences get smaller, in favour of UMM, with larger instance size. Our
+%conjecture is that building an accurate Bayesian model and searching for good
+%solutions on it becomes harder for larger fitness landscapes.
+%\EKHINE{Parece que el paper va del CEGO en vez del UMM :p. Yo diría que tanto UMM como CEGO encuentran soluciones que mejoran según avanzan, pero con diferencias de comportamiento: (1) las los optimos de UMM son '3 veces mejor', y esto yo creo que es importante, aunque en gran parte se debe a que (2) UMM hace 400 ejecuciones en 3, 6 y 11 horas y CEGO entre 50 y 130 en 5 dias (3) cego empeora segun n aumenta (y n=200 tampoco es enorme)}
+%\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
+%\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
+
+
+In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB~\citep{}. The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
+
+
 
 In the case of the PFSP, none of the algorithms are able to achieve a progress
 better than a random search would, as illustrated by the results
@@ -702,7 +719,7 @@ whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \te
 
 Table~\ref{tab:results} shows overall results over all instances evaluated (excluding the synthetic LOP instances). In particular, the mean fitness (and standard deviation) of the best solution found at the end of each run,
 In terms of best fitness achieved on each run, and taking into account the
-random behaviour observed in some instances and discussed above,
+random behaviour observed in some instances and discussed above,\ekhine{}{falta un cacho aqui}
 
 
 
@@ -756,6 +773,7 @@ specially well-suited for budget-limited scenarios that are still
 time-sensitive, e.g., when the overhead incurred by the optimizer should be no
 more than a few minutes added to each fitness evaluation. As shown by our
 results, a Bayesian optimizer such as CEGO may sometimes require more than hour
+\EKHINE{me parece mas de CEGO q UMM y parece q UMM solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos  y luego que addemás es más rápido}
 per fitness evaluation. The time required to train the surrogate-model of CEGO
 also sharply increases with permutation length, hence, UMM would be a
 computationally feasible alternative for relatively large problem sizes.
@@ -763,7 +781,7 @@ computationally feasible alternative for relatively large problem sizes.
 Although we were inspired by previous work on ACO for expensive black-box
 combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
 knowledge, the first EDA specifically designed for such problems that is able
-to obtain competitive results when compared with Bayesian optimizers. The
+to obtain competitive\EKHINE{hhmmm lo hacemos mejor o igual} results when compared with Bayesian optimizers. The
 results presented here show that, despite the intrinsic difficulty of this scenario, there are still significant advances yet to be made. Thus, we hope
 that this paper will motivate further research. % on such problems.
 
@@ -772,7 +790,7 @@ CEGO) on the PFSP is close to random. This result may be due to the distance
 metric used, but further analysis is needed to corroborate this
 conjecture. Here, we have focused on Kendall's $\tau$ distance, however, it is
 possible to extend UMM to other distance metrics, which will allow us to
-dynamically select among various distance metrics for an unknown black-box
+dynamically select among various distance metrics for an unknown black-box \ekhine{}{estoy totalmente en contra de esto :) }
 permutation landscape~\citep{ZaeStoBar2014:ppsn}. Also, as shown by our
 experiments, the behavior of the parameters ($r_1$ and $r_2$) of UMM is not
 always obvious, thus a more detailed analysis would be needed to provide either
@@ -780,7 +798,7 @@ generally good static values or an online adaptation approach. Finally, we have
 used here three very different combinatorial problems (LOP, PFSP and QAP) as
 black-box benchmarks. However, an even more diverse range of problems would be
 needed to understand the behavior of UMM on real-world black-box combinatorial
-landscapes.
+landscapes. 
 
 % Bayesian optimization methods using a global GP model, such as CEGO, are known
 % to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
