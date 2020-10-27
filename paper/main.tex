@@ -513,7 +513,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 
 
-For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$ here? We already use $\FEmax$ for the budget, but we could change it. }
+For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$ here? We already use $\FEmax$ for the budget, but we could change it.}
 Describir como se generan las intancias de LOP: Ekhine
 
 Describir las LOPLIB instancias: Ekhine
@@ -539,7 +539,7 @@ Infiniband network}
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{?? why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material.
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material.
 
 \begin{figure}[htb]
   \centering%
@@ -550,7 +550,7 @@ The first part of the experimental analysis concerns the {analyses} of the learn
   \begin{minipage}{0.49\linewidth}\centering
     \texttt{N-t1d50.01} (LOP)\\[-0.2ex]
  \includegraphics[width=\textwidth]{../img/heatmap_N-t1d150_01}
-\end{minipage}\\\vspace{1ex}
+\end{minipage}\\\vskip 1ex
 \begin{minipage}{0.49\linewidth}
   \centering
   \texttt{reC05} (PFSP)\\[-0.5ex]
