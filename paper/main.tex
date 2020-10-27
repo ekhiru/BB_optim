@@ -408,15 +408,11 @@ controlled by parameter $\rho \in (0,1)$. %
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,
-\MANUEL{Let's talk about this Equation tomorrow}
 %
 \begin{equation}
-\begin{split}
-r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma\in S'}\rho^{f(\sigma)} \quad\text{where}\quad |S'| = r_2|S| \land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\geq f(\sigma)
-\end{split}
+r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma'\in S'}\rho^{f(\sigma')} \quad\text{where}\quad |S'| = r_2|S| \land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma)
 \end{equation}
 %
-\MANUEL{X should the $\sigma$ be the same on both sides of $=$?}
 where $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification: higher values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
 
 
