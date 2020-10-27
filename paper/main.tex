@@ -483,7 +483,7 @@ implemented UMM using Python 3.
 distance~(Eq.~\ref{eq:kendall_decomp}) in all
 experiments. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-when using Hamming distance.  We plan to extend UMM to other distance measures.
+when using Hamming distance.  We plan to extend UMM to other distance measures in the future.
 In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
 the actual objective function. In a white-box context, state-of-the-art
 algorithms for the problems considered here typically evaluate
@@ -493,7 +493,7 @@ here for the black-box context is extremely limited.
 
 \subsubsection{Benchmark problems.} Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
 
-The \textbf{LOP} \ldots
+The \textbf{LOP} \ldots\EKHINE{Mío}
 
 The \emph{Quadratic Assignment Problem (QAP)} is defined by:
 \begin{equation}\label{eq:qap}
@@ -512,11 +512,11 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 \end{equation}
 
 
-Describir como se generan las intancias de LOP: Ekhine
-
-Describir las instancias: Ekhine
 
 For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$ here? We already use $\FEmax$ for the budget, but we could change it. }
+Describir como se generan las intancias de LOP: Ekhine
+
+Describir las LOPLIB instancias: Ekhine
 
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
@@ -539,15 +539,20 @@ Infiniband network}
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-\subsection{Setting the learning rate}
 The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried different configurations of parameters $r_1$ and $r_2$ in all the instances.\MANUEL{?? why did we try this values.} Figure~\ref{fig:heatmaps} shows the best solution\MANUEL{best solution found at the end of a run?} (averaged for 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material. \MANUEL{The caption says synthetic instances}
 
 \begin{figure}[htb]
   \centering%
-  \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d100_01}
-  \includegraphics[width=0.24\textwidth]{../img/heatmap_N-t1d150_01}
-  \includegraphics[width=0.24\textwidth]{../img/heatmap_rec05}
-  \includegraphics[width=0.24\textwidth]{../img/heatmap_kra32_dat}
+  \begin{minipage}{0.49\linewidth}\centering
+    \texttt{N-t1d100.01}\\[-0.2ex]
+    \includegraphics[width=\textwidth]{../img/heatmap_N-t1d100_01}
+  \end{minipage}
+  \begin{minipage}{0.49\linewidth}\centering
+    \texttt{N-t1d50.01}\\[-0.2ex]
+ \includegraphics[width=\textwidth]{../img/heatmap_N-t1d150_01}
+\end{minipage}\\
+\includegraphics[width=0.49\textwidth]{../img/heatmap_rec05}
+  \includegraphics[width=0.49\textwidth]{../img/heatmap_kra32_dat}
     \caption{Mean fitness  for different configuration for the learning rate \label{fig:heatmaps}}
 \end{figure}
 
