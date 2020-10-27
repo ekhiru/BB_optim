@@ -265,7 +265,7 @@ B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
 and, the same as Borda, orders the items $i \in [n]$ increasingly by their score.
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
-Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
+Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{???}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
 %
 % In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$.
 Interestingly, uBorda is computed in polynomial time.
@@ -348,8 +348,8 @@ Mallows model and uBorda learning.
     \State $S \assign $ generate $\minit$ permutations uniformly at random
     \State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
-    \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}
-    \State Decrease  $\theta$\label{line:theta}\Comment{Eq.~\ref{eq:expectation:}}
+    \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
+    \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}\Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
     \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     \State $S \assign S \cup \{\sigma\}$, $\quad F \assign F \cup \{f(\sigma)\}$
     \EndFor 
@@ -367,11 +367,10 @@ Mallows model and uBorda learning.
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are uniformly randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to find a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are uniformly randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
 Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
-Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.\MANUEL{If the learning step happens later, when does it happen here?}
-\MANUEL{We do not explain the initial value of $\theta$ or how we decrease it. Can we give a bit more detail?\ekhine{no without explaining the expecteattions, too messy}}
+Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
