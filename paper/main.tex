@@ -553,14 +553,14 @@ The first part of the experimental analysis concerns the {analyses} of the learn
 \end{minipage}\\
 \includegraphics[width=0.49\textwidth]{../img/heatmap_rec05}
   \includegraphics[width=0.49\textwidth]{../img/heatmap_kra32_dat}
-    \caption{Mean fitness  for different configuration for the learning rate \label{fig:heatmaps}}
+    \caption{Mean fitness  for different configuration for the learning rate (darker is better). \label{fig:heatmaps}}
 \end{figure}
 
 The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
 $r_2$, yet, low values of $r_1$ and high values of $r_2$ almost always produce
 the best results, independently of the problem. Nevertheless, there are a few
 cases where an interaction seems to occur and particular combinations perform
-remarkably well.\MANUEL{why?}  In particular, we observe that the pattern on
+remarkably well.\MANUEL{Missing data, whitespaces}  In particular, we observe that the pattern on
 the two left-most figures differs from the two right-most ones. While on the
 left the fitness gets worse homogeneously from the top right corner to the
 bottom left one, the pattern on the right is not as homogeneous, yet still
@@ -570,7 +570,7 @@ parameters $r_1$ and $r_2$ depends on the problem (not to the particular
 instances) and the more homogeneous the behavior, the better performance of
 UMM. We elaborate this argument in the following sections with detail.
 
-Over all the instances \MANUEL{X (which instances we tested? all synthetic?)} we
+Over all the instances  we
 see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
 performance\MANUEL{how do you define this? The best mean?}. From this
 preliminary experiment, it is not obvious how the best settings are related to
@@ -609,10 +609,14 @@ rather the best one (minimum fitness) of each run.
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
 \end{figure}
 
-\EKHINE{cambio un poco al argumento}
-When we compare the behaviour of CEGO and UMM on synthetic LOP instances
-(Fig.~\ref{fig:lop_synth}), we observe a clear pattern independently of the
-uniformity of the instances. In particular, we see a linear convergence to the optimal value for UMM. This is due to the linear decrease in the parameter $\theta$ (line~\ref{line:theta} in Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the internal probability model of the algorithm over the $m$ functions evaluations. Overall, UMM found the best solution in all the repetitions. 
+When we compare the behaviour of CEGO and
+UMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}), we observe a clear
+pattern independently of the uniformity of the instances. In particular, we see
+a linear convergence to the optimal value for UMM.  This is due to the linear
+decrease in the parameter $\theta$ (line~\ref{line:theta} in
+Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the
+internal probability model of the algorithm over the $m$ functions
+evaluations. Overall, UMM found  the best solutions in all the repetitions.\MANUEL{in all runs UMM found a better solution? }
 
 
 %UMM converges much more slowly than CEGO, only reaching the
