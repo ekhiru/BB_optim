@@ -144,15 +144,20 @@ $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
 short budgets.
 
+
+
 In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
 population-based probabilistic algorithm specifically designed for optimizing
 black-box problems over a permutation landscape under a limited budget. There
-exists a wide body of research on probabilistic models for permutations including  Plackett-Luce and Mallows
-algorithms~\citep{???},\MANUEL{what can we cite from that body of research?: Ekhine will fix this.}
+exists a wide body of research on probabilistic models for permutations, such as Mallows~\cite{gMallows} that have already been 
+been used in optimization problems successfully,
 with the most prominent examples being estimation of distribution algorithms
-(EDAs)~\cite{Ceberio2013}.  ACO may also be considered a type of EDA, since
+(EDAs)~\cite{Ceberio2013}, \cite{Ceberio2015}. ACO may also be considered a type of EDA, since
 it builds a probability distribution model from which solutions are sampled
-with a bias towards the best solutions evaluated so far. The proposed UMM
+with a bias towards the best solutions evaluated so far. This works fall into at least one of these assumptions: function evaluations are cheap or the function evaluation is a white-box.
+
+
+The proposed UMM
 drastically differs from EDAs since EDAs assume that function evaluations are
 cheap and they can do many of them. On the contrary, UMM aims at learning as
 much as possible with a limited number of function evaluations. Moreover,
@@ -161,7 +166,11 @@ evolves over ``generations''. Instead, taking inspiration from Bayesian
 optimizers, UMM considers a sample of permutations during the whole execution
 that is increased by one new permutation at each iteration. Finally,
 the balance between intensification and exploration is dynamically adapted by
-controlling the variance of the probabilistic Mallows model.  \manuel{}{
+controlling the variance of the probabilistic Mallows model.  
+
+The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of the well-known rank aggregation algorithm Borda~\cite{Borda1781}. Rank aggregation algorithms summarize in a single permutation the information of a sample of permutations $S$, and they can be seen as functions to compute  the \textit{mean} of sample $S$. The uBorda algorithm has been proposed to compute a \textit{weighted mean} of sample $S$. UBorda has been show to return the correct estimator with high probability on streaming contexts; in this paper, we show its quality on black-box optimization problems. \ekhine{}{revisa esto por favor, Manuel}
+
+\manuel{}{
   \begin{itemize}
   \item Who else has used Mallows model for black-box optimization? Ekhine: Va a mirarlo.
   \item Who else has used unbalanced borda for optimization? Ekhine va a añadir 2 frases.
@@ -256,7 +265,7 @@ The Borda ranking of a sample of permutations $S \subset S_n$ is computed as fol
 First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
-We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{???}.\MANUEL{X This paper is missing \ekhine{}{to be pocessed by arxiv}} In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
+We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{irurozki2020}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
 %
 \begin{equation}\label{eq:uborda_score}
 B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
@@ -265,7 +274,7 @@ B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
 and, the same as Borda, orders the items $i \in [n]$ increasingly by their score.
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
-Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{???}.\MANUEL{X where? Do we miss a citation here?\ekhine{}{to be processed, arxiv} Maybe you can create a bibentry with the details that you know already.} 
+Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{irurozki2020}.
 %
 % In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$.
 Interestingly, uBorda is computed in polynomial time.
@@ -493,7 +502,14 @@ here for the black-box context is extremely limited.
 
 \subsubsection{Benchmark problems.} Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
 
-The \textbf{LOP} \ldots\EKHINE{Mío}
+
+
+The \textbf{LOP} is defined as 
+\begin{equation}\label{eq:lop}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n-1} \sum_{j=i+1}^n  a_{\sigma(i), \sigma(j)}
+\end{equation}
+where $[a_{i,j}]$ is a matrix of size $n \times n$.
+
 
 The \emph{Quadratic Assignment Problem (QAP)} is defined by:
 \begin{equation}\label{eq:qap}
@@ -511,12 +527,12 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 \end{split}
 \end{equation}
 
+\paragraph{Datasets}
 
+For the LOP, we generated synthetic instances as follows: sample 200 permutations from a MM of size $n=20$ and $\theta=\{-\log(.5), -\log(.7), -\log(.9)\}$, i.e., from peaked distributions to almost uniform distributions. Then, generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}(\sigma(i)<\sigma(j))$.
 
-For the LOP, we generated synthetic instances of size $n=20$, $m=200$, $\phi\in\{0.5,0.7,0.9\}$\MANUEL{what is $m$ here? We already use $\FEmax$ for the budget, but we could change it.}
-Describir como se generan las intancias de LOP: Ekhine
-
-Describir las LOPLIB instancias: Ekhine
+Moreover, we consider real LOP datasets from the LOPLIB repository. \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
+In particular, we consider the following types: IO, Random instances of type A and Random instances of type B. 
 
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
@@ -580,7 +596,7 @@ UMM. We elaborate this argument in the following sections with detail.
 
 Over all the instances  we
 see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
-performance\MANUEL{how do you define this? The best mean?}. From this
+performance: \ekhine{}{the rank of this parameter configuration among all the possible configurations is less than 4 on average for all the instances}. From this
 preliminary experiment, it is not obvious how the best settings are related to
 problem features, such as permutation length ($n$). On the other hand, given
 the sharp transitions in the plots, it is clear that further fine-tuning may
@@ -594,7 +610,7 @@ current default of UMM.
 
 \subsection{Analysis of UMM and CEGO}
 
-To better understand the behaviour of the algorithms, we record the fitness of
+To better understand the behavior of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
 over 10 runs with different random seeds on the same problem instance.  As an example, each line in Fig.~\ref{fig:lop_synth} 
 shows the mean fitness of the solutions evaluated by either UMM or CEGO on one synthetic LOP
@@ -617,14 +633,14 @@ rather the best one (minimum fitness) of each run.
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
 \end{figure}
 
-When we compare the behaviour of CEGO and
+When we compare the behavior of CEGO and
 UMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}), we observe a clear
 pattern independently of the uniformity of the instances. In particular, we see
 a linear convergence to the optimal value for UMM.  This is due to the linear
 decrease in the parameter $\theta$ (line~\ref{line:theta} in
 Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the
 internal probability model of the algorithm over the $m$ functions
-evaluations. Overall, UMM found  the best solutions in all the repetitions.\MANUEL{in all runs UMM found a better solution? }
+evaluations. Overall, \ekhine{UMM found  the best solutions in all the repetitions. }{the mean best solutions of UMM are better than the mean of CEGO regardless the uniformity of the instances. }
 
 
 %UMM converges much more slowly than CEGO, only reaching the
@@ -635,9 +651,9 @@ evaluations. Overall, UMM found  the best solutions in all the repetitions.\MANU
 %of CEGO, lower uniformity values lead to worse performance, although the
 %difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
 
-On the other hand, \EKHINE{cambio el orden}
+On the other hand, % \EKHINE{cambio el orden}
 CEGO starts with a random sampling
-of X\ekhine{}{10?} solutions, with are quite poor as expected, followed by building and
+of 10 solutions, with are quite poor as expected, followed by building and
 updating the Kriging model based new evaluations, which leads to an impressive
 improvement in less than 50 evaluations. However, progress is %more or less 
 halted at this point and the model seems to have trouble generating better
@@ -689,7 +705,7 @@ improved solutions using the model.\MANUEL{perhaps we should measure the
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
 
-In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB~\citep{}. The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
+In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
 
 
 
@@ -781,8 +797,9 @@ random behaviour observed in some instances and discussed above,\ekhine{}{falta 
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
 black-box combinatorial problems on permutation landscapes and when the budget
-of fitness evaluations is severely limited (up to $1000$ or less).  UMM is
-specially well-suited for budget-limited scenarios that are still
+of fitness evaluations is severely limited (up to $1000$ or less).  UMM 
+\ekhine{}{has shown to perform statistically better or equal than CEGO, the state of the art algorithm, in the same instances as in the original paper of CEGO and some new instances. UMM}
+is specially well-suited for budget-limited scenarios that are still
 time-sensitive, e.g., when the overhead incurred by the optimizer should be no
 more than a few minutes added to each fitness evaluation. As shown by our
 results, a Bayesian optimizer such as CEGO may sometimes require more than hour
