@@ -177,7 +177,6 @@ The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of the
 }
 This paper structured as follows \MANUEL{Mío}
 
-\ekhine{}{meter esto https://arxiv.org/pdf/1903.03332.pdf }
 
 % \ldots\MANUEL{what is the inspiration}
 % \EKHINE{we propose a probabilistic algrithm that (like cego?) (1) iteratively adds solutions to the sample and (2) fits a surrogate model for every new sample obtained. However,  different fom cego, our surrogate model is an estimation of the predicted fitness function at each point. CEGO controls the  intensification-explotation balance with the expected improvement??? We mimic the intensification-explotation balance by automatically controllong the variance of our surrogate model.}
@@ -505,7 +504,7 @@ here for the black-box context is extremely limited.
 
 
 
-The \textbf{LOP} is defined as 
+The \emph{Linear Ordering Problem (LOP)} is defined as 
 \begin{equation}\label{eq:lop}
   \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n-1} \sum_{j=i+1}^n  a_{\sigma(i), \sigma(j)}
 \end{equation}
@@ -530,7 +529,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 \paragraph{Datasets}
 
-For the LOP, we generated synthetic instances as follows: sample 200 permutations from a MM of size $n=20$ and $\theta=\{-\log(.5), -\log(.7), -\log(.9)\}$, i.e., from peaked distributions to almost uniform distributions. Then, generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}(\sigma(i)<\sigma(j))$.
+For the LOP, we generated synthetic instances as follows: sample 200 permutations from a MM of size $n=20$ and $\theta=-\log(uniformity)$, where  $uniformity=\{.5,.7,.9)\}$, i.e., from peaked distributions to almost uniform distributions. Then, generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}(\sigma(i)<\sigma(j))$.
 
 Moreover, we consider real LOP datasets from the LOPLIB repository. \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
 In particular, we consider the following types: IO, Random instances of type A and Random instances of type B. 
@@ -543,14 +542,62 @@ with $n$ (the permutation length) equal to the number in the instance name, and 
 $n \in \{20, 20, 30, 50\}$, respectively.
 
 \subsubsection{Computing environment.}
-All experiments were run on Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at
-2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core).
-\MANUEL{This may need updating since you ran some experiments? didn't you?}
-\ekhine{}{esto es lo q se: Hipatia (Cluster)
-18 nodes (1 with Nvidia Tesla K40 GPU)
-624 cores
-4TB of RAM Memory
-Infiniband network}
+All experiments were run on 
+Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at 2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core),
+\ekhine{}{
+Intel Xeon ``GenuineIntel'' E5-2680v3 CPUs at 2.50\,GHz, 32???\,GB RAM running Linux,
+Intel Xeon ``GenuineIntel'' E5-2683v4 CPUs at 2.10\,GHz, 32???\,GB RAM running Linux.
+}
+%processor : 23
+%vendor_id : GenuineIntel
+%cpu family : 6
+%model : 63
+%model name : Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz
+%stepping : 2
+%microcode : 0x43
+%cpu MHz : 1199.951
+%cache size : 30720 KB
+%physical id : 1
+%siblings : 12
+%core id : 13
+%cpu cores : 12
+%apicid : 58
+%initial apicid : 58
+%fpu : yes
+%fpu_exception : yes
+%cpuid level : 15
+%wp : yes
+%flags : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm epb intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts md_clear spec_ctrl intel_stibp flush_l1d
+%bogomips : 5005.34
+%clflush size : 64
+%cache_alignment : 64
+%address sizes : 46 bits physical, 48 bits virtual
+%
+%The node n015 has 32 processors. This is the info of the 32st processor:
+%processor : 31
+%vendor_id : GenuineIntel
+%cpu family : 6
+%model : 79
+%model name : Intel(R) Xeon(R) CPU E5-2683 v4 @ 2.10GHz
+%stepping : 1
+%microcode : 0xb000022
+%cpu MHz : 2442.608
+%cache size : 40960 KB
+%physical id : 1
+%siblings : 16
+%core id : 15
+%cpu cores : 16
+%apicid : 62
+%initial apicid : 62
+%fpu : yes
+%fpu_exception : yes
+%cpuid level : 20
+%wp : yes
+%flags : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch epb cat_l3 cdp_l3 intel_ppin intel_pt tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm rdt_a rdseed adx smap xsaveopt cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts
+%bogomips : 4207.67
+%clflush size : 64
+%cache_alignment : 64
+%address sizes : 46 bits physical, 48 bits virtual
 
 \section{Experimental analysis}
 
