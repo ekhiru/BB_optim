@@ -531,7 +531,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 For the LOP, we generated synthetic instances as follows: sample 200 permutations from a MM of size $n=20$ and $\theta=-\log(uniformity)$, where  $uniformity=\{.5,.7,.9)\}$, i.e., from peaked distributions to almost uniform distributions. Then, generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}(\sigma(i)<\sigma(j))$.
 
-Moreover, we consider real LOP datasets from the LOPLIB repository. \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
+Moreover, we consider real LOP datasets from the LOPLIB repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
 In particular, we consider the following types: IO, Random instances of type A and Random instances of type B. 
 
 In the case of the QAP and PFSP, we consider the same instances as
@@ -632,7 +632,7 @@ The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
 $r_2$, yet, low values of $r_1$ and high values of $r_2$ almost always produce
 the best results, independently of the problem. Nevertheless, there are a few
 cases where an interaction seems to occur and particular combinations perform
-remarkably well.\MANUEL{Missing data, whitespaces}  In particular, we observe that the pattern on
+remarkably well.\MANUEL{Missing data, whitespaces where more than 6 hours of wall-clock time}  In particular, we observe that the pattern on
 the two left-most figures differs from the two right-most ones. While on the
 left the fitness gets worse homogeneously from the top right corner to the
 bottom left one, the pattern on the right is not as homogeneous, yet still
@@ -640,7 +640,7 @@ fitness gets worse with decreasing $r_2$.  We observe that this behavior is
 related to the adequacy of UMM to the problem: the homogeneous behavior of
 parameters $r_1$ and $r_2$ depends on the problem (not to the particular
 instances) and the more homogeneous the behavior, the better performance of
-UMM. We elaborate this argument in the following sections with detail.
+UMM. We elaborate this argument in the following sections with detail.\MANUEL{top and bottom}
 
 Over all the instances  we
 see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
@@ -691,6 +691,7 @@ internal probability model of the algorithm over the $m$ functions
 evaluations. Overall, \ekhine{UMM found  the best solutions in all the repetitions. }{the mean best solutions of UMM are better than the mean of CEGO regardless the uniformity of the instances. }
 
 
+
 %UMM converges much more slowly than CEGO, only reaching the
 %same fitness values around evaluation 250. 
 
@@ -711,10 +712,10 @@ Kriging model clearly helps CEGO to quickly identify good solutions in very few
 evaluations. However, for some reason, CEGO is not able to further improve
 those solutions given more data. This may due to the model not being able to
 produce accurate predictions or the underlying optimizer not being able to find
-improved solutions using the model.\MANUEL{perhaps we should measure the
-  prediction error and see if it grows or decreases. That would answer this
-  question.}
-
+improved solutions using the model.
+%\MANUEL{perhaps we should measure the
+%  prediction error and see if it grows or decreases. That would answer this
+%  question.}
 
 
 
@@ -753,7 +754,10 @@ improved solutions using the model.\MANUEL{perhaps we should measure the
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
 
-In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
+  In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB.
+  %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
+  % \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
+  The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
 
 
 
@@ -762,7 +766,7 @@ better than a random search would, as illustrated by the results
 (Fig.~\ref{fig:rec05}) obtained on \texttt{rec05}, which is the smallest PFSP
 instance considered here. The lack of any apparent convergence suggests that
 the models (both Bayesian and probabilistic) are not learning anything about
-the fitness landscape. Results for larger PFSP corroborate this conclusions
+the fitness landscape. Results for larger PFSP corroborate these conclusions
 (\supplement). Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
 that other distance measures are more suited than Kendall's-$\tau$ distance for
 the PFSP, the reported fitness differences between various distance metrics are
@@ -796,7 +800,7 @@ whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \te
 
 Table~\ref{tab:results} shows overall results over all instances evaluated (excluding the synthetic LOP instances). In particular, the mean fitness (and standard deviation) of the best solution found at the end of each run,
 In terms of best fitness achieved on each run, and taking into account the
-random behaviour observed in some instances and discussed above,\ekhine{}{falta un cacho aqui}
+random behaviour observed in some instances and discussed above,\ekhine{}{falta un cacho aqui}\MANUEL{Mío}
 
 
 
