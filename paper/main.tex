@@ -156,18 +156,26 @@ it builds a probability distribution model from which solutions are sampled
 with a bias towards the best solutions evaluated so far. This works fall into at least one of these assumptions: function evaluations are cheap or the function evaluation is a white-box.
 
 
-The proposed UMM
-drastically differs from EDAs since EDAs assume that function evaluations are
-cheap and they can do many of them. On the contrary, UMM aims at learning as
-much as possible with a limited number of function evaluations. Moreover,
-unlike EDAs, UMM does not rely on a fixed-size population of solutions that
-evolves over ``generations''. Instead, taking inspiration from Bayesian
-optimizers, UMM considers a sample of permutations during the whole execution
-that is increased by one new permutation at each iteration. Finally,
-the balance between intensification and exploration is dynamically adapted by
-controlling the variance of the probabilistic Mallows model.  
+The proposed UMM drastically differs from EDAs since EDAs assume that function
+evaluations are cheap and they can do many of them. On the contrary, UMM aims
+at learning as much as possible with a limited number of function
+evaluations. Moreover, unlike EDAs, UMM does not rely on a fixed-size
+population of solutions that evolves over ``generations''. Instead, taking
+inspiration from Bayesian optimizers, UMM considers a sample of permutations
+during the whole execution that is increased by one new permutation at each
+iteration. Finally, the balance between intensification and exploration is
+dynamically adapted by controlling the variance of the probabilistic Mallows
+model.
 
-The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of the well-known rank aggregation algorithm Borda~\cite{Borda1781}. Rank aggregation algorithms summarize in a single permutation the information of a sample of permutations $S$, and they can be seen as functions to compute  the \textit{mean} of sample $S$. The uBorda algorithm has been proposed to compute a \textit{weighted mean} of sample $S$. UBorda has been show to return the correct estimator with high probability on streaming contexts; in this paper, we show its quality on black-box optimization problems. \ekhine{}{revisa esto por favor, Manuel}
+The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of
+the well-known rank aggregation algorithm Borda~\cite{Borda1781}. Rank
+aggregation algorithms summarize in a single permutation the information of a
+sample of permutations $S$, and they can be seen as functions to compute the
+\textit{mean} of sample $S$. The uBorda algorithm has been proposed to compute
+a \textit{weighted mean} of sample $S$. UBorda has been show to return the
+correct estimator with high probability on streaming contexts; in this paper,
+we show its quality on black-box optimization problems. \ekhine{}{revisa esto
+  por favor, Manuel}
 
 \manuel{}{
   \begin{itemize}
@@ -175,7 +183,8 @@ The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of the
   \item Who else has used unbalanced borda for optimization? Ekhine va a añadir 2 frases.
   \end{itemize}
 }
-This paper structured as follows \MANUEL{Mío}
+This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, the uBorda algorithm, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMMA is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
+
 
 
 % \ldots\MANUEL{what is the inspiration}
@@ -329,7 +338,7 @@ function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
 
 
 
-\section{Unbalanced Mallows model (UMM)}
+\section{Unbalanced Mallows model (UMM)}\label{sec:umm}
 
 % \ekhine{
 % cosas de intro : 
@@ -449,7 +458,7 @@ A purely explotation approach would always generate $\sigma_0$ in the sampling s
 
 
 
-\section{Experimental setup}
+\section{Experimental setup}\label{sec:setup}
 
 \subsubsection{CEGO.}
 We use the implementation of GECO provided by the
@@ -599,7 +608,7 @@ Intel Xeon ``GenuineIntel'' E5-2683v4 CPUs at 2.10\,GHz, 32???\,GB RAM running L
 %cache_alignment : 64
 %address sizes : 46 bits physical, 48 bits virtual
 
-\section{Experimental analysis}
+\section{Experimental analysis}\label{sec:analysis}
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
@@ -844,7 +853,7 @@ random behaviour observed in some instances and discussed above,\ekhine{}{falta 
 
 
 
-\section{Conclusions}
+\section{Conclusions}\label{sec:conclusions}
 
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
