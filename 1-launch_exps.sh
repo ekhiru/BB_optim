@@ -60,6 +60,7 @@ gen_lop_synthetic() {
     echo $INSTANCES
 }
 
+## For QAP, PFSP instances
 #INSTANCES="\
 # qap/kra32.dat \
 # qap/nug12.dat \
@@ -71,11 +72,12 @@ gen_lop_synthetic() {
 # pfsp/rec31.txt \
 #"
 
-INSTANCES=" pfsp/rec31.txt "
+###### For synthetic LOP instances
 #INSTANCES=$(gen_lop_synthetic $INSTANCES)
-#INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
 
 
+###### For LOPLIB instances
+INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
 
 budget=400
 nruns=10
@@ -86,41 +88,22 @@ LAUNCHER=qsub_job
 cego_m_ini=10
 budgetGA=3 # Actually, 10**budgetGA
 
-RESULTS=results-loplib
-mkdir -p $RESULTS
 counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
+    RESULTS="results/$instance"
+    mkdir -p $RESULTS
     for run in $(seq 1 $nruns); do
-	$LAUNCHER cego-$counter-$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output $RESULTS/cego-$counter-$run
+	### Uncomment for running CEGO
+	$LAUNCHER cego-$counter-r$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output $RESULTS/cego-r$run
 
-        rsl=0.15
-	wml=0.84
-	budgetMM=15
-	umm_m_ini=23
+	### Uncomment for running UMM
+	#rsl=0.15
+	#wml=0.84
+	#budgetMM=15
+	#umm_m_ini=23
 	#$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $rsl --wml $wml --budget $budget --output results/umm-$counter-$run
         
-
-        
-	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
-	
-	# ratio_samples_learn=0.23
-	# weight_mass_learn=0.88
-	# budgetMM=16
-	# m_ini=38
-	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
-
-	# ratio_samples_learn=0.22
-	# weight_mass_learn=0.83
-	# budgetMM=14
-	# m_ini=32
-	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
-	
-	# ratio_samples_learn=0.17
-	# weight_mass_learn=0.83
-	# budgetMM=17
-	# m_ini=32
-	# $LAUNCHER python3 cego_lop.py $n $repe $phi_instance $budgetGA $budgetMM $ratio_samples_learn $weight_mass_learn $SLURM_JOB_ID $m_max $m_ini
     done
 done
 
