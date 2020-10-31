@@ -22,7 +22,7 @@ import pandas as pd
 import runner
 
 from argparse import ArgumentParser,RawDescriptionHelpFormatter,_StoreTrueAction,ArgumentDefaultsHelpFormatter,Action
-parser = ArgumentParser(description = "uMM")
+parser = ArgumentParser(description = "UMM")
 parser.add_argument('configuration_id', type=str, help='configuration_id')
 parser.add_argument('instance_id', type=str, help='instance_id')
 parser.add_argument('seed', type=int, help='random seed')
@@ -44,7 +44,7 @@ assert budget > 2 * args.m_ini
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout'
 with open(outfilename, 'w') as sys.stdout:
-    df = runner.run_once("uMM", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, 
+    df = runner.run_once("UMM", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, 
                          budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml, out_filename = args.output)
             
 sys.stdout = stdout

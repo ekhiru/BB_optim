@@ -271,7 +271,7 @@ def runCEGO(instance, m_ini, m, rep, best_known_sol, worst_known_sol, budgetGA):
     df['Solver'] = 'CEGO'
     df['Sample size'] = range(m)
     df['rep'] = rep
-    #    df['budgetGA'] = budgetGA this must be set for all, including uMM, so that we can filter appropriately
+    #    df['budgetGA'] = budgetGA this must be set for all, including UMM, so that we can filter appropriately
     # FIXME: We should calculate the distance outside here so we do not need the best_known_sol here.
     if best_known_sol is not None:
         df['Distance'] = [ kendallTau(perm, best_known_sol) / (instance.n * (instance.n - 1) / 2) for perm in instance.solutions]

@@ -33,11 +33,11 @@ def get_problem(instance_name):
 
 def run_once(algo_name, instance_name, seed, out_filename = None,
              **algo_params):
-    if algo_name == "uMM":
+    if algo_name == "UMM":
         import umm as umm
         reload(umm)
-        from umm import uMM
-        algo = uMM
+        from umm import UMM
+        algo = UMM
     elif algo_name == "CEGO":
         from cego import cego
         algo = cego

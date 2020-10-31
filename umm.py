@@ -39,7 +39,7 @@ def get_expected_distance(iterat,n,m):
     return max(a, f_end)
 
 
-def uMM(instance,
+def UMM(instance,
         seed, budget,
         m_ini,
         budgetMM,
