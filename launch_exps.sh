@@ -60,7 +60,7 @@ gen_lop_synthetic() {
     echo $INSTANCES
 }
 
-# INSTANCES="\
+#INSTANCES="\
 # qap/kra32.dat \
 # qap/nug12.dat \
 # qap/nug30.dat \
@@ -69,9 +69,11 @@ gen_lop_synthetic() {
 # pfsp/rec13.txt \
 # pfsp/rec19.txt \
 # pfsp/rec31.txt \
-# "
+#"
+
+INSTANCES=" pfsp/rec31.txt "
 #INSTANCES=$(gen_lop_synthetic $INSTANCES)
-INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
+#INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
 
 
 
