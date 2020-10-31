@@ -6,9 +6,7 @@ Reproducibility steps for the paper
 Setup
 -----
 
-1. Install the R package `CEGO` v2.4.0. Original is available at:
-   https://CRAN.R-project.org/package=CEGO . 
-
+Read first, then run the `setup.sh` script.
 
 
 How to reproduce the plots and tables without re-running
