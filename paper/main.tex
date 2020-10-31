@@ -47,6 +47,8 @@
 %\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
 \newcommand{\FEmax}{\ensuremath{m}}
 
+\newcommand{\supplement}{~(\href{http://doi.org/10.5281/zenodo.4167148}{doi:10.5281/zenodo.4167148})}
+
 %% Revision documents
 \usepackage[dvipsnames]{xcolor}
 \usepackage[normalem]{ulem}
@@ -97,24 +99,25 @@
   Black-box combinatorial optimization problems arise in practice when the
   objective function is evaluated by means of a simulator or a real-world
   experiment. In such cases, classical techniques such as mixed-integer
-  programming and local search cannot be applied. Moreover, often each solution
-  evaluation is expensive in terms of time or resources, thus only a limited
-  number of evaluations is possible, typically several order of magnitude
-  smaller than in white-box optimization problems. In the continuous case,
-  Bayesian optimization, in particular using Gaussian processes, has proven
-  very effective under these conditions. Much less research is available in the
-  combinatorial case. In this paper, we propose and analyze an
+  programming and local search cannot be applied. Moreover, each fitness
+  evaluation is often expensive in terms of time or resources, thus only a
+  limited number of evaluations is possible, typically several orders of
+  magnitude smaller than in white-box optimization problems. In the continuous
+  case, Bayesian optimization, in particular using Gaussian processes, has
+  proven very effective under these conditions. Much less research is available
+  in the combinatorial case. In this paper, we propose and analyze UMM, an
   estimation-of-distribution (EDA) algorithm based on a Mallows probabilistic
-  model and compare it with CEGO, a Bayesian optimization algorithm for
-  combinatorial optimization. Experimental results show that the Bayesian
-  algorithm is able to obtain very good solutions with very few evaluations,
-  however, at a significant computational cost, whereas the proposed EDA
-  outperforms CEGO when the number of solutions evaluated approaches 400, and
-  it is significantly faster. These results suggest that the combination of
-  Bayesian optimization and a Mallows-based EDA may be an interesting direction
-  for future research.\sloppy  
-\textcolor{red}{16 pages max, deadline: 1 November 2020}
-\keywords{Combinatorial optimization \and Bayesian optimization \and Expensive black-box optimization \and Estimation of distribution algorithms}
+  model and unbalanced rank aggregation (uBorda). Experimental results on
+  black-box versions of LOP, QAP and PFSP show that UMM is able to match, and
+  sometimes surpass, the solutions obtained by CEGO, a Bayesian optimization
+  algorithm for combinatorial optimization, specially when the budget of
+  solutions evaluated approaches 400. The computational cost of UMM is at least
+  an order of magnitude smaller than CEGO, which makes it specially useful when
+  both computation time and number of evaluations are of concern.\sloppy
+  \textcolor{red}{16 pages max, deadline: 1 November 2020}
+  \keywords{Combinatorial optimization \and Bayesian optimization \and
+    Expensive black-box optimization \and Estimation of distribution
+    algorithms}
 \end{abstract}
 
 \section{Introduction}
@@ -197,6 +200,7 @@ adapted by controlling the variance of the probabilistic Mallows model.
 % }
 
 This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
+
 
 
 
@@ -343,8 +347,9 @@ explored by a GA with crossover and mutation operators appropriate for the
 particular combinatorial problem. The original paper notes that coupling the GA
 with local search does not improve the results significantly since the model is
 anyway an inexact estimation of the original fitness
-function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
-
+function~\citep[p.~875]{ZaeStoFriFisNauBar2014}. A thorough comparison of CEGO
+with other optimizers for expensive black-box combinatorial optimization ranked
+it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
 
 
 \renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
@@ -497,15 +502,18 @@ interchange mutation (i.e., exchanging two randomly selected elements) and
 cycle crossover for permutations. To generate each new solution, CEGO runs the
 GA using the model as a surrogate of the true fitness function.  The authors of
 CEGO used a budget of $10^4$ surrogate-model evaluations for each run of the
-GA. However, with such a setting, a single run of CEGO with a budget of $\FEmax=400$
-true fitness evaluations requires \emph{more than a week} of computation time,
-which was infeasible for our study. Hence, we set the budget of the GA to
-$10^3$. Although a higher GA budget could improve the results of CEGO reported
-here, our results are similar (and sometimes better) than the ones reported in
-the original papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to
-running CEGO with $\FEmax=400$ instead of $\FEmax=200$. In fact, we found that the
-increase in runtime caused by doubling $\FEmax$ is much smaller than by increasing
-the GA budget by a factor of $10$. Nevertheless, we caution that choosing a
+GA. However, with such a setting, a single run of CEGO with a budget of
+$\FEmax=400$ true fitness evaluations requires \emph{more than a week} of
+computation time, which was infeasible for our study. Due to extremely long
+runtimes of CEGO and constraints in our computing system, we set a maximum
+wall-clock time of 3 days for each run of CEGO. Hence, we set the budget of the
+GA to $10^3$. Although a higher GA budget could improve the results of CEGO
+reported here, our results are similar (and sometimes better) than the ones
+reported in the original
+papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to running CEGO
+with $\FEmax=400$ instead of $\FEmax=200$. In fact, we found that the increase
+in runtime caused by doubling $\FEmax$ is much smaller than by increasing the
+GA budget by a factor of $10$. Nevertheless, we caution that choosing a
 different trade-off may lead to different conclusions and more work is needed
 to understand CEGO parameters.
 
@@ -641,7 +649,7 @@ CEGO used a more powerful system: Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as whitespace.  Results for all the datasets can be found in the supplemental material.
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material\supplement.
 
 \begin{figure}[htb]
   \centering%
@@ -652,7 +660,7 @@ The first part of the experimental analysis concerns the {analyses} of the learn
   \begin{minipage}{0.49\linewidth}\centering
     \texttt{N-t1d50.01} (LOP)\\[-0.2ex]
  \includegraphics[width=\textwidth]{../img/heatmap_N-t1d150_01}
-\end{minipage}\\\vskip 1ex
+\end{minipage}\\\vskip 1em
 \begin{minipage}{0.49\linewidth}
   \centering
   \texttt{reC05} (PFSP)\\[-0.5ex]
@@ -668,33 +676,32 @@ The first part of the experimental analysis concerns the {analyses} of the learn
 
 The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
 $r_2$, yet, low values of $r_1$ and high values of $r_2$ almost always produce
-the best results, independently of the problem. Nevertheless, there are a few
-cases where an interaction seems to occur and particular combinations perform
-remarkably well.\MANUEL{Missing data, whitespaces where more than 6 hours of wall-clock time}  In particular, we observe that the pattern on
-the two left-most figures differs from the two right-most ones. While on the
-left the fitness gets worse homogeneously from the top right corner to the
-bottom left one, the pattern on the right is not as homogeneous, yet still
-fitness gets worse with decreasing $r_2$.  We observe that this behavior is
-related to the adequacy of UMM to the problem: the homogeneous behavior of
-parameters $r_1$ and $r_2$ depends on the problem (not to the particular
+the best results, independently of the problem.  In particular, we observe that
+the pattern on the two top figures differs from the two bottom ones. While on
+the top figures the fitness gets worse homogeneously from the top-right corner
+to the bottom-left one, the pattern on the bottom figures is not as homogeneous, yet
+still fitness gets worse with decreasing $r_2$.  We observe that this behavior
+is related to the adequacy of UMM to the problem: the homogeneous behavior of
+parameters $r_1$ and $r_2$ depends on the problem (not on the particular
 instances) and the more homogeneous the behavior, the better performance of
-UMM. We elaborate this argument in the following sections with detail.\MANUEL{top and bottom}
+UMM. We elaborate this argument in detail in the next section.
 
-Over all the instances  we
-see that the configuration $r_1 =0.1$, $r_2=0.9$ has good
-performance: \ekhine{}{the rank of this parameter configuration among all the possible configurations is less than 4 on average for all the instances}. From this
-preliminary experiment, it is not obvious how the best settings are related to
-problem features, such as permutation length ($n$). On the other hand, given
-the sharp transitions in the plots, it is clear that further fine-tuning may
-improve performance and uncover further patterns.  Although automatic parameter
-tuning may likely provide even more fine-tuned settings, our goal here is to
-understand how UMM performs in comparison to an existing Bayesian method (CEGO)
-and automatically tuning the parameters of CEGO is not computationally
-feasible.  For consistency, in the following sections, we run UMM with this
-parameter configuration. Moreover, we recommend this configuration as the
-current default of UMM.
+From this preliminary experiment, it is not obvious how the best settings are
+related to problem features, such as permutation length ($n$). On the other
+hand, given the sharp transitions in the plots, it is clear that further
+fine-tuning may improve performance and uncover further patterns.
 
-\subsection{Analysis of UMM and CEGO}
+Over all the instances, we observe that the configuration $r_1 =0.1$, $r_2=0.9$
+has good performance, i.e., its mean rank (over 10 runs) relative to all the
+other configurations is less than 4 for all the instances.  Although automatic
+parameter tuning may likely provide even more fine-tuned settings, our goal
+here is to understand how UMM performs in comparison to an existing Bayesian
+method (CEGO) and automatically tuning the parameters of CEGO is not
+computationally feasible.  For consistency, in the following sections, we run
+UMM with this parameter configuration.  Moreover, we recommend this
+configuration as the current default of UMM.
+
+\subsection{Analysis of UMM and CEGO on synthetic LOP instances}
 
 To better understand the behavior of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
@@ -725,8 +732,8 @@ pattern independently of the uniformity of the instances. In particular, we see
 a linear convergence to the optimal value for UMM.  This is due to the linear
 decrease in the parameter $\theta$ (line~\ref{line:theta} in
 Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the
-internal probability model of the algorithm over the $m$ functions
-evaluations. Overall, \ekhine{UMM found  the best solutions in all the repetitions. }{the mean best solutions of UMM are better than the mean of CEGO regardless the uniformity of the instances. }
+internal probability model of the algorithm over the $\FEmax$ functions
+evaluations. Overall, the mean fitness returned by UMM after $\FEmax$ is better one returned by  CEGO, regardless the uniformity of the instances.
 
 
 
@@ -744,7 +751,7 @@ of 10 solutions, with are quite poor as expected, followed by building and
 updating the Kriging model based new evaluations, which leads to an impressive
 improvement in less than 50 evaluations. However, progress is %more or less 
 halted at this point and the model seems to have trouble generating better
-solutions. Lower uniformity values (e.g., $\phi=.5$) show worsening evaluations
+solutions. Lower uniformity values (e.g., \manuel{$\phi=.5$}{0.5})\MANUEL{We never use $\phi$, not even in the plots, so less have one less symbol to worry about.} show worsening evaluations
 despite the increase in solutions used to build the model. In summary, the
 Kriging model clearly helps CEGO to quickly identify good solutions in very few
 evaluations. However, for some reason, CEGO is not able to further improve
@@ -755,10 +762,6 @@ improved solutions using the model.
 %  prediction error and see if it grows or decreases. That would answer this
 %  question.}
 
-
-
-
-\newcommand{\supplement}{\citep{Supplementary}}
 
 
 %: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
@@ -791,25 +794,39 @@ improved solutions using the model.
 %\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
+\subsection{Analysis of UMM and CEGO on LOP, QAP and PFSP}
 
-  In the following paragraphs we analyze the result over real rata. Fig.~\ref{fig:loplib} shows the results on the instances available in LOPLIB.
+In the following paragraphs we analyze the result over real-world instances. %
+Figure~\ref{fig:loplib} shows the results on the instances taken from LOPLIB.
   %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
   % \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
-  The distribution of this instances differs from the symthetic LOP instances, and thus so does the landscape. However, UMM shows a very similar performance: there is a (close to) linear decrease on the function evaluations of new solutions along iterations. This suggests that UMM very good fits the fitness landscape. Regarding CEGO, we can take similar conclussions for the first 50-100 iterations. However, the processes had to be halted after hitting the wall time, so no conlusion can be taken for further iterations. Overall, the improvement from the first (random) to the last solutions is 2-3 times larger in UMM than CEGO.
-
-
+The distribution\MANUEL{what do you mean the distribution? Is this a feature of
+  the matrix $a$?} of these instances differs from the synthetic LOP instances,
+and, thus, so does the landscape. However, UMM shows a very similar behavior:
+there is a (close to) linear decrease \manuel{on the function evaluations of
+  new solutions along iterations}{of the fitness of new solutions over each new
+  evaluation}. This suggests that UMM \manuel{very good fits}{is able to model}
+the fitness landscape. Regarding CEGO, we \manuel{can take similar
+  conclusions}{observe a similar behavior} for the first 50-100
+\manuel{iterations}{evaluations}. At this point, CEGO reaches the time limit of
+3 days, so no observations can be made for longer budgets.  Overall, the
+improvement from the first (random) to the last solutions is 2-3 times larger
+in UMM than CEGO. %
+\MANUEL{But this is a bit misleading because UMM runs for 4 times more
+  evaluations, perhaps we should also measure up to the evaluation that CEGO
+  reaches so we report both values?}
 
 In the case of the PFSP, none of the algorithms are able to achieve a progress
 better than a random search would, as illustrated by the results
-(Fig.~\ref{fig:rec05}) obtained on \texttt{rec05}, which is the smallest PFSP
+ obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
 instance considered here. The lack of any apparent convergence suggests that
 the models (both Bayesian and probabilistic) are not learning anything about
-the fitness landscape. Results for larger PFSP corroborate these conclusions
-(\supplement). Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
+the fitness landscape. Results for larger PFSP corroborate these conclusions\supplement.
+\manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
 that other distance measures are more suited than Kendall's-$\tau$ distance for
 the PFSP, the reported fitness differences between various distance metrics are
-small, hence, we conjecture that the same behaviour will be observed with other
-distance metrics.
+small.
+Hence, we conjecture that the same behavior will be observed with other distance metrics.}{}\MANUEL{On second thought, I'm not sure we should say this, because we really have no idea and we actually hope it is not true.}
   
 
 \begin{figure}[tb]
@@ -820,12 +837,12 @@ distance metrics.
 
 The situation is very similar for the QAP, where both algorithms show the same
 behaviour as in the PFSP for all instances tested, except for
-\texttt{kra32}. As shown in Fig~\ref{fig:kra32}, in this instance both
+\texttt{kra32}. As shown in Fig~\ref{fig:kra32}, for \texttt{kra32} both
 algorithms are able to improve over the number of evaluations, although not
 with ease. As in the synthetic LOP instances, we again observe that CEGO does
-improve faster than UMM initially, yet, around evaluation 250, it appears to
-get stuck and around evaluation 300, UMM overtakes it. We believe the reason is
-the same as before, that is, the model is not able to adequately reflect the
+improve faster than UMM initially, yet CEGO appears to
+get stuck around evaluation 250,  and UMM overtakes it around evaluation 300. We believe the reason is
+the same as before, that is, the CEGO model is not able to adequately reflect the
 ruggedness of the actual landscape and, hence, the best solutions found by the
 GA searching the model are not improved solutions for the actual problem. Interestingly, \texttt{kra32} is rectangular
 whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!! What is the difference then? Ask Thomas?}
@@ -836,15 +853,33 @@ whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \te
     \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
 \end{figure}
 
-Table~\ref{tab:results} shows overall results over all instances evaluated (excluding the synthetic LOP instances). In particular, the mean fitness (and standard deviation) of the best solution found at the end of each run,
-In terms of best fitness achieved on each run, and taking into account the
-random behaviour observed in some instances and discussed above,\ekhine{}{falta un cacho aqui}\MANUEL{Mío}
+Table~\ref{tab:results} shows results over all instances evaluated (excluding
+the synthetic LOP instances). In particular, we show the mean fitness (and
+standard deviation) of the best solution found at the end of each run. We also report the mean runtime in hours and, since CEGO sometimes reached the limit of 72 hours, also the number of fitness evaluations reached by CEGO.
+
+In the LOP, differences are mostly in favour of UMM, due to the time limit of
+72 hours, which resulted in CEGO typically achieving less than 200
+evaluations. In contrast, UMM was always able to reach 400 evaluations in less
+than 16 hours. If UMM was allowed to reach the 72 hours limit, the differences
+would be even stronger.
+
+In the case of the PFSP, the differences are minor and/or not statistically
+significant, with the qualification that both algorithms appear to be
+performing a random search. Similar observations can be made for the QAP, where
+only on the smallest instance \texttt{nug12}, there is a significant different
+in favour of CEGO.
+
+The overall conclusion from Table~\ref{tab:results} is that there is not a
+significant difference in performance between UMM and CEGO. For the larger LOP
+instances, CEGO reaches the time limit of 72 hours before consuming the budget
+of 400 evaluations and thus, obtains quite poor solutions compared to UMM,
+which is at least an order of magnitude faster.
 
 
 
 \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
 \begin{table}[tb]
- \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean of the difference between the fitness of UMM minus the one of CEGO. Mean runtime is measured in hours. If a run went over 72 hours, of  CEGO was not able to reach 400 function evaluations (FEs) in 72 hours, it was terminated earlier. This was the case for all LOP instances shown.\manuel{}{Don't we have results for rec31?}\label{tab:results}}
+ \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean of the difference between the fitness of UMM minus the one of CEGO. Mean runtime is measured in hours. If a run of  CEGO was not able to reach 400 function evaluations (FEs) in 72 hours, it was terminated earlier. This was the case for all LOP instances shown.\manuel{}{Don't we have results for rec31?}\label{tab:results}}
  \resizebox{\textwidth}{!}{%
 \begin{tabular}{r@{\hskip -2ex}*{5}{r}rl@{\hskip -2ex}*{3}{r}}
  \toprule
@@ -871,10 +906,10 @@ random behaviour observed in some instances and discussed above,\ekhine{}{falta 
    PFSP     & rec05        & 1317.9                  & (25.1)     & 1330.7    & (17.9)                 & $[$-33.4,     & 7.8$]$        & 400.0& 38.9 & 0.1  \\
        & rec13        & 2128.2                  & (25.0)     & 2158.7    & (29.5)                 & $[$-56.2,     & -4.8$]$       & 400.0& 38.9 & 0.1  \\
        & rec19        & 2398.6                  & (19.8)     & 2405.1    & (12.6)                 & $[$-22.3,     & 9.3$]$        & 400.0& 82.1 & 0.3  \\\midrule
-    QAP     & kra32        & 115907.0                & (4663.4)   & 116320.0  & (4673.5)               & $[$-4799.3,   & 3973.3$]$     & 400.0& 95.8 & 0.3  \\
-        & nug12        & 624.2                   & (26.3)     & 660.4     & (17.3)                 & $[$-57.3,     & -15.1$]$      & 400.0& 14.8 & 0.0  \\
-        & nug30        & 7486.8                  & (40.4)     & 7474.0    & (83.9)                 & $[$-50.8,     & 76.4$]$       & 400.0& 84.3 & 0.3  \\
+    QAP  & nug12        & 624.2                   & (26.3)     & 660.4     & (17.3)                 & $[$-57.3,     & -15.1$]$      & 400.0& 14.8 & 0.0  \\
+         & nug30        & 7486.8                  & (40.4)     & 7474.0    & (83.9)                 & $[$-50.8,     & 76.4$]$       & 400.0& 84.3 & 0.3  \\
         & tho30        & 192416.0                & (2584.2)   & 191482.0  & (4419.7)               & $[$-2527.0,   & 4395.0$]$     & 400.0& 85.1 & 0.3  \\
+         & kra32        & 115907.0                & (4663.4)   & 116320.0  & (4673.5)               & $[$-4799.3,   & 3973.3$]$     & 400.0& 95.8 & 0.3  \\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -894,6 +929,7 @@ time-sensitive, e.g., when the overhead incurred by the optimizer should be no
 more than a few minutes added to each fitness evaluation. As shown by our
 results, a Bayesian optimizer such as CEGO may sometimes require more than hour
 \EKHINE{me parece mas de CEGO q UMM y parece q UMM solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos  y luego que addemás es más rápido}
+\MANUEL{Pero UMM es peor en rec13 y nug12, y en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir lo que pasa en el momento en que matamos a CEGO y dar también ese valor entonces la diferencia en velocidad no importaría. }
 per fitness evaluation. The time required to train the surrogate-model of CEGO
 also sharply increases with permutation length, hence, UMM would be a
 computationally feasible alternative for relatively large problem sizes.
@@ -902,7 +938,10 @@ Although we were inspired by previous work on ACO for expensive black-box
 combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
 knowledge, the first EDA specifically designed for such problems that is able
 to match (and sometimes even improve) the results of a Bayesian
-optimizer\EKHINE{hhmmm lo hacemos mejor o igual}. The results presented here
+optimizer.
+% MANUEL: OK?
+% \EKHINE{hhmmm lo hacemos mejor o igual}
+The results presented here
 show that, despite the intrinsic difficulty of this scenario, there are still
 significant advances yet to be made. Thus, we hope that this paper will
 motivate further research. % on such problems.
