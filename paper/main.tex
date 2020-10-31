@@ -125,8 +125,8 @@ prediction models, simulations or physical experiments. When decision variables
 are continuous, the use of Bayesian surrogate-models (e.g., Gaussian processes)
 is widespread in
 optimization~\citep{JonSchWel98go,ForKea2009surrogate}. Motivated by this
-success, there have been attempts at adapting such Bayesian optimization
-algorithms to the combinatorial case, a notable example being Combinatorial
+success, there have been attempts at adapting such surrogate-based optimization
+algorithms to the combinatorial case~\cite{MorKat2011:evo}, a notable example being Combinatorial
 Efficient Global Optimization
 (CEGO)~\citep{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}. However, the
 ruggedness of combinatorial landscapes, which makes local search particularly
@@ -142,50 +142,61 @@ is competitive with CEGO
 on a black-box version of the travelling salesman problem under a budget of
 $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
-short budgets. Finally, we note that learning Budget-constrained Combinatorial is a hot topic for a variety of structures besides permutation~\cite{manchanda2020}. 
+short budgets.
+%Finally, we note that learning Budget-constrained Combinatorial is a hot topic for a variety of structures besides permutation~\cite{manchanda2020}. 
 
 
 In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
 population-based probabilistic algorithm specifically designed for optimizing
 black-box problems over a permutation landscape under a limited budget. There
-exists a wide body of research on probabilistic models for permutations, such as Mallows~\cite{gMallows} that have already been 
-been used in optimization problems successfully,
-with the most prominent examples being estimation of distribution algorithms
-(EDAs)~\cite{Ceberio2013}, \cite{Ceberio2015}. ACO may also be considered a type of EDA, since
-it builds a probability distribution model from which solutions are sampled
-with a bias towards the best solutions evaluated so far. This works fall into at least one of these assumptions: function evaluations are cheap or the function evaluation is a white-box.
+exists a wide body of research on probabilistic models for permutations, such
+as Mallows~\cite{FliVer1986}, that have already been been used in optimization
+problems successfully, with the most prominent examples being estimation of
+distribution algorithms
+(EDAs)~\cite{CebIruMen2014eda,CebMenLoz2015mallows}. ACO may also be considered
+a type of EDA, since it builds a probability distribution model from which
+solutions are sampled with a bias towards the best solutions evaluated so
+far. These classical EDAs  assume that function
+evaluations are cheap and/or the fitness function is white-box.\MANUEL{Do EDAs really assume that the fitness function is white-box? ACO doesn't.}
+%The proposed UMM drastically differs from the above algorithms.
 
-
-The proposed UMM drastically differs from EDAs since EDAs assume that function
-evaluations are cheap and they can do many of them. On the contrary, UMM aims
-at learning as much as possible with a limited number of function
-evaluations. Moreover, unlike EDAs, UMM does not rely on a fixed-size
+In contrast, UMM aims at learning as much as possible with a limited number of
+function evaluations. Moreover, unlike EDAs, UMM does not rely on a fixed-size
 population of solutions that evolves over ``generations''. Instead, taking
 inspiration from Bayesian optimizers, UMM considers a sample of permutations
 during the whole execution that is increased by one new permutation at each
-iteration.
+iteration. The sample is used to learn a Mallows model from which a single new
+permutation is sampled. The model is learned by using
+uBorda~\cite{IruLobPer2020arxiv}, a generalization of the well-known rank
+aggregation algorithm Borda~\cite{Borda1781}. Rank aggregation algorithms
+summarize in a single permutation the information of a sample of permutations,
+and they can be seen as functions to compute the \emph{sample mean}. The uBorda
+algorithm computes a \textit{weighted sample mean} and has been shown to return
+the correct estimator with high probability on streaming
+contexts~\cite{IruLobPer2020arxiv}.
 %
 Finally, the balance between intensification and exploration is dynamically
 adapted by controlling the variance of the probabilistic Mallows model.
 
-The proposed UMM is based on uBorda~\cite{irurozki2020}, a generalization of
-the well-known rank aggregation algorithm Borda~\cite{Borda1781}. Rank
-aggregation algorithms summarize in a single permutation the information of a
-sample of permutations $S$, and they can be seen as functions to compute the
-\textit{mean} of sample $S$. The uBorda algorithm has been proposed to compute
-a \textit{weighted mean} of sample $S$. UBorda has been show to return the
-correct estimator with high probability on streaming contexts; in this paper,
-we show its quality on black-box optimization problems. \ekhine{}{revisa esto
-  por favor, Manuel}
+% The proposed UMM is based on uBorda~\cite{IruLobPer2020arxiv}, a generalization
+% of the well-known rank aggregation algorithm Borda~\cite{Borda1781}. Rank
+% aggregation algorithms summarize in a single permutation the information of a
+% sample of permutations, and they can be seen as functions to compute the
+% \emph{sample mean}. The uBorda algorithm has been proposed to compute a
+% \textit{weighted sample mean} and shown to return the correct estimator with
+% high probability on streaming contexts.  in this paper, we show its quality on
+% black-box optimization problems.
+%\ekhine{}{revisa esto por
+%  favor, Manuel}
 
-\manuel{}{
-  \begin{itemize}
-  \item Who else has used Mallows model for black-box optimization? Ekhine: Va a mirarlo.
-  \item Who else has used unbalanced borda for optimization? Ekhine va a añadir 2 frases.
-  \end{itemize}
-}
+% \manuel{}{
+%   \begin{itemize}
+%   \item Who else has used Mallows model for black-box optimization? Ekhine: Va a mirarlo.
+%   \item Who else has used unbalanced borda for optimization? Ekhine va a añadir 2 frases.
+%   \end{itemize}
+% }
 
-This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, the uBorda algorithm, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
+This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
 
 
 
@@ -241,7 +252,7 @@ This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundame
 
 \subsection{Permutations}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=e$ always holds.
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters.\MANUEL{Do we use $e$ anywhere? If not, we do not need this definition ``with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$.''} We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
 
 
 Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
@@ -276,7 +287,7 @@ The Borda ranking of a sample of permutations $S \subset S_n$ is computed as fol
 First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
-We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{irurozki2020}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
+We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{IruLobPer2020arxiv}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
 %
 \begin{equation}\label{eq:uborda_score}
 B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
@@ -285,7 +296,7 @@ B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
 and, the same as Borda, orders the items $i \in [n]$ increasingly by their score.
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. However, in other case uBorda ranking will be closer to the rankings in $S$ with smaller value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with low values of $w(\sigma$).
-Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{irurozki2020}.
+Clearly, the choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain. For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{IruLobPer2020arxiv}.
 %
 % In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$.
 Interestingly, uBorda is computed in polynomial time.
@@ -299,7 +310,7 @@ space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
 we can evaluate any candidate permutation $\sigma \in S_n$ to obtain
 $f(\sigma)$, however, we do not know anything else about the form of
 $f$. Moreover, the evaluation of $f$ is expensive in computation time or
-resources and, thus, we can only evaluate a limited budget of candidate
+resources and, thus, we can only evaluate a limited budget $\FEmax$ of candidate
 permutations. Here, we will study budgets lower than 400. Such expensive
 black-box combinatorial problems arise in diverse contexts, for example,
 protein folding~\citep{RomKraArn2012protein} and industrial
@@ -307,8 +318,8 @@ production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
 involve expensive simulations for which no closed-form mathematical description
 is available. The black-box formulation and limited budget preclude most of the
 optimization techniques that are successful in combinatorial optimization, such
-as constructive and perturbation heuristics and local search, which makes this
-a particularly challenging scenario, perhaps even more than its continuous
+as constructive  heuristics and local search, leading to
+a particularly challenging scenario, perhaps even more challenging than its continuous
 counter-part.
 
 \subsection{CEGO}
@@ -336,7 +347,7 @@ function~\citep[p.~875]{ZaeStoFriFisNauBar2014}.
 
 
 
-\renewcommand{\subsubsection}{\smallskip{}\noindent\textbf}
+\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
 
 
 
@@ -397,13 +408,13 @@ UMM does not simply represent the current sample $S$. Instead, the model
 assigns higher probability values to the permutations with known (or expected)
 minimal fitness values. This is achieved by means of the uBorda ranking
 (Section~\ref{sec:uborda}), which can be seen as replicating each permutation
-$\sigma$ in the sample a number of times inversely proportional to its fitness
+$\sigma \in S$ a number of times inversely proportional to its fitness
 $f(\sigma)$, i.e., it behaves as if there were many copies of the best
 solutions and few of the bad ones. A property of UMM is that the
 computational complexity of working with the original sample (Borda) and with the
-transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are
-the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sample} in Algorithm~\ref{alg:umm}) and the update
-(\emph{learning}) of the parameters $\sigma_0$, $\theta$ and $\rho$ (line~\ref{line:uborda} in Algorithm~\ref{alg:umm}).
+transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are the update
+(\emph{learning}) of the parameters $\sigma_0$, $\theta$ and $\rho$ (line~\ref{line:uborda} in Algorithm~\ref{alg:umm}) and
+the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sample}). % in Algorithm~\ref{alg:umm}).
 
 
 % 'However, the question of how
@@ -418,8 +429,9 @@ the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sam
 \newcommand{\Edist}{\ensuremath{\mathbb{E}[D]}}
 
 
-\subsubsection{Learning step.}
-At each iteration we start by fitting a MM to the sample $S$, which implies
+\subsubsection{Learning step}
+%
+At each iteration, we start by fitting a MM to the sample $S$, which implies
 estimating $\hat\sigma_0$ and $\theta$. Parameter $\theta$ is updated
 deterministically at the sampling step.  The parameter $\sigma_0$, however, is
 learned from the current sample $S$ by using the uBorda algorithm with a weight
@@ -430,10 +442,13 @@ and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,
 %
 \begin{equation}
-r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma'\in S'}\rho^{f(\sigma')} \quad\text{where}\quad |S'| = r_2|S| \land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma)
+  \begin{split}
+  r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma'\in S'}\rho^{f(\sigma')} \quad\text{where}\; &|S'| = r_2|S| \\[-1.2em]
+  &\land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma)
+  \end{split}
 \end{equation}
 %
-where $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification: higher values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
+i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification: higher values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
 
 
 % As shown in Section~\ref{sec:backgroud}, MM can be approximately learnt in two= steps (1) estimating the location parameter $\sigma_0$ and (2) computing the scale parameter $\theta$. Since the scale parameter $\theta$ is set in the sampling step,\MANUEL{X How is it set?} we focus on estimating $\sigma_0$.
@@ -443,10 +458,11 @@ where $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fit
 
 
 
-\subsubsection{Sampling step.}\label{sec:sampling}
+\subsubsection{Sampling step}\label{sec:sampling}
+%
 Sampling from $MM(\sigma_0,\theta)$  can be done efficiently given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{IruCalLoz2016permallows}, where the computational complexity is $O(n\log n)$. % and $O(n^2)$.\MANUEL{X respectively? more than 2}
 %
-At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in the previous learning step. The scale $\theta$ controls the expected value and variance of the distance $D$ of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$. Both  the expected value of $D$ and its variance increase monotonically with the value of $\theta$. In particular, the expected distance $\Edist$ is given by~\cite{gMallows}:
+At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in the previous learning step. The scale $\theta$ controls the expected value and variance of the distance $D$ of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$. Both  the expected value of $D$ and its variance increase monotonically with the value of $\theta$. In particular, the expected distance $\Edist$ is given by~\cite{FliVer1986}:
 %
 \begin{equation}\label{eq:expectation}
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
@@ -462,7 +478,8 @@ A purely explotation approach would always generate $\sigma_0$ in the sampling s
 
 \section{Experimental setup}\label{sec:setup}
 
-\subsubsection{CEGO.}
+\subsubsection{CEGO}
+%
 We use the implementation of GECO provided by the
 authors.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
 Although it is never stated in the original paper, the implementation of CEGO
@@ -492,28 +509,31 @@ the GA budget by a factor of $10$. Nevertheless, we caution that choosing a
 different trade-off may lead to different conclusions and more work is needed
 to understand CEGO parameters.
 
-\subsubsection{UMM}. UMM uses the same budget of evaluation ($\FEmax$) as CEGO
+\subsubsection{UMM}
+%
+UMM uses the same budget of evaluations ($\FEmax$) as CEGO
 and initially samples $\minit=10$ solutions uniformly. The other two parameters
 of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
-exploitation. In the experimental section we will study their impact. We
-implemented UMM using Python 3.
+exploitation. In the experimental section we will study their impact. implemented UMM using Python 3.
 
 
-\subsubsection{Other settings}.  For simplicity, we use Kendall's $\tau$
-distance~(Eq.~\ref{eq:kendall_decomp}) in all
-experiments. Nevertheless,
+\subsubsection{Other settings}
+%
+For simplicity, we use Kendall's $\tau$
+distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-when using Hamming distance.  We plan to extend UMM to other distance measures in the future.
-In all experiments, we consider a maximum budget of $\FEmax=400$ evaluations of
-the actual objective function. In a white-box context, state-of-the-art
-algorithms for the problems considered here typically evaluate
-thousands of solutions, thus, the budget considered
-here for the black-box context is extremely limited.
+when using Hamming distance and the same may apply to UMM.
+We plan to extend UMM to other distance measures in the future.  In all
+experiments, we consider a maximum budget of $\FEmax=400$ evaluations of the
+actual objective function. In a white-box context, state-of-the-art algorithms
+for the problems considered here typically evaluate thousands of solutions,
+thus, the budget considered here for the black-box context is extremely
+limited.
 
 
-\subsubsection{Benchmark problems.} Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
-
-
+\subsubsection{Benchmark problems}
+%
+Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
 
 The \emph{Linear Ordering Problem (LOP)} is defined as 
 \begin{equation}\label{eq:lop}
@@ -530,7 +550,7 @@ The \emph{Quadratic Assignment Problem (QAP)} is defined by:
 where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
 
 The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
-\begin{equation}\label{eq:qap}
+\begin{equation}\label{eq:pfsp}
   \begin{split}
     \min_{\sigma \in S_n}\quad& f(\sigma) = C_{n,M}\\
     \text{s.t.}\quad & C_{1,j} = 0 \quad j\in [M], \qquad C_{i,1} = 0\quad i \in [n]\\
@@ -538,12 +558,17 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 \end{split}
 \end{equation}
 
-\paragraph{Datasets}
+\subsubsection{Datasets}
+%
+For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbf{I}\{\sigma(i)<\sigma(j)\}$, where $\mathbf{I}\colon S \times S \to \{0,1\}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 
-For the LOP, we generated synthetic instances as follows: sample 200 permutations from a MM of size $n=20$ and $\theta=-\log(uniformity)$, where  $uniformity=\{.5,.7,.9)\}$, i.e., from peaked distributions to almost uniform distributions. Then, generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}(\sigma(i)<\sigma(j))$.
-
-Moreover, we consider real LOP datasets from the LOPLIB repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
-In particular, we consider the following types: IO, Random instances of type A and Random instances of type B. 
+Moreover, we consider real LOP datasets from the LOPLIB
+repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
+particular, we consider the following types: IO, Random instances of type A and
+Random instances of type B of various sizes $n \in \{50, 100, 150, 200,
+250\}$. These are harder problems than the synthetic instances, not only
+because of the larger search space, but also because of the different instance
+types.
 
 In the case of the QAP and PFSP, we consider the same instances as
 \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e.,
@@ -553,12 +578,14 @@ with $n$ (the permutation length) equal to the number in the instance name, and 
 $n \in \{20, 20, 30, 50\}$, respectively.
 
 \subsubsection{Computing environment.}
-All experiments were run on 
-Intel Xeon ``Ivybridge'' E5-2650v2 CPUs at 2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core),
-\ekhine{}{
-Intel Xeon ``GenuineIntel'' E5-2680v3 CPUs at 2.50\,GHz, 32???\,GB RAM running Linux,
-Intel Xeon ``GenuineIntel'' E5-2683v4 CPUs at 2.10\,GHz, 32???\,GB RAM running Linux.
-}
+Due to the computational effort required, we used several computing systems to
+run experiments. All UMM experiments were either on run on Intel Xeon
+\emph{Broadwell} E5-2683v4 CPUs at 2.10\,GHz or Intel Xeon \emph{Haswell} E5-2680v3
+CPUs at 2.50\,GHz, both of them with 32\,GB RAM running Linux.\MANUEL{If you enter in a node and do \texttt{cat /etc/lsb-release} what does it say?} %
+Experiments with
+CEGO used a more powerful system: Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
+2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core).
+
 %processor : 23
 %vendor_id : GenuineIntel
 %cpu family : 6
@@ -614,7 +641,7 @@ Intel Xeon ``GenuineIntel'' E5-2683v4 CPUs at 2.10\,GHz, 32???\,GB RAM running L
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. This experiment for all the real datasets can be bound in the supplemental material.
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as whitespace.  Results for all the datasets can be found in the supplemental material.
 
 \begin{figure}[htb]
   \centering%
@@ -636,7 +663,7 @@ The first part of the experimental analysis concerns the {analyses} of the learn
   \texttt{kra32} (QAP)\\[-0.5ex]
 \includegraphics[width=\textwidth]{../img/heatmap_kra32_dat}
 \end{minipage}
-\caption{Mean fitness  for different configuration for the learning rate (darker is better). \label{fig:heatmaps}}
+\caption{Mean fitness (over 10 runs) of different configurations of $r_1$ and $r_2$ (darker is better). Whitespace denotes missing data (runs that took longer than 6 hours).\label{fig:heatmaps}}
 \end{figure}
 
 The plot shows that UMM is indeed very sensitive to the values of $r_1$ and

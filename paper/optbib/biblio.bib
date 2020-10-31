@@ -751,7 +751,7 @@ Assignment with Controllable Processing Times},
 @article{Arr04,
   title =        "A partial enumeration heuristic for multi-objective
                   flowshop scheduling problems",
-  author =       Arroyo #and# Armentano,
+  author =       Arroyo_JEC #and# Armentano,
   journal =      jors,
   volume =       55,
   number =       9,
@@ -760,7 +760,7 @@ Assignment with Controllable Processing Times},
 }
 
 @article{ArrArm05,
-  author =       Arroyo #and# Armentano,
+  author =       Arroyo_JEC #and# Armentano,
   title =        "Genetic local search for multi-objective flowshop
                   scheduling problems",
   journal =      ejor,
@@ -772,7 +772,7 @@ Assignment with Controllable Processing Times},
 }
 
 @Article{ArrLeu2017,
-  author = 	 {Arroyo, J.E.C. and Leung, J.Y.-T.},
+  author = 	 Arroyo_JEC #and# Leung_JYT,
   title = 	 {An Effective Iterated Greedy Algorithm for Scheduling Unrelated Parallel Batch Machines with Non-identical Capacities and Unequal Ready Times},
   journal = 	 cie,
   year = 	 2017,
@@ -781,23 +781,8 @@ Assignment with Controllable Processing Times},
 }
 
 
-@article{Ceberio2013,
-abstract = {The aim of this paper is two-fold. First, we introduce a novel general estimation of distribution algorithm to deal with permutation-based optimization problems. The algorithm is based on the use of a probabilistic model for permutations called the generalized Mallows model. In order to prove the potential of the proposed algorithm, our second aim is to solve the permutation flowshop scheduling problem. A hybrid approach consisting of the new estimation of distribution algorithm and a variable neighborhood search is proposed. Conducted experiments demonstrate that the proposed algorithm is able to outperform the state-of-the-art approaches. Moreover, from the 220 benchmark instances tested, the proposed hybrid approach obtains new best known results in 152 cases. An in-depth study of the results suggests that the successful performance of the introduced approach is due to the ability of the generalized Mallows estimation of distribution algorithm to discover promising regions in the search space.},
-author = {Ceberio, Josu and Irurozki, Ekhine and Mendiburu, Alexander and Lozano, Jose A.},
-doi = {10.1109/TEVC.2013.2260548},
-isbn = {2009029143},
-issn = {1089778X},
-journal = {IEEE Transactions on Evolutionary Computation},
-keywords = {Estimation of distribution algorithms,Generalized Mallows model,Permutation flowshop scheduling problem,Permutations-based optimization problems},
-number = {2},
-pages = {286--300},
-title = {{A distance-based ranking model estimation of distribution algorithm for the flowshop scheduling problem}},
-volume = {18},
-year = {2014}
-}
-
 @InCollection{ArzCebPer2019qap,
-  author =       {Etor Arza} #and# {Josu Ceberio} #and# {Aritz P{\'{e}}rez}
+  author =       {Etor Arza} #and# Ceberio #and# {Aritz P{\'{e}}rez}
                   #and# Irurozki_E,
   title =        {Approaching the quadratic assignment problem with kernels of
                   mallows models under the hamming distance},
@@ -3163,6 +3148,15 @@ Los Angeles, CA},
   pages =        "99--132"
 }
 
+@article{Borda1781,
+  author =       {Jean-Charles de Borda},
+  journal =      {Histoire de l'Acad{\'e}mie Royal des Sciences},
+  title =        {M{\'e}moire sur les {\'E}lections au Scrutin},
+  year =         1781,
+  keywords =     "ranking"
+}
+
+
 @Article{BotBon98,
   author =       {Hozefa M. Botee and Eric Bonabeau},
   title =        {Evolving Ant Colony Optimization},
@@ -4119,6 +4113,47 @@ Los Angeles, CA},
   year =         2014,
   volume =       51,
   pages =        {257--267}
+}
+
+@article{CebIruMen2014eda,
+  author =       Ceberio #and# Irurozki_E #and# Mendiburu_A #and# Lozano_JA,
+  title =        {A distance-based ranking model estimation of distribution
+                  algorithm for the flowshop scheduling problem},
+  abstract =     {The aim of this paper is two-fold. First, we introduce a
+                  novel general estimation of distribution algorithm to deal
+                  with permutation-based optimization problems. The algorithm
+                  is based on the use of a probabilistic model for permutations
+                  called the generalized Mallows model. In order to prove the
+                  potential of the proposed algorithm, our second aim is to
+                  solve the permutation flowshop scheduling problem. A hybrid
+                  approach consisting of the new estimation of distribution
+                  algorithm and a variable neighborhood search is
+                  proposed. Conducted experiments demonstrate that the proposed
+                  algorithm is able to outperform the state-of-the-art
+                  approaches. Moreover, from the 220 benchmark instances
+                  tested, the proposed hybrid approach obtains new best known
+                  results in 152 cases. An in-depth study of the results
+                  suggests that the successful performance of the introduced
+                  approach is due to the ability of the generalized Mallows
+                  estimation of distribution algorithm to discover promising
+                  regions in the search space.},
+  doi =          {10.1109/TEVC.2013.2260548},
+  journal =      tec,
+  keywords =     {Estimation of distribution algorithms,Generalized Mallows
+                  model,Permutation flowshop scheduling
+                  problem,Permutations-based optimization problems},
+  number =       2,
+  pages =        {286--300},
+  volume =       18,
+  year =         2014
+}
+
+@inCollection{CebMenLoz2015mallows,
+  title =        {Kernels of {M}allows Models for Solving Permutation-based
+                  Problems},
+  author =       Ceberio #and# Mendiburu_A #and# Lozano_JA,
+  crossref =     "GECCO2015",
+  pages =        {505--512},
 }
 
 @Book{Cela:QAP,
@@ -6464,7 +6499,7 @@ doi =           {10.1007/978-3-642-38516-2_16},
 }
 
 @Article{DuLeu90,
-  author =       Du_J #and# Leung,
+  author =       Du_J #and# Leung_JYT,
   title =        "Minimizing Total Tardiness on One Machine is
                   {NP}-Hard",
   journal =      mor,
@@ -11152,6 +11187,16 @@ Traveling Salesman Heuristic},
   number =       1,
   pages =        {1--35},
   journal =      mcap,
+}
+
+@article{IruLobPer2020arxiv,
+  title =        {Rank aggregation for non-stationary data streams},
+  author =       Irurozki_E #and# {Lobo, Jesus and Perez, Aritz and Del Ser,
+                  Javier},
+  keywords =     {uborda},
+  journal =      arxiv,
+  note =         "Submitted",
+  year =         2020
 }
 
 @article{Ish1998,
@@ -23544,6 +23589,18 @@ Integer Algorithm Parameters of Swarm Intelligence Algorithms},
                   Through Better Initialization},
   pages =        {815--822},
   crossref =     "GECCO2015",
+}
+
+@article{FliVer1986,
+  title =        {Distance Based Ranking Models},
+  author =       {Fligner, Michael A. and Verducci, Joseph S.},
+  journal =      rssb,
+  number =       3,
+  volume =       48,
+  pages =        {359--369},
+  year =         1986,
+  keywords =     "Mallows model, ranking, probabilistic models",
+  doi =          {10.1111/j.2517-6161.1986.tb01420.x},
 }
 
 @Article{mlrMBO,
