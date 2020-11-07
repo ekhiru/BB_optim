@@ -34,7 +34,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
         infill = infillExpectedImprovement, model = modelKriging, 
         modelSettings = list(), optimizer = optimEA, optimizerSettings = list(), 
         initialDesign = designMaxMinDist, archiveModelInfo = NULL, 
-        initialDesignSettings = list(), maxTime = 3600 * 24 * 3)
+        initialDesignSettings = list(), maxTime = 3600 * 24 * 6)
     con[names(control)] <- control
     control <- con
     rm(con)
