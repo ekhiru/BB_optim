@@ -160,7 +160,7 @@ distribution algorithms
 a type of EDA, since it builds a probability distribution model from which
 solutions are sampled with a bias towards the best solutions evaluated so
 far. These classical EDAs  assume that function
-evaluations are cheap and/or the fitness function is white-box.\MANUEL{Do EDAs really assume that the fitness function is white-box? ACO doesn't.}
+evaluations are cheap and/or the fitness function is white-box.\MANUEL{Do EDAs really assume that the fitness function is white-box? ACO doesn't: They are hybridized with local search }
 %The proposed UMM drastically differs from the above algorithms.
 
 In contrast, UMM aims at learning as much as possible with a limited number of
@@ -256,7 +256,9 @@ This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundame
 
 \subsection{Permutations}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters.\MANUEL{Do we use $e$ anywhere? If not, we do not need this definition ``with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$.''} We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters.
+% \MANUEL{Do we use $e$ anywhere? If not, we do not need this definition ``with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$.''}
+We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
 
 
 Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
@@ -589,11 +591,12 @@ $n \in \{20, 20, 30, 50\}$, respectively.
 Due to the computational effort required, we used several computing systems to
 run experiments. All UMM experiments were either on run on Intel Xeon
 \emph{Broadwell} E5-2683v4 CPUs at 2.10\,GHz or Intel Xeon \emph{Haswell} E5-2680v3
-CPUs at 2.50\,GHz, both of them with 32\,GB RAM running Linux.\MANUEL{If you enter in a node and do \texttt{cat /etc/lsb-release} what does it say?} %
+CPUs at 2.50\,GHz, both of them with 32\,GB RAM. 
+ %
 Experiments with
 CEGO used a more powerful system: Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
-2.60\,GHz, 64\,GB RAM running CentOS Linux release 7.4.1708 (Core).
-
+2.60\,GHz, 64\,GB RAM. % running CentOS Linux release 7 (Core).
+The operating system was CentOS Linux release 7 (Core).
 %processor : 23
 %vendor_id : GenuineIntel
 %cpu family : 6
@@ -751,7 +754,8 @@ of 10 solutions, with are quite poor as expected, followed by building and
 updating the Kriging model based new evaluations, which leads to an impressive
 improvement in less than 50 evaluations. However, progress is %more or less 
 halted at this point and the model seems to have trouble generating better
-solutions. Lower uniformity values (e.g., \manuel{$\phi=.5$}{0.5})\MANUEL{We never use $\phi$, not even in the plots, so less have one less symbol to worry about.} show worsening evaluations
+solutions. Lower uniformity values, e.g., 0.5,
+ show worsening evaluations
 despite the increase in solutions used to build the model. In summary, the
 Kriging model clearly helps CEGO to quickly identify good solutions in very few
 evaluations. However, for some reason, CEGO is not able to further improve
@@ -800,18 +804,14 @@ In the following paragraphs we analyze the result over real-world instances. %
 Figure~\ref{fig:loplib} shows the results on the instances taken from LOPLIB.
   %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
   % \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
-The distribution\MANUEL{what do you mean the distribution? Is this a feature of
-  the matrix $a$?} of these instances differs from the synthetic LOP instances,
-and, thus, so does the landscape. However, UMM shows a very similar behavior:
-there is a (close to) linear decrease \manuel{on the function evaluations of
-  new solutions along iterations}{of the fitness of new solutions over each new
-  evaluation}. This suggests that UMM \manuel{very good fits}{is able to model}
-the fitness landscape. Regarding CEGO, we \manuel{can take similar
-  conclusions}{observe a similar behavior} for the first 50-100
-\manuel{iterations}{evaluations}. At this point, CEGO reaches the time limit of
-3 days, so no observations can be made for longer budgets.  Overall, the
-improvement from the first (random) to the last solutions is 2-3 times larger
-in UMM than CEGO. %
+The type of instances from the synthetic LOP instances, and, thus, so does the
+landscape. However, UMM shows a very similar behavior: there is a (close to)
+linear decrease of the fitness of new solutions over each new evaluation. This
+suggests that UMM is able to model the fitness landscape. Regarding CEGO, we
+observe a similar behavior for the first 50-100 evaluations. At this point,
+CEGO reaches the time limit of 3 days, so no observations can be made for
+longer budgets.  Overall, the improvement from the first (random) to the last
+solutions is 2-3 times larger in UMM than CEGO. %
 \MANUEL{But this is a bit misleading because UMM runs for 4 times more
   evaluations, perhaps we should also measure up to the evaluation that CEGO
   reaches so we report both values?}
@@ -821,11 +821,11 @@ In the case of the PFSP, the progress of both algorithms resembles a random sear
 instance considered here. The lack of any apparent convergence suggests that
 the models (both Bayesian and probabilistic) are not learning anything about
 the fitness landscape. Results for larger PFSP corroborate these conclusions\supplement.
-\manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
-that other distance measures are more suited than Kendall's-$\tau$ distance for
-the PFSP, the reported fitness differences between various distance metrics are
-small.
-Hence, we conjecture that the same behavior will be observed with other distance metrics.}{}\MANUEL{On second thought, I'm not sure we should say this, because we really have no idea and we actually hope it is not true.}
+% \manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
+% that other distance measures are more suited than Kendall's-$\tau$ distance for
+% the PFSP, the reported fitness differences between various distance metrics are
+% small.
+% Hence, we conjecture that the same behavior will be observed with other distance metrics.}{}\MANUEL{On second thought, I'm not sure we should say this, because we really have no idea and we actually hope it is not true.}
   
 
 \begin{figure}[tb]
@@ -927,6 +927,7 @@ is specially well-suited for budget-limited scenarios that are still
 time-sensitive, e.g., when the overhead incurred by the optimizer should be no
 more than a few minutes added to each fitness evaluation. As shown by our
 results, a Bayesian optimizer such as CEGO may sometimes require more than hour
+\MANUEL{UMM is able to model the LOP landscape at least as well as CEGO as shown by the plots where UMM shows a linear decrease in fitness.}
 \EKHINE{me parece mas de CEGO q UMM y parece q UMM solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos  y luego que addemás es más rápido}
 \MANUEL{Pero UMM es peor en rec13 y nug12, y en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir lo que pasa en el momento en que matamos a CEGO y dar también ese valor entonces la diferencia en velocidad no importaría. }
 per fitness evaluation. The time required to train the surrogate-model of CEGO
