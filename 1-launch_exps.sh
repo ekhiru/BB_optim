@@ -61,23 +61,22 @@ gen_lop_synthetic() {
 }
 
 ## For QAP, PFSP instances
-#INSTANCES="\
-# qap/kra32.dat \
-# qap/nug12.dat \
-# qap/nug30.dat \
-# qap/tho30.dat \
-# pfsp/rec05.txt \
-# pfsp/rec13.txt \
-# pfsp/rec19.txt \
+INSTANCES="\
+ qap/kra32.dat \
+ qap/nug12.dat \
+ qap/nug30.dat \
+ qap/tho30.dat \
+ pfsp/rec05.txt \
+ pfsp/rec13.txt \
+ pfsp/rec19.txt \
+"
 # pfsp/rec31.txt \
-#"
 
 ###### For synthetic LOP instances
 #INSTANCES=$(gen_lop_synthetic $INSTANCES)
 
-
 ###### For LOPLIB instances
-INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
+#INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
 
 budget=400
 nruns=10
