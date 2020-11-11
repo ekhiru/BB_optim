@@ -4,11 +4,17 @@ import scipy as sp
 from scipy import optimize
 #fit MM
 
-# estas dos funciones valen para buscar los thetas para diferentes E[d].
-# desde 0<E[d]<1 (theta alto) hasta E_0[d] (theta 0)
+# FIXME: Isn't this specific to Kendall?
+def max_dist(n):
+    return int(n * (n - 1) / 2)
+
+# These two functions search for theta for different E[D].
+# from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
+# FIXME: We should rename it as find_theta
 def find_phi_n(n, bins): #NO
     ed, phi_ed = [], []
     #expected dist en la uniforma para este n
+    # FIXME: Use max_dist(n) / 2
     ed_uniform = (n*(n-1)/2)/2 # dist max div 2. AKA
     # ed_uniform = np.mean([expected_dist_MM(n,-0.01), expected_dist_MM(n,0.01)])
     # if k is not None : ed_uniform = np.mean([expected_V(n,theta=None, phi=0.99999,k=k).sum(), expected_V(n,theta=None, phi=1.00000001,k=k).sum()])
@@ -30,33 +36,39 @@ def find_phi(n, dmin, dmax): #NO
         elif d > dmax : imax = med
         iterat  += 1
 
-def max_dist(n):
-    return int(n*(n-1)/2)
 
-def compose(s,p):
-    return np.array(s[p])
-def compose_partial(partial,full):#s is partial
+def compose(s, p):
+    return np.asarray(s[p])
+
+# FIXME: Better than use np.nan, which is a float, use -1 to represent nan
+def compose_partial(partial, full):#s is partial
+    # FIXME: This is equivalent to:
+    # return np.where(np.isnan(full), np.nan, partial[full])
     return [partial[i] if not np.isnan(i) else np.nan for i in full]
+
 def inverse_partial(sigma):
     inv = np.array([np.nan]*len(sigma))
     for i,j in enumerate(sigma):
         if not np.isnan(j):
             inv[int(j)] = i
     return inv
+
 def inverse(s):
     return np.argsort(s)
 
-def alpha2beta(alpha,k):
+def alpha2beta(alpha, k):
     inv = np.array([np.nan]*len(alpha))
     for i,j in enumerate(alpha[:k]): inv[int(j)] = i
     return inv
 
 
 def borda(rankings):
+    # Double argsort should cancel itself?
     consensus =  np.argsort(np.argsort(rankings.sum(axis=0))) #borda
     return consensus
 
 def borda_partial(rankings):
+    # Double argsort should cancel itself?
     borda = np.argsort(np.argsort(np.nanmean(rankings, axis=0))).astype(float)
     mask = np.isnan(rankings).all(axis=0)
     borda[mask]=np.nan
@@ -71,20 +83,27 @@ def check_theta_phi(theta, phi):
     if theta is None and type(phi)==list: theta = [phi2theta(p) for p in phi]
     return theta, phi
 
-def expected_dist_MM(n,theta=None, phi=None):
+def expected_dist_MM(n, theta=None, phi=None):
     theta, phi = check_theta_phi(theta, phi)
-    expected_dist = n * np.exp(-theta) / (1-np.exp(-theta)) - np.sum([j * np.exp(-j*theta) / (1 - np.exp(-j*theta))  for j in range(1,n+1)])
+    # FIXME: It is faster:
+    # j = np.arange(1, n + 1)
+    # exp_j_theta = np.exp(-j * theta)
+    # exp_dist = (n * n.exp(-theta) / (1 - n.exp(-theta))) - np.sum(j * exp_j_theta / (1 - exp_j_theta)
+    expected_dist = n * np.exp(-theta) / (1 - np.exp(-theta)) - np.sum([j * np.exp(-j*theta) / (1 - np.exp(-j*theta))  for j in range(1,n+1)])
     return expected_dist
+
 def variance_dist_MM(n,theta=None, phi=None):
     theta, phi = check_theta_phi(theta, phi)
     variance = (phi*n)/(1-phi)**2 - np.sum([(pow(phi,i) * i**2)/(1-pow(phi,i))**2  for i in range(1,n+1)])
     return variance
+
 def expected_V(n,theta=None, phi=None,k=None):#txapu integrar
     theta, phi = check_theta_phi(theta, phi)
     if k is None: k = n-1
     if type(theta)!=list: theta = [theta]*k
     expected_v = [np.exp(-theta[j]) / (1-np.exp(-theta[j])) - (n-j) * np.exp(-(n-j)*theta[j]) / (1 - np.exp(-(n-j)*theta[j]))  for j in range(k)]
     return np.array(expected_v)
+
 def variance_V(n,theta=None, phi=None,k=None):#txapu integrar es posibe q solo fuciones con MM
     theta, phi = check_theta_phi(theta, phi)
     if k is None: k = n-1
@@ -100,6 +119,7 @@ def psiMM(n,theta=None,phi=None):
 
 def prob_mode(n, theta):
     #theta as array
+    # FIXME: You do not need the for-loop
     psi = np.array([(1 - np.exp(( - n + i )*(theta[i])))/(1 - np.exp( -theta[i])) for i in range(n-1)])
     return np.prod(1.0/psi)
 
@@ -295,6 +315,7 @@ def num_perms_at_dist(n):
             else:
                 sk[i,j] = sk[i,j-1]+ sk[i-1,j]
     return sk.astype(np.uint64)
+
 ## random permutations at distance
 def random_perm_at_dist(n, dist, sk):
     # param sk is the results of the function num_perms_at_dist(n)
@@ -334,6 +355,7 @@ def u_phi(sample, s0, ws):
 
 def uborda(sample, ws):
     mul = (sample * ws[:, None]).sum(axis=0)
+    # FIXME: double argsort cancels
     return np.argsort(np.argsort(mul))
 
 
