@@ -11,8 +11,8 @@ def generate_list_of_instances(opt_filename):
             instance_name = find_in_lop_folder(name, "path")
             if instance_name:
                 print(instance_name)
-    
-    
+
+
 def find_in_lop_folder(instance_name, ret_value='instance'):
     for fol in os.listdir("lop"):
         subdir = "lop/" + fol
@@ -35,10 +35,10 @@ def read_best_known(opt_filename, instance_name):
                 # The instances in http://grafo.etsii.urjc.es/optsicom/lolib/#instances and best sols try to maximize the superdiagonal.
                 # We minimize the subdiagonal, which is equivalent, but the best sol needs to be updated
                 return int(value)
-                
+
     print(f"Instance {instance_name} not found in {opt_filename}")
     return None
-            
+
 def synthetic_LOP(n, m, phi):
     instance = np.zeros((n,n))
     s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
@@ -67,7 +67,7 @@ class LOP(Problem):
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
     @classmethod
-    def read_instance(cls, filename, opt_filename = "lop/best_knowns.csv"):
+    def read_instance(cls, filename, opt_filename = "./best_knowns.csv"):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
             print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
@@ -83,7 +83,7 @@ class LOP(Problem):
                 if best_fitness != None:
                     best_fitness = instance.sum() - best_fitness
                     print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
-                    
+
             return LOP(n, instance, best_fitness = best_fitness, instance_name = filename)
 
     # Methods
