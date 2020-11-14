@@ -108,7 +108,7 @@ for instance in $INSTANCES; do
 	$LAUNCHER cego-$counter-r$run ./target-runner-cego.py cego $counter $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output $RESULTS/cego-r$run
 
 	### Uncomment for running UMM
-	$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
+	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
         
     done
 done
@@ -127,7 +127,7 @@ for instance in $INSTANCES; do
 	    mkdir -p $RESULTS
 	    for run in $(seq 1 $nruns); do
 		### Uncomment for running UMM
-		$LAUNCHER umm-$counter-$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
+		$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
 	    done
 	done
     done
