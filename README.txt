@@ -20,5 +20,6 @@ script for your computing system.
 How to reproduce the plots and tables without re-running
 ---------------------------------------------------------
 
-Open notebook `BB\ opt\ 2.ipynb`, evaluate the first cell (imports), then
-go to section **Compare CEGO and UMM** and run the cells that interest you.
+Open notebook `2-An intro to UMM.ipynb`, evaluate the first cell (imports),
+then evaluate the cells in the sections that interest you.
+
