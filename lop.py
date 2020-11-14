@@ -67,7 +67,7 @@ class LOP(Problem):
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
     @classmethod
-    def read_instance(cls, filename, opt_filename = "./best_knowns.csv"):
+    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv"):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
             print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
