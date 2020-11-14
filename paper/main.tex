@@ -47,7 +47,7 @@
 %\newcommand{\FEmax}{\ensuremath{\textit{FE}_{\max}}}
 \newcommand{\FEmax}{\ensuremath{m}}
 
-\newcommand{\supplement}{~(\href{http://doi.org/10.5281/zenodo.4167148}{doi:10.5281/zenodo.4167148})}
+\newcommand{\supplement}{\href{http://doi.org/10.5281/zenodo.4167148}{doi:10.5281/zenodo.4167148}}
 
 %% Revision documents
 \usepackage[dvipsnames]{xcolor}
@@ -275,7 +275,7 @@ An equivalent definition for the Kendall's-$\tau$ distance counts the number of 
 
 
 \subsection{Distributions over permutations}
-Distributions over permutations~\cite{critchlow91} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
+Distributions over permutations~\cite{CriFliVer1996rankings} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
 %
 \begin{equation}\label{eq:MM}
 \Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
@@ -287,7 +287,7 @@ with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a
 We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
 The MLE process is divided in two stages: first, we estimate the central permutation of the distribution, $\hat{\sigma}_0$ and, second, compute the dispersion parameter, $\hat\theta$~\cite{IruCalLoz2016permallows}. 
 
-The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters for a sample distributed according to the MM~\cite{CarProSha2013votes}; and (iii) and also when no distribution is assumed, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.
+The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters for a sample distributed according to the MM~\cite{CarProSha2013votes}; and (iii) when no distribution is assumed, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.
 
 The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
 First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
@@ -570,7 +570,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 \subsubsection{Datasets}
 %
-For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbf{I}\{\sigma(i)<\sigma(j)\}$, where $\mathbf{I}\colon S \times S \to \{0,1\}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
+For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbf{I}\{\sigma(i)<\sigma(j)\}$, where $\mathbf{I}\colon S \times S \to \{0,1\}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 
 Moreover, we consider real LOP datasets from the LOPLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
@@ -652,7 +652,7 @@ The operating system was CentOS Linux release 7 (Core).
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material\supplement.
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material~(\supplement).
 
 \begin{figure}[htb]
   \centering%
@@ -840,12 +840,15 @@ behaviour as in the PFSP for all instances tested, except for
 \texttt{kra32}. As shown in Fig~\ref{fig:kra32}, for \texttt{kra32} both
 algorithms are able to improve over the number of evaluations, although not
 with ease. As in the synthetic LOP instances, we again observe that CEGO does
-improve faster than UMM initially, yet CEGO appears to
-get stuck around evaluation 250,  and UMM overtakes it around evaluation 300. We believe the reason is
-the same as before, that is, the CEGO model is not able to adequately reflect the
-ruggedness of the actual landscape and, hence, the best solutions found by the
-GA searching the model are not improved solutions for the actual problem. Interestingly, \texttt{kra32} is rectangular
-whereas \texttt{tho32} contains rectangular distances and \texttt{nug12} and \texttt{nug30} contain Manhattan distances of rectangular grids.\MANUEL{so they all have the same distance type!!! What is the difference then? Ask Thomas?}
+improve faster than UMM initially, yet CEGO appears to get stuck around
+evaluation 250, and UMM overtakes it around evaluation 300. We believe the
+reason is the same as before, that is, the CEGO model is not able to adequately
+reflect the ruggedness of the actual landscape and, hence, the best solutions
+found by the GA searching the model are not improved solutions for the actual
+problem. Interestingly, there are well-known differences between
+\texttt{kra32}, on one hand, and \texttt{nug12}, \texttt{nug30} and
+\texttt{tho32}, on the other~\citep{AnsBriGou2002qap}. However, we cannot at
+this moment point out the root cause of this different behavior.
 
 \begin{figure}[tp]
   \centering%
@@ -922,18 +925,26 @@ which is at least an order of magnitude faster.
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
 black-box combinatorial problems on permutation landscapes and when the budget
-of fitness evaluations is severely limited (up to $1000$ or less).  UMM 
-\ekhine{}{has shown to perform statistically better or equal than CEGO, the state of the art algorithm, in the same instances as in the original paper of CEGO and some new instances. UMM}
-is specially well-suited for budget-limited scenarios that are still
-time-sensitive, e.g., when the overhead incurred by the optimizer should be no
-more than a few minutes added to each fitness evaluation. As shown by our
-results, a Bayesian optimizer such as CEGO may sometimes require more than hour
-\MANUEL{UMM is able to model the LOP landscape at least as well as CEGO as shown by the plots where UMM shows a linear decrease in fitness.}
-\EKHINE{me parece mas de CEGO q UMM y parece q UMM solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos  y luego que addemás es más rápido}
-\MANUEL{Pero UMM es peor en rec13 y nug12, y en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir lo que pasa en el momento en que matamos a CEGO y dar también ese valor entonces la diferencia en velocidad no importaría. }
-per fitness evaluation. The time required to train the surrogate-model of CEGO
-also sharply increases with permutation length, hence, UMM would be a
-computationally feasible alternative for relatively large problem sizes.
+of fitness evaluations is severely limited (here, up to $400$ evaluations).
+UMM \ekhine{}{has shown to perform statistically better or equal than CEGO, the
+  state of the art algorithm, in the same instances as in the original paper of
+  CEGO and some new instances. UMM} is specially well-suited for budget-limited
+scenarios that are still time-sensitive, e.g., when the overhead incurred by
+the optimizer should be no more than a few minutes added to each fitness
+evaluation. As shown by our results, a Bayesian optimizer such as CEGO may
+sometimes require more than hour \MANUEL{UMM is able to model the LOP landscape
+  at least as well as CEGO as shown by the plots where UMM shows a linear
+  decrease in fitness.}  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
+  solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q
+  es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos y
+  luego que addemás es más rápido} \MANUEL{Pero UMM es peor en rec13 y nug12, y
+  en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más
+  rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
+  lo que pasa en el momento en que matamos a CEGO y dar también ese valor
+  entonces la diferencia en velocidad no importaría. } per fitness
+evaluation. The time required to train the surrogate-model of CEGO also sharply
+increases with permutation length, hence, UMM would be a computationally
+feasible alternative for relatively large problem sizes.
 
 Although we were inspired by previous work on ACO for expensive black-box
 combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
@@ -942,11 +953,11 @@ to match (and sometimes even improve) the results of a Bayesian
 optimizer.
 % MANUEL: OK?
 % \EKHINE{hhmmm lo hacemos mejor o igual}
-The results presented here
-show that, despite the intrinsic difficulty of this scenario, there are still
-significant advances yet to be made. Thus, we hope that this paper will
-motivate further research. % on such problems.
-
+The results presented here show that, despite the intrinsic difficulty of the
+expensive black-box combinatorial scenario, there are still significant
+advances yet to be made. Thus, we hope that this paper will motivate further
+research. % on such problems.
+\MANUEL{I'm thinking about finishing here and commenting out the following paragraph}
 A somewhat surprising result was that the behavior of UMM (and the same for
 CEGO) on the PFSP is close to random. This result may be due to the distance
 metric used, but further analysis is needed to corroborate this
@@ -961,7 +972,8 @@ generally good static values or an online adaptation approach. Finally, we have
 used here three very different combinatorial problems (LOP, PFSP and QAP) as
 black-box benchmarks. However, an even more diverse range of problems would be
 needed to understand the behavior of UMM on real-world black-box combinatorial
-landscapes. 
+landscapes.
+
 
 % Bayesian optimization methods using a global GP model, such as CEGO, are known
 % to have trouble optimizing locally \citep{EriPeaGar2019scalable}. Our
@@ -976,12 +988,14 @@ landscapes.
 
 %% MANUEL: Blind, so no acknowledgments yet.
 \begin{smaller}
+  \paragraph*{Reproducibility.} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
+  \vspace*{-1em}
 \paragraph*{Acknowledgements.}
 % M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
 %
 % MANUEL: We should also thank the COST ACTION: Ask Carlos?
 Thanks to Hao Wang (Leiden University) for pointing us to the arguments of
-\citet{EriPeaGar2019scalable} and to Thomas Stützle for suggesting works
+\citet{EriPeaGar2019scalable} and to Thomas Stützle (Université libre de Bruxelles) for suggesting works
 discussing differences between QAPLIB instances.
 \end{smaller}
 
@@ -989,7 +1003,7 @@ discussing differences between QAPLIB instances.
 
 \renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
 \bibliographystyle{splncs04nat}
-\bibliography{optbib/abbrev,optbib/authors,optbib/journals,optbib/biblio,optbib/crossref,./mendeley}
+\bibliography{optbib/abbrev,optbib/authors,optbib/journals,optbib/biblio,optbib/crossref}%,./mendeley}
 
 \end{document}
 
