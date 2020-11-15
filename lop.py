@@ -98,7 +98,7 @@ class LOP(Problem):
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
-        xinverse = np.argsort(x)#### OJOOOOO se evalua la inversa
+        xinverse = np.argsort(x) # Important: We evaluate the inverse permutation
         # Sum of the upper triangle. We have to minimize this.
         f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
         return f
