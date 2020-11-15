@@ -86,7 +86,7 @@ def UMM(instance,
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
         fitnesses.append(instance.fitness(perm))
-        # print("Fitness, best, desde UMM.py", fitnesses[-1], instance.best_fitness)
+        print(f"UMM: eval={m}\tF={fitnesses[-1]}\tbest_known={instance.best_fitness}")
         # print(fitnesses,ws)
 
         # This is only used for reporting stats.
