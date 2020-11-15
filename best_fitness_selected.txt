@@ -17,11 +17,14 @@ N-be75eec_250	8893533
 N-be75np_250	17814072
 N-atp111	1495
 N-atp134	1796
-tho30	180000
-kra32	112000
-nug30	7200
-nug12	620
+tho30	149936
+kra30a  88900
+kra30b  91420
+kra32   88700
+nug30	6124
+nug12	578
 rec05	1300
 rec13	2200
 rec19	2325
-rec31	3525
+# We need more cpu time to run these on CEGO
+#rec31	3525

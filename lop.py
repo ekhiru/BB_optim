@@ -43,11 +43,11 @@ def synthetic_LOP(n, m, phi):
     instance = np.zeros((n,n))
     s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
     central = np.random.permutation(n)
-    s = s[:,central] #compose
+    s = s[:, central] #compose
     for i in range(n):
         for j in range(i+1,n):
-            instance[i,j] = (s[:,i] < s[:,j]).sum() / m
-            instance[j,i] = 1 - instance[i,j]
+            instance[i, j] = (s[:, i] < s[:, j]).sum() / m
+            instance[j, i] = 1 - instance[i, j]
     return instance, central
 
 # Linear Ordering Problem
@@ -93,12 +93,17 @@ class LOP(Problem):
         self.instance = instance
         super().__init__(best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name, best_fitness = best_fitness)
 
-        print("identity, reverse and best-known fitnesses",self.fitness_nosave(np.arange(n)),self.fitness_nosave(np.arange(n)[::-1]), best_fitness)
+        print("identity, reverse and best-known and worst-known fitnesses",self.fitness_nosave(np.arange(n)),self.fitness_nosave(np.arange(n)[::-1]), self.best_fitness, self.worst_fitness)
 
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
+<<<<<<< HEAD
         xinverse = np.argsort(x)#### OJOOOOO se evalua la inversa
         # Sum of the lower triangle. We have to minimize this.
+=======
+        xinverse = np.argsort(x) # Important: We evaluate the inverse permutation
+        # Sum of the upper triangle. We have to minimize this.
+>>>>>>> 956903d23a481193e4430038eadcd1922190f4e9
         f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
         return f
