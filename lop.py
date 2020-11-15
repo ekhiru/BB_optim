@@ -41,6 +41,7 @@ def read_best_known(opt_filename, instance_name):
 
 def synthetic_LOP(n, m, phi):
     instance = np.zeros((n,n))
+    # FIXME: It should already return an array.
     s = np.asarray(mk.samplingMM(m, n, phi=phi, k=None))
     central = np.random.permutation(n)
     s = s[:, central] #compose
@@ -61,7 +62,6 @@ class LOP(Problem):
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
-        # best_sol = list(range(n))
         worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
@@ -92,8 +92,12 @@ class LOP(Problem):
         # FIXME: Can we find a better name than instance?
         self.instance = instance
         super().__init__(best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name, best_fitness = best_fitness)
-
-        print("identity, reverse and best-known and worst-known fitnesses",self.fitness_nosave(np.arange(n)),self.fitness_nosave(np.arange(n)[::-1]), self.best_fitness, self.worst_fitness)
+        identity = np.arange(n)
+        print("identity, reverse, best-known and worst-known fitnesses",
+              self.fitness_nosave(identity),
+              self.fitness_nosave(identity[::-1]),
+              self.best_fitness,
+              self.worst_fitness)
 
     def fitness_nosave(self, x):
         # In case it is not numpy array.
