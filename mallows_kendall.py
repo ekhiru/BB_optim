@@ -15,21 +15,23 @@ def find_phi_n(n, bins): #NO
     ed, phi_ed = [], []
     #expected dist en la uniforma para este n
     # FIXME: Use max_dist(n) / 2
+    # FIXME: Is this an integer? should we divide by 2?
     ed_uniform = (n*(n-1)/2)/2 # dist max div 2. AKA
     # ed_uniform = np.mean([expected_dist_MM(n,-0.01), expected_dist_MM(n,0.01)])
     # if k is not None : ed_uniform = np.mean([expected_V(n,theta=None, phi=0.99999,k=k).sum(), expected_V(n,theta=None, phi=1.00000001,k=k).sum()])
     # print(ed_uniform, "find")
-    for dmin in np.linspace(0,ed_uniform-1,bins):
+    for dmin in np.linspace(0, ed_uniform - 1, bins):
         ed.append(dmin)
         phi_ed.append(find_phi(n, dmin, dmin+1))
     return ed, phi_ed
 
 def find_phi(n, dmin, dmax): #NO
-    imin, imax = np.float64(0),np.float64(1)
+    # 0.0, 1.0
+    imin, imax = np.float64(0), np.float64(1)
     iterat = 0
     while iterat < 500:
-        med = imin + (imax-imin)/2
-        d = expected_dist_MM(n,phi2theta(med))#mk.phi2theta(med)
+        med = imin + (imax - imin) / 2
+        d = expected_dist_MM(n, phi2theta(med))#mk.phi2theta(med)
         #print(imin, imax, med, d,imin==imax)
         if d < dmax and d > dmin: return med
         elif d < dmin : imin = med
@@ -71,16 +73,23 @@ def borda_partial(rankings):
     # Double argsort should cancel itself?
     borda = np.argsort(np.argsort(np.nanmean(rankings, axis=0))).astype(float)
     mask = np.isnan(rankings).all(axis=0)
-    borda[mask]=np.nan
+    borda[mask] = np.nan
     return borda
 
-
 def check_theta_phi(theta, phi):
-    if not ((phi is None) ^ (theta is None)): print("KAKA, pon valores")
-    if phi is None and type(theta)!=list: phi = theta2phi(theta)
-    if theta is None and type(phi)!=list: theta = phi2theta(phi)
-    if phi is None and type(theta)==list: phi = [theta2phi(t) for t in theta]
-    if theta is None and type(phi)==list: theta = [phi2theta(p) for p in phi]
+    assert phi is not None or theta is not None, "check_theta_phi: you need to provide either theta or phi"
+    if phi is None:
+        if type(theta)!=list:
+            phi = theta2phi(theta)
+        else:
+            # FIXME: we do not need this because it is already a numpy operation so it will vectorize.
+            phi = [theta2phi(t) for t in theta]
+    if theta is None:
+        if type(phi)!=list:
+            theta = phi2theta(phi)
+        else:
+            # FIXME: we do not need this because it is already a numpy operation so it will vectorize.
+            theta = [phi2theta(p) for p in phi]
     return theta, phi
 
 def expected_dist_MM(n, theta=None, phi=None):
@@ -124,6 +133,7 @@ def prob_mode(n, theta):
     return np.prod(1.0/psi)
 
 def prob(n, theta, dist):
+    # FIXME: You do not need the for-loop
     psi = np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
     psi = np.prod(psi)
     return np.exp(-theta*dist) / psi
@@ -131,41 +141,40 @@ def prob(n, theta, dist):
 def prob_sample(perms,sigma,theta=None,phi=None):
     m,n = perms.shape
     theta, phi = check_theta_phi(theta, phi)
+    # FIXME: You do not need the for-loop
     psi = np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
     psi = np.prod(psi)
     return np.array([np.exp(-theta*kendallTau(perm, sigma)) / psi for perm in perms])
 
 def fit_MM(rankings, s0=None): #returns sigma, phi
-    m , n = rankings.shape
-    if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
-    dist_avg = np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
-    try:
-        theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
-    except:
-        if dist_avg == 0.0: return s0, np.exp(-5)#=phi
-        print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
-        print(rankings)
-        print(s0)
-        raise
-    # theta = - np.log(phi)
-    return s0, np.exp(-theta)#=phi
+    m, n = rankings.shape
+    if s0 is None:
+        # FIXME: Double argsort cancels?
+        s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+    dist_avg = np.mean([kendallTau(s0, perm) for perm in rankings])
+    s0, phi = fit_MM_phi(n, dist_avg)
+    return s0, phi
 
 def fit_MM_phi(n, dist_avg): #returns sigma, phi
     try:
         theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
-        if dist_avg == 0.0: return s0, np.exp(-5)#=phi
+        if dist_avg == 0.0:
+            # FIXME: Why 5?
+            return s0, np.exp(-5)#=phi
         print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
         print(rankings)
         print(s0)
         raise
     # theta = - np.log(phi)
+    # FIXME: return theta2phi(theta)
     return np.exp(-theta)
 
 def theta2phi(theta):
     return np.exp(-theta)
+
 def phi2theta(phi):
-    return - np.log(phi)
+    return -np.log(phi)
 
 def mle_theta_mm_f(theta, n, dist_avg):
     aux = 0
@@ -180,12 +189,12 @@ def mle_theta_mm_fdev(theta, n, dist_avg):
     for j in range(1,n):
         k = n - j + 1
         aux += (k * k * np.exp( -theta * k ))/pow((1 - np.exp(-theta * k)) , 2 )
-    aux2 = (- n + 1) * np.exp( theta ) / pow ((np.exp( theta ) - 1) , 2 )
+    aux2 = (-n + 1) * np.exp( theta ) / pow((np.exp( theta ) - 1) , 2 )
     # print(theta)
     return aux2 + aux
 
 def likelihood_mm(perms, s0, theta):
-    m,n = perms.shape
+    m, n = perms.shape
     psi = 1.0 / np.prod([(1-np.exp(-theta*j))/(1-np.exp(-theta)) for j in range(2,n+1)])
     probs = np.array([np.log(np.exp(-kendallTau(s0, perm)*theta)/psi) for perm in perms])
     # print(probs,m,n)
@@ -194,8 +203,9 @@ def likelihood_mm(perms, s0, theta):
 def samplingMM(m,n,theta=None, phi=None, k=None):
     # k return partial orderings
     theta, phi = check_theta_phi(theta, phi)
-    if k==n:k=None
-    return samplingGMM(m,[theta]*(n-1),topk=k)
+    if k == n:
+        k = None
+    return samplingGMM(m, [theta] * (n-1), topk = k)
 
 def samplingGMM(m,theta, topk=None):
     #  returns RANKINGS!!!!!!!*****
@@ -338,7 +348,7 @@ def random_perm_at_dist(n, dist, sk):
     return v2ranking(v)
 
 def u_phi(sample, s0, ws):
-    m , n = np.asarray(sample).shape
+    m, n = np.asarray(sample).shape
     #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
     dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
     try:
