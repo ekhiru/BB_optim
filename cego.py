@@ -24,6 +24,7 @@ def cego(instance, seed, budget, m_ini, budgetGA):
     
     rstring = """
     library(CEGO)
+    print(sessionInfo())
     # This is identical to the function in the package but takes also a maxTime parameter.
 optimCEGO <- function (x = NULL, fun, control = list()) 
 {
@@ -121,9 +122,11 @@ optimCEGO <- function (x = NULL, fun, control = list())
         indbest <- which.min(res$y)
         res$ybest <- res$y[[indbest]]
         res$xbest <- res$x[[indbest]]
-        if (verbosity > 0) 
+        if (verbosity > 0) {
+            # Modified to print current quality
             print(paste("Evaluations:", res$count, "    Quality:", 
-                res$ybest))
+                res$y[res$count], "    Best:", res$ybest))
+        }
         if (plotting) {
             plot(res$y, type = "l", xlab = "number of evaluations", 
                 ylab = "y")
