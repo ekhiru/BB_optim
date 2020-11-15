@@ -281,7 +281,7 @@ Distributions over permutations~\cite{CriFliVer1996rankings} are functions that 
 \Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
 \end{equation}
 %
-with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's $\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
+with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's-$\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
 
 
 We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
@@ -343,7 +343,7 @@ hopefully increasing its predictive power.
 
 CEGO replaces the Euclidean distance measure, used by the surrogate model in
 EGO, with a distance measure appropriate to combinatorial
-landscapes~\citep{ZaeStoBar2014:ppsn}, such as Kendall's $\tau$ distance for
+landscapes~\citep{ZaeStoBar2014:ppsn}, such as Kendall's-$\tau$ distance for
 permutations (Eq.~\ref{eq:kendall_decomp}). In CEGO, the surrogate model is
 explored by a GA with crossover and mutation operators appropriate for the
 particular combinatorial problem. The original paper notes that coupling the GA
@@ -529,7 +529,7 @@ exploitation. In the experimental section we will study their impact. implemente
 
 \subsubsection{Other settings}
 %
-For simplicity, we use Kendall's $\tau$
+For simplicity, we use Kendall's-$\tau$
 distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments. Nevertheless,
 \citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
 when using Hamming distance and the same may apply to UMM.
@@ -927,7 +927,7 @@ algorithm based on an unbalanced Mallows model. The algorithm is designed for
 black-box combinatorial problems on permutation landscapes and when the budget
 of fitness evaluations is severely limited (here, up to $400$ evaluations).
 UMM \ekhine{}{has shown to perform statistically better or equal than CEGO, the
-  state of the art algorithm, in the same instances as in the original paper of
+  state of the art algorithm for black-box expensive optimization, in the same instances as in the original paper of
   CEGO and some new instances. UMM} is specially well-suited for budget-limited
 scenarios that are still time-sensitive, e.g., when the overhead incurred by
 the optimizer should be no more than a few minutes added to each fitness
@@ -942,8 +942,9 @@ sometimes require more than hour \MANUEL{UMM is able to model the LOP landscape
   rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
   lo que pasa en el momento en que matamos a CEGO y dar también ese valor
   entonces la diferencia en velocidad no importaría. } per fitness
-evaluation. The time required to train the surrogate-model of CEGO also sharply
-increases with permutation length, hence, UMM would be a computationally
+evaluation. The time required to train the surrogate-model of \ekhine{esta establecida la complexity de CEGO???}{UMM increases linearly with the permutation length $n$, while in }
+CEGO  sharply
+increases with $n$, hence, UMM would be a computationally
 feasible alternative for relatively large problem sizes.
 
 Although we were inspired by previous work on ACO for expensive black-box
@@ -961,7 +962,7 @@ research. % on such problems.
 A somewhat surprising result was that the behavior of UMM (and the same for
 CEGO) on the PFSP is close to random. This result may be due to the distance
 metric used, but further analysis is needed to corroborate this
-conjecture. Here, we have focused on Kendall's $\tau$ distance, however, it is
+conjecture. Here, we have focused on Kendall's-$\tau$ distance, however, it is
 possible to extend UMM to other distance metrics, which will allow us to
 dynamically select among various distance metrics for an unknown black-box
 % \ekhine{}{estoy totalmente en contra de esto :) }

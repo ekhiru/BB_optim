@@ -99,6 +99,6 @@ class LOP(Problem):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
         xinverse = np.argsort(x)#### OJOOOOO se evalua la inversa
-        # Sum of the upper triangle. We have to minimize this.
+        # Sum of the lower triangle. We have to minimize this.
         f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
         return f
