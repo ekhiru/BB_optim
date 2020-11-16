@@ -466,7 +466,7 @@ i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fit
 
 
 \subsubsection{Sampling step}\label{sec:sampling}
-%
+In this step, the algorithm samples from the distribution the new data point to be evaluated. 
 Sampling from $MM(\sigma_0,\theta)$  can be done efficiently given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{IruCalLoz2016permallows}, where the computational complexity is $O(n\log n)$. % and $O(n^2)$.\MANUEL{X respectively? more than 2}
 %
 At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in the previous learning step. The scale $\theta$ controls the expected value and variance of the distance $D$ of a random permutation $\sigma\sim MM(\sigma_0, \theta)$ to the location parameter $\sigma_0$. Both  the expected value of $D$ and its variance increase monotonically with the value of $\theta$. In particular, the expected distance $\Edist$ is given by~\cite{FliVer1986}:
@@ -475,9 +475,11 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
 \end{equation}
 
-Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the distance of the uniform distribution), and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
+Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution), and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
-A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.\EKHINE{Explain budgetMM. we sample several permutations and choose one only!}
+
+
+A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. The algorithm also implements the following strategy to avoid sampling the same points more than once, which will be more likely at the explotation phase. The strategy is as follows. Instead of sampling just one permutation from the MM, the algorithm generates $budgetMM$ permutations, $\Sigma$. Then it selects  for evaluation the farest to the sample, i.e.,  $\sigma\in \Sigma$ such that $\sigma = \arg\max\arg\min d(\sigma, \pi)$ for every $\pi\in S$. 
 
 
 
@@ -931,20 +933,25 @@ UMM \ekhine{}{has shown to perform statistically better or equal than CEGO, the
   CEGO and some new instances. UMM} is specially well-suited for budget-limited
 scenarios that are still time-sensitive, e.g., when the overhead incurred by
 the optimizer should be no more than a few minutes added to each fitness
-evaluation. As shown by our results, a Bayesian optimizer such as CEGO may
-sometimes require more than hour \MANUEL{UMM is able to model the LOP landscape
+evaluation. 
+
+\MANUEL{UMM is able to model the LOP landscape
   at least as well as CEGO as shown by the plots where UMM shows a linear
-  decrease in fitness.}  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
+  decrease in fitness.}  
+  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
   solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q
   es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos y
-  luego que addemás es más rápido} \MANUEL{Pero UMM es peor en rec13 y nug12, y
+  luego que addemás es más rápido} 
+  \MANUEL{Pero UMM es peor en rec13 y nug12, y
   en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más
   rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
   lo que pasa en el momento en que matamos a CEGO y dar también ese valor
-  entonces la diferencia en velocidad no importaría. } per fitness
-evaluation. The time required to train the surrogate-model of \ekhine{esta establecida la complexity de CEGO???}{UMM increases linearly with the permutation length $n$, while in }
-CEGO  sharply
-increases with $n$, hence, UMM would be a computationally
+  entonces la diferencia en velocidad no importaría. } 
+The time required to train the surrogate-model of \ekhine{esta establecida la complexity de CEGO???}{UMM increases linearly with the permutation length $n$, while in }
+CEGO  it sharply
+increases with $n$, requiring 
+sometimes more than hour per fitness evaluation as shown in the experimental section. 
+Hence, UMM is a computationally
 feasible alternative for relatively large problem sizes.
 
 Although we were inspired by previous work on ACO for expensive black-box
