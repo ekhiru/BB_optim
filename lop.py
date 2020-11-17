@@ -49,7 +49,10 @@ def synthetic_LOP(n, m, phi):
         for j in range(i+1, n):
             instance[i, j] = (s[:, i] < s[:, j]).sum() / m
             instance[j, i] = 1 - instance[i, j]
-    return instance, central
+    # The best is the inverse central because the evaluation does not use the
+    # inverse
+    best_sol = np.argsort(central)
+    return instance, best_sol
 
 # Linear Ordering Problem
 class LOP(Problem):
@@ -62,10 +65,9 @@ class LOP(Problem):
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
-        worst_sol = np.argsort(np.argsort(best_sol)[::-1])
-        #OJO, si la fitness NO evalua la inversa, las bests y worst son estas de abajo
-        worst_sol = np.argsort(worst_sol)
-        best_sol = np.argsort(best_sol)
+        # The worst is the reverse of the best because the evaluation does not
+        # use the inverse
+        worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
