@@ -104,5 +104,6 @@ class LOP(Problem):
         x = np.asarray(x, dtype=int)
         xinverse = np.argsort(x) # Important: We evaluate the inverse permutation
         # Sum of the lower triangle. We have to minimize this.
-        f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
+        # f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
+        f = np.tril(self.instance[np.ix_(x, x)]).sum()
         return f
