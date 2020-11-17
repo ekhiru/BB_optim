@@ -8,26 +8,40 @@ import pandas as pd
 def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
                       # 0 <= w_i <= 1, w is sorted increasingly,
                       rho_ini=1, rho_end=0, tol=0.001):
-  w = np.asarray(w)
-  assert np.all(w >= 0.0)
-  assert np.all(w <= 1.0)
-  #if pos is None we take the largest 4th.
-  #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
-  # codes as a recursive binary search in (0,1)
-  pos = int(len(w) * ratio_samples_learn)
-  # print(pos,len(w),ratio_samples_learn)
-  rho_med = rho_ini + (rho_end - rho_ini) / 2
-  acum = np.cumsum(rho_med ** w)
-  a = acum[pos]
-  b = acum[-1]
-  if abs(a/b - weight_mass_learn) < tol:
-      return rho_med
-  if a/b > weight_mass_learn:
-      mid = rho_ini
-      last = rho_med
-  else:
-      mid = rho_med
-      last = rho_end
+  try:
+      w = np.asarray(w)
+      ane = np.ediff1d(w)[np.ediff1d(w)>0].min()/2 #avoid numerical errors caused by having several zeros in w
+      w = w+ane
+      w[0] = 0.0
+      w[w>1] = 1.0
+      assert np.all(w >= 0.0)
+      assert np.all(w <= 1.0)
+
+      #if pos is None we take the largest 4th.
+      #find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
+      # codes as a recursive binary search in (0,1)
+      pos = int(len(w) * ratio_samples_learn)
+      # print(pos,len(w),ratio_samples_learn)
+      rho_med = rho_ini + (rho_end - rho_ini) / 2
+      acum = np.cumsum(rho_med ** w)
+      a = acum[pos]
+      b = acum[-1]
+      if abs(a/b - weight_mass_learn) < tol:
+          return rho_med
+      if a/b > weight_mass_learn:
+          mid = rho_ini
+          last = rho_med
+      else:
+          mid = rho_med
+          last = rho_end
+  except:
+       pos = int(len(w) * ratio_samples_learn)
+       # print(pos,len(w),ratio_samples_learn)
+       rho_med = rho_ini + (rho_end - rho_ini) / 2
+       acum = np.cumsum(rho_med ** w)
+       a = acum[pos]
+       b = acum[-1]
+       print(a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
   return binary_search_rho(w, ratio_samples_learn, weight_mass_learn, mid, last)
 
 def get_expected_distance(iterat,n,m):
