@@ -62,7 +62,7 @@ class LOP(Problem):
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
-        worst_sol = best_sol[::-1]
+        worst_sol = np.argsort(np.argsort(bes)[::-1])
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
