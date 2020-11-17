@@ -42,7 +42,7 @@ launch_local() {
 
 # Generate LOP synthetic
 gen_lop_synthetic() {
-    INSTANCES=$@
+    INSTANCES=""
     LOP_n=20
     LOP_m=200
     LOP_seed=123456
@@ -60,6 +60,11 @@ gen_lop_synthetic() {
     echo $INSTANCES
 }
 
+nruns=10
+
+LAUNCHER=qsub_job
+#LAUNCHER=launch_local
+
 ## For QAP, PFSP instances
 INSTANCES="\
   qap/kra30a.dat \
@@ -74,17 +79,14 @@ INSTANCES="\
  pfsp/rec31.txt \
 "
 
-###### For synthetic LOP instances
-INSTANCES=$(gen_lop_synthetic "")
-
 ###### For LOPLIB instances
 #INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
 
-budget=400
-nruns=10
+###### For synthetic LOP instances, we generate different instances and one run per instance.
+INSTANCES=$(gen_lop_synthetic)
 
-LAUNCHER=qsub_job
-#LAUNCHER=launch_local
+
+budget=400
 
 cego_m_ini=10
 budgetGA=3 # Actually, 10**budgetGA
@@ -100,11 +102,11 @@ for instance in $INSTANCES; do
     RESULTS="results/$instance"
     mkdir -p $RESULTS
     for run in $(seq 1 $nruns); do
-	### Uncomment for running CEGO
+       	### Uncomment for running CEGO
 	$LAUNCHER cego-$counter-r$run ./target-runner-cego.py cego $counter-r$run-$$ $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --output $RESULTS/cego-r$run
 
 	### Uncomment for running UMM
-	#$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
+	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --output $RESULTS/umm-r$run
         
     done
 done
