@@ -10,10 +10,6 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
                       rho_ini=1, rho_end=0, tol=0.001):
   try:
       w = np.asarray(w)
-      ane = np.ediff1d(w)[np.ediff1d(w)>0].min()/2 #avoid numerical errors caused by having several zeros in w
-      w = w+ane
-      w[0] = 0.0
-      w[w>1] = 1.0
       assert np.all(w >= 0.0)
       assert np.all(w <= 1.0)
 
@@ -35,6 +31,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
           mid = rho_med
           last = rho_end
   except:
+       print(w)
        pos = int(len(w) * ratio_samples_learn)
        # print(pos,len(w),ratio_samples_learn)
        rho_med = rho_ini + (rho_end - rho_ini) / 2
