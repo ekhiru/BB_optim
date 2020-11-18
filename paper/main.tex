@@ -547,11 +547,12 @@ limited.
 %
 Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
 
-The \emph{Linear Ordering Problem (LOP)} is defined as 
+The \emph{Linear Ordering Problem (LOP)}, when minimizing, is defined as
+%\footnote{For consistency with the other problems, we minimise the lower triangle instead of maximising the upper triangle.} 
 \begin{equation}\label{eq:lop}
-  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma(i), \sigma(j)}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma^{-1}(i), \sigma^{-1}(j)}
 \end{equation}
-where $[a_{i,j}]$ is a matrix of size $n \times n$.
+where $[a_{i,j}]$ is a matrix of size $n \times n$ and $\sigma^{-1}$ is the inverse of $\sigma$.
 
 
 The \emph{Quadratic Assignment Problem (QAP)} is defined by:
