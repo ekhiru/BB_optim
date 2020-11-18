@@ -549,7 +549,7 @@ Experiments with real-world expensive black-box problems would be computationall
 
 The \emph{Linear Ordering Problem (LOP)} is defined as 
 \begin{equation}\label{eq:lop}
-  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n-1} \sum_{j=i+1}^n  a_{\sigma(i), \sigma(j)}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma(i), \sigma(j)}
 \end{equation}
 where $[a_{i,j}]$ is a matrix of size $n \times n$.
 
