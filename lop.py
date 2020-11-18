@@ -66,7 +66,7 @@ class LOP(Problem):
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
         # The worst is the reverse of the best because the evaluation does not
-        # use the inverse.
+        # use the inverse
         worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
