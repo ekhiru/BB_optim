@@ -42,7 +42,7 @@ launch_local() {
 
 # Generate LOP synthetic
 gen_lop_synthetic() {
-    INSTANCES=""
+    INSTANCES=$@
     LOP_n=20
     LOP_m=200
     LOP_seed=123456
@@ -79,11 +79,11 @@ INSTANCES="\
  pfsp/rec31.txt \
 "
 
-###### For LOPLIB instances
-#INSTANCES="$(tr '\n' ' ' < loplib-instances.txt)"
+###### Synthetic LOP instances
+INSTANCES=$(gen_lop_synthetic "")
 
-###### For synthetic LOP instances, we generate different instances and one run per instance.
-INSTANCES=$(gen_lop_synthetic)
+###### For LOLIB instances
+INSTANCES="$INSTANCES $(tr '\n' ' ' < loplib-instances.txt)"
 
 
 budget=400
