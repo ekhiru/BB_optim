@@ -49,10 +49,7 @@ def synthetic_LOP(n, m, phi):
         for j in range(i+1, n):
             instance[i, j] = (s[:, i] < s[:, j]).sum() / m
             instance[j, i] = 1 - instance[i, j]
-    # The best is the inverse central because the evaluation does not use the
-    # inverse
-    best_sol = np.argsort(central)
-    return instance, best_sol
+    return instance, central
 
 # Linear Ordering Problem
 class LOP(Problem):
@@ -65,8 +62,7 @@ class LOP(Problem):
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
-        # The worst is the reverse of the best because the evaluation does not
-        # use the inverse
+        # FIXME: This worst is not the worst.
         worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
@@ -107,6 +103,7 @@ class LOP(Problem):
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
+        xinverse = np.argsort(x) # Important: We evaluate the inverse permutation
         # Sum of the lower triangle. We have to minimize this.
-        f = np.tril(self.instance[np.ix_(x, x)]).sum()
+        f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
         return f
