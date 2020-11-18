@@ -156,11 +156,11 @@ exists a wide body of research on probabilistic models for permutations, such
 as Mallows~\cite{FliVer1986}, that have already been been used in optimization
 problems successfully, with the most prominent examples being estimation of
 distribution algorithms
-(EDAs)~\cite{CebIruMen2014eda,CebMenLoz2015mallows}. ACO may also be considered
+(EDAs)~\cite{CebIruMen2014eda}. ACO may also be considered
 a type of EDA, since it builds a probability distribution model from which
 solutions are sampled with a bias towards the best solutions evaluated so
 far. These classical EDAs  assume that function
-evaluations are cheap and/or the fitness function is white-box.\MANUEL{Do EDAs really assume that the fitness function is white-box? ACO doesn't: They are hybridized with local search }
+evaluations are cheap and/or the fitness function is white-box.%\MANUEL{Do EDAs really assume that the fitness function is white-box? ACO doesn't: They are hybridized with local search }
 %The proposed UMM drastically differs from the above algorithms.
 
 In contrast, UMM aims at learning as much as possible with a limited number of
@@ -171,7 +171,7 @@ during the whole execution that is increased by one new permutation at each
 iteration. The sample is used to learn a Mallows model from which a single new
 permutation is sampled. The model is learned by using
 uBorda~\cite{IruLobPer2020arxiv}, a generalization of the well-known rank
-aggregation algorithm Borda~\cite{Borda1781}. Rank aggregation algorithms
+aggregation algorithm Borda~\cite{AliMei2011kemeny}. Rank aggregation algorithms
 summarize in a single permutation the information of a sample of permutations,
 and they can be seen as functions to compute the \emph{sample mean}. The uBorda
 algorithm computes a \textit{weighted sample mean} and has been shown to return
@@ -275,7 +275,7 @@ An equivalent definition for the Kendall's-$\tau$ distance counts the number of 
 
 
 \subsection{Distributions over permutations}
-Distributions over permutations~\cite{CriFliVer1996rankings} are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
+Distributions over permutations are functions that assign a probability value  $\Prob(\sigma)\in[0,1]$ to each permutation $\sigma \in S_n$. One of the most popular distributions is the Mallows Model (MM), which is considered as an analogous to the Gaussian distribution for permutations. The MM defines the probability of each permutation $\sigma\in S_n$ as follows:
 %
 \begin{equation}\label{eq:MM}
 \Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
@@ -388,7 +388,9 @@ Mallows model and uBorda learning.
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
     \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}\Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
-    \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
+    \State $\Sigma \assign$ sampled $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}\Comment{Generate $\beta$ permutations}
+    \State $\sigma\assign  \arg\max_{\pi'\in \Sigma}\arg\min_{ \pi \in S} d(\pi', \pi)   $ \Comment{Select the farthest from $S$}
+   % \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     \State $S \assign S \cup \{\sigma\}$, $\quad F \assign F \cup \{f(\sigma)\}$
     \EndFor 
     \State \Return $S$, $F$
@@ -479,7 +481,7 @@ Parameter $\theta$ is set automatically by the algorithm to control the diversif
 
 
 
-A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. The algorithm also implements the following strategy to avoid sampling the same points more than once, which will be more likely at the explotation phase. The strategy is as follows. Instead of sampling just one permutation from the MM, the algorithm generates $budgetMM$ permutations, $\Sigma$. Then it selects  for evaluation the farest to the sample, i.e.,  $\sigma\in \Sigma$ such that $\sigma = \arg\max\arg\min d(\sigma, \pi)$ for every $\pi\in S$. 
+A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. The algorithm also implements the following strategy to avoid sampling the same points more than once, which will be more likely at the explotation phase. The strategy is as follows. Instead of sampling just one permutation from the MM, the algorithm generates $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest to the sample, i.e.,  $\sigma\in \Sigma$ such that $\sigma = \arg\max\arg\min d(\sigma, \pi)$ for every $\pi\in S$. 
 
 
 
@@ -487,6 +489,14 @@ A purely explotation approach would always generate $\sigma_0$ in the sampling s
 
 
 \section{Experimental setup}\label{sec:setup}
+
+\subsubsection{UMM}
+%
+UMM uses the same budget of evaluations ($\FEmax$) as CEGO
+and initially samples $\minit=10$ solutions uniformly. The other two parameters
+of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
+exploitation. In the experimental section we will study their impact. implemented UMM using Python 3.
+At each sampling step, we set $\beta=10$, meaning that 10 permutations are generated and the farthest from $S$ is selected for evaluation. 
 
 \subsubsection{CEGO}
 %
@@ -520,13 +530,6 @@ doubling $\FEmax$ produces a smaller increase in runtime than multiplying the
 GA budget by a factor of $10$. Nevertheless, we caution that choosing a
 different trade-off may lead to different conclusions and more work is needed
 to understand CEGO parameters.
-
-\subsubsection{UMM}
-%
-UMM uses the same budget of evaluations ($\FEmax$) as CEGO
-and initially samples $\minit=10$ solutions uniformly. The other two parameters
-of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
-exploitation. In the experimental section we will study their impact. implemented UMM using Python 3.
 
 
 \subsubsection{Other settings}
@@ -573,7 +576,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 \subsubsection{Datasets}
 %
-For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbf{I}\{\sigma(i)<\sigma(j)\}$, where $\mathbf{I}\colon S \times S \to \{0,1\}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
+For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 
 Moreover, we consider real LOP datasets from the LOPLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
@@ -768,9 +771,9 @@ observe a similar behavior for the first 50-100 evaluations. At this point,
 CEGO reaches the time limit of 3 days, so no observations can be made for
 longer budgets.  Overall, the improvement from the first (random) to the last
 solutions is 2-3 times larger in UMM than CEGO. %
-\MANUEL{But this is a bit misleading because UMM runs for 4 times more
-  evaluations, perhaps we should also measure up to the evaluation that CEGO
-  reaches so we report both values?}
+%\MANUEL{But this is a bit misleading because UMM runs for 4 times more
+%  evaluations, perhaps we should also measure up to the evaluation that CEGO
+%  reaches so we report both values?}
 
 In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
  obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
@@ -892,18 +895,18 @@ scenarios that are still time-sensitive, e.g., when the overhead incurred by
 the optimizer should be no more than a few minutes added to each fitness
 evaluation. 
 
-\MANUEL{UMM is able to model the LOP landscape
-  at least as well as CEGO as shown by the plots where UMM shows a linear
-  decrease in fitness.}  
-  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
-  solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q
-  es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos y
-  luego que addemás es más rápido} 
-  \MANUEL{Pero UMM es peor en rec13 y nug12, y
-  en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más
-  rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
-  lo que pasa en el momento en que matamos a CEGO y dar también ese valor
-  entonces la diferencia en velocidad no importaría. } 
+%\MANUEL{UMM is able to model the LOP landscape
+%  at least as well as CEGO as shown by the plots where UMM shows a linear
+%  decrease in fitness.}  
+%  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
+%  solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q
+%  es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos y
+%  luego que addemás es más rápido} 
+%  \MANUEL{Pero UMM es peor en rec13 y nug12, y
+%  en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más
+%  rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
+%  lo que pasa en el momento en que matamos a CEGO y dar también ese valor
+%  entonces la diferencia en velocidad no importaría. } 
 The time required to train the surrogate-model of \ekhine{esta establecida la complexity de CEGO???}{UMM increases linearly with the permutation length $n$, while in }
 CEGO  it sharply
 increases with $n$, requiring 
@@ -916,13 +919,11 @@ combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
 knowledge, the first EDA specifically designed for such problems that is able
 to match (and sometimes even improve) the results of a Bayesian
 optimizer.
-% MANUEL: OK?
-% \EKHINE{hhmmm lo hacemos mejor o igual}
 The results presented here show that, despite the intrinsic difficulty of the
 expensive black-box combinatorial scenario, there are still significant
 advances yet to be made. Thus, we hope that this paper will motivate further
 research. % on such problems.
-\MANUEL{I'm thinking about finishing here and commenting out the following paragraph}
+%\MANUEL{I'm thinking about finishing here and commenting out the following paragraph}
 A somewhat surprising result was that the behavior of UMM (and the same for
 CEGO) on the PFSP is close to random. This result may be due to the distance
 metric used, but further analysis is needed to corroborate this
@@ -958,10 +959,11 @@ landscapes.
 \paragraph*{Acknowledgements.}
 % M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
 %
-% MANUEL: We should also thank the COST ACTION: Ask Carlos?
+\manuel{}{: We should also thank the COST ACTION: Ask Carlos?} \ekhine{}{Sure!, esto no habra q ponerlo aun por ser blind, no?}
 Thanks to Hao Wang (Leiden University) for pointing us to the arguments of
 \citet{EriPeaGar2019scalable} and to Thomas Stützle (Université libre de Bruxelles) for suggesting works
 discussing differences between QAPLIB instances.
+Thanks to Ahmed Boujaada for the experimental support. 
 \end{smaller}
 
 
