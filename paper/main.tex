@@ -114,7 +114,7 @@
   solutions evaluated approaches 400. The computational cost of UMM is at least
   an order of magnitude smaller than CEGO, which makes it specially useful when
   both computation time and number of evaluations are of concern.\sloppy
-  \textcolor{red}{16 pages max, deadline: 1 November 2020}
+  %\textcolor{red}{16 pages max, deadline: 1 November 2020}
   \keywords{Combinatorial optimization \and Bayesian optimization \and
     Expensive black-box optimization \and Estimation of distribution
     algorithms}
@@ -388,8 +388,8 @@ Mallows model and uBorda learning.
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
     \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}\Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
-    \State $\Sigma \assign$ sampled $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}\Comment{Generate $\beta$ permutations}
-    \State $\sigma\assign  \arg\max_{\pi'\in \Sigma}\arg\min_{ \pi \in S} d(\pi', \pi)   $ \Comment{Select the farthest from $S$}
+    \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}\Comment{Generate $\beta$ permutations}
+    \State $\sigma\assign  \argmax_{\pi'\in \Sigma}\min_{ \pi \in S} d(\pi', \pi)   $ \Comment{Select the farthest from $S$}\label{line:distance}
    % \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     \State $S \assign S \cup \{\sigma\}$, $\quad F \assign F \cup \{f(\sigma)\}$
     \EndFor 
@@ -423,7 +423,7 @@ solutions and few of the bad ones. A property of UMM is that the
 computational complexity of working with the original sample (Borda) and with the
 transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are the update
 (\emph{learning}) of the parameters $\sigma_0$, $\theta$ and $\rho$ (line~\ref{line:uborda} in Algorithm~\ref{alg:umm}) and
-the sampling of a new permutation from $MM(\sigma_0,\theta)$ (line~\ref{line:sample}). % in Algorithm~\ref{alg:umm}).
+the sampling from $MM(\sigma_0,\theta)$ (lines~\ref{line:sample}--\ref{line:distance}). % in Algorithm~\ref{alg:umm}).
 
 
 % 'However, the question of how
@@ -481,7 +481,10 @@ Parameter $\theta$ is set automatically by the algorithm to control the diversif
 
 
 
-A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. The algorithm also implements the following strategy to avoid sampling the same points more than once, which will be more likely at the explotation phase. The strategy is as follows. Instead of sampling just one permutation from the MM, the algorithm generates $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest to the sample, i.e.,  $\sigma\in \Sigma$ such that $\sigma = \arg\max\arg\min d(\sigma, \pi)$ for every $\pi\in S$. 
+A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
+
+To avoid sampling the same points more than once and increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
+%i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
 
 
 
@@ -500,8 +503,7 @@ At each sampling step, we set $\beta=10$, meaning that 10 permutations are gener
 
 \subsubsection{CEGO}
 %
-We use the implementation of GECO provided by the
-authors.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
+We use the original implementation of GECO.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
 Although it is never stated in the original paper, the implementation of CEGO
 generates a set of initial solutions of size $\minit=10$ by means of a
 max-min-distance sequential design: new solutions are added to the set
@@ -525,7 +527,7 @@ the GA to $10^3$ and we stopped each run of CEGO after 144 hours of CPU-time.
 Although a higher GA budget could improve the results of CEGO reported here,
 our results are similar (and sometimes better) than the ones reported in the
 original papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to
-running CEGO with $\FEmax=400$ instead of $\FEmax=200$. In fact, we found that
+running CEGO with $\FEmax=400$ instead of $\FEmax=200$. We found that
 doubling $\FEmax$ produces a smaller increase in runtime than multiplying the
 GA budget by a factor of $10$. Nevertheless, we caution that choosing a
 different trade-off may lead to different conclusions and more work is needed
@@ -707,19 +709,23 @@ evaluations. Overall, the mean fitness returned by UMM after $\FEmax$ is better 
 %difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
 
 On the other hand, % \EKHINE{cambio el orden}
-CEGO starts with a random sampling
-of 10 solutions, with are quite poor as expected, followed by building and
-updating the Kriging model based new evaluations, which leads to an impressive
-improvement in less than 50 evaluations. However, progress is %more or less 
-halted at this point and the model seems to have trouble generating better
-solutions. Lower uniformity values, e.g., 0.5,
- show worsening evaluations
-despite the increase in solutions used to build the model. In summary, the
-Kriging model clearly helps CEGO to quickly identify good solutions in very few
-evaluations. However, for some reason, CEGO is not able to further improve
-those solutions given more data. This may due to the model not being able to
-produce accurate predictions or the underlying optimizer not being able to find
-improved solutions using the model.
+CEGO starts with a random sampling of 10 solutions, with are quite poor as
+expected, followed by building and updating the Kriging model based new
+evaluations, which leads to an impressive improvement in less than 50
+evaluations. However, progress is halted at this point and the model seems to
+have trouble generating better solutions. Around evaluation 200, the search
+becomes fully random. Lower uniformity values, e.g., 0.5, show worsening
+evaluations despite the increase in solutions used to build the model. In
+summary, the Kriging model clearly helps CEGO to quickly identify good
+solutions in very few evaluations. However, for some reason, CEGO is not able
+to further improve those solutions given more data. Given what we know about
+Kriging~\citep{EriPeaGar2019scalable}, it appears that the surrogate model cannot model the local step
+necessary to reach the optimal solution and switches to an exploration strategy
+that ends up being completely random.
+
+% This may due to the model not being able to produce accurate
+% predictions or the underlying optimizer not being able to find improved
+% solutions using the model.
 %\MANUEL{perhaps we should measure the
 %  prediction error and see if it grows or decreases. That would answer this
 %  question.}
