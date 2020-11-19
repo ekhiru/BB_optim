@@ -110,10 +110,11 @@
   model and unbalanced rank aggregation (uBorda). Experimental results on
   black-box versions of LOP, QAP and PFSP show that UMM is able to match, and
   sometimes surpass, the solutions obtained by CEGO, a Bayesian optimization
-  algorithm for combinatorial optimization, specially when the budget of
-  solutions evaluated approaches 400. The computational cost of UMM is at least
-  an order of magnitude smaller than CEGO, which makes it specially useful when
-  both computation time and number of evaluations are of concern.\sloppy
+  algorithm for combinatorial optimization. %, specially when the budget of solutions evaluated approaches 400. 
+  Moreover, the computational complexity of UMM increases linearly with both the number of function evaluations and the permutation size.
+%  an order of magnitude smaller than CEGO, which makes it specially useful when
+  %both computation time and number of evaluations are of concern.
+  \sloppy
   %\textcolor{red}{16 pages max, deadline: 1 November 2020}
   \keywords{Combinatorial optimization \and Bayesian optimization \and
     Expensive black-box optimization \and Estimation of distribution
@@ -409,7 +410,7 @@ Mallows model and uBorda learning.
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are uniformly randomly generated (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are generated uniformly at random  (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
 Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
 Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
@@ -455,17 +456,11 @@ the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.
 \begin{equation}
   \begin{split}
   r_1 \sum_{\sigma\in S}\rho^{f(\sigma)} =  \sum_{\sigma'\in S'}\rho^{f(\sigma')} \quad\text{where}\; &|S'| = r_2|S| \\[-1.2em]
-  &\land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma)
+  &\land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma).
   \end{split}
 \end{equation}
 %
-i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification: higher values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas smaller values make the sampling more uniform, thus slowing down the learning.
-
-
-% As shown in Section~\ref{sec:backgroud}, MM can be approximately learnt in two= steps (1) estimating the location parameter $\sigma_0$ and (2) computing the scale parameter $\theta$. Since the scale parameter $\theta$ is set in the sampling step,\MANUEL{X How is it set?} we focus on estimating $\sigma_0$.
-
-% The location parameter of a MM is usually approximated with the Borda algorithm. Since we are interested on biasing the model towards the regions of the space where the fitness function is smaller, we would like to replicate the permutations a number of times that is inversely proportionally to their fitness values.
-% We can simulate the replication of the best fitted individuals by using uBorda and setting $w(\sigma)=\rho^{f(\sigma)}$, as described in . This generalization requires setting a value for parameter $\rho$. We show how to choose this value in the experimental section.\MANUEL{I thought we select it automatically now?\ekhine{that is $\theta$}} 
+i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
 
 
