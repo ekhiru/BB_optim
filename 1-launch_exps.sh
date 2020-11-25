@@ -79,16 +79,15 @@ INSTANCES="\
  pfsp/rec31.txt \
 "
 
+###### For LOLIB instances
+#INSTANCES="$INSTANCES $(tr '\n' ' ' < loplib-instances.txt)"
+
 ###### Synthetic LOP instances
 INSTANCES=$(gen_lop_synthetic "")
 
-###### For LOLIB instances
-INSTANCES="$INSTANCES $(tr '\n' ' ' < loplib-instances.txt)"
-
-
 budget=400
 
-eval_ranks=0
+#eval_ranks=0
 eval_ranks=1
 
 cego_m_ini=10
