@@ -45,7 +45,7 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
         raise ValueError("Unknown algo: " + algo_name)
 
     problem = get_problem(instance_name)
-    instance = problem.read_instance(instance_name, eval_ranks=True)
+    instance = problem.read_instance(instance_name)
 
     timer = Timer()
     df = algo(instance, seed, **algo_params)
