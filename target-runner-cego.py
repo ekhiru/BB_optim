@@ -32,6 +32,7 @@ parser.add_argument("--output", type=str, default=None, help="output file")
 # Parameters for the target algorithm
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
 parser.add_argument('--budget', type=int, default=400, help='budget')
+parser.add_argument('--eval_ranks', type=int, default=0, help='eval_ranks')
 parser.add_argument('--budgetGA', type=int, default=0, help='budgetGA')
 
 args = parser.parse_args()
@@ -44,7 +45,7 @@ budgetGA = 10**args.budgetGA
 stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout' 
 with open(outfilename, 'w') as sys.stdout:
-    df = runner.run_once("CEGO", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA, out_filename = args.output)
+    df = runner.run_once("CEGO", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, budgetGA = budgetGA, eval_ranks = args.eval_ranks, out_filename = args.output)
         
 sys.stdout = stdout
 print(df["Fitness"].min())

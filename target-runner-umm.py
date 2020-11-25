@@ -35,6 +35,7 @@ parser.add_argument('--budget', type=int, default=400, help='budget')
 parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
 parser.add_argument('--rsl', type=float, default=0, help='rsl')
 parser.add_argument('--wml', type=float, default=0, help='wml')
+parser.add_argument('--eval_ranks', type=int, default=0, help='eval_ranks')
 
 args = parser.parse_args()
 
@@ -45,7 +46,7 @@ stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout'
 with open(outfilename, 'w') as sys.stdout:
     df = runner.run_once("UMM", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, 
-                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml, out_filename = args.output)
+                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml, eval_ranks = args.eval_ranks, out_filename = args.output)
             
 sys.stdout = stdout
 print(df["Fitness"].min())

@@ -18,7 +18,7 @@ import rpy2.rinterface as ri
 def r_kendallTau(A,B):
     return kendallTau(A,B)
 
-def cego(instance, seed, budget, m_ini, budgetGA):
+def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
     # Reset the list of recorded evaluations.
     instance.reset()
     
@@ -34,7 +34,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
         infill = infillExpectedImprovement, model = modelKriging, 
         modelSettings = list(), optimizer = optimEA, optimizerSettings = list(), 
         initialDesign = designMaxMinDist, archiveModelInfo = NULL, 
-        initialDesignSettings = list(), maxTime = 3600 * 24 * 6)
+        initialDesignSettings = list(), maxTime = 3600 * 24 * 6, eval_ranks = FALSE)
     con[names(control)] <- control
     control <- con
     rm(con)
@@ -49,9 +49,13 @@ optimCEGO <- function (x = NULL, fun, control = list())
     if (is.null(control$initialDesignSettings$distanceFunction)) 
         control$initialDesignSettings$distanceFunction <- distanceFunction
     fun
-    if (!vectorized) 
-        fn <- function(x) unlist(lapply(x, fun))
-    else fn <- fun
+    if (!vectorized) { 
+        fn <- if (control$eval_ranks) function(x) unlist(lapply(x, fun)) 
+              else function(x) unlist(lapply(x, function(y) fun(order(y) - 1))) 
+    } else {
+     # fn <- fun
+     stop("We do not handle vectorized functions")
+    }
     res <- list(xbest = NA, ybest = NA, x = NA, y = NA, distances = NA, 
         modelArchive = NA, count = count, convergence = 0, message = "")
     msg <- "Termination message:"
@@ -163,7 +167,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
     res
     }
 
-    my_cego <- function(fun, dist, n, m_ini = 5, budget = 15, seed = 0, budgetGA = 100)
+    my_cego <- function(fun, dist, n, m_ini = 5, budget = 15, seed = 0, budgetGA = 100, eval_ranks)
     {
     set.seed(seed)
     # mutation
@@ -184,7 +188,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
                                                             recombinationFunction=rF),
                                      evalInit=m_ini,budget=budget,verbosity=1,
                                      model=modelKriging,
-                                     vectorized=FALSE))
+                                     vectorized=FALSE, eval_ranks = eval_ranks))
 
     return(list(res$xbest, res$ybest, do.call(rbind, res$x), res$y))
     }
@@ -197,7 +201,8 @@ optimCEGO <- function (x = NULL, fun, control = list())
                                                m_ini = m_ini,
                                                budget = budget,
                                                seed = seed,
-                                               budgetGA = budgetGA)
+                                               budgetGA = budgetGA,
+                                               eval_ranks = eval_ranks)
 
     # We use what instance recorded because CEGO may not get us what was
     # actually evaluated.
@@ -207,4 +212,5 @@ optimCEGO <- function (x = NULL, fun, control = list())
         m_ini = m_ini,
         seed = seed,
         budget = budget, budgetGA = budgetGA,
+        eval_ranks = eval_ranks,
         Distance = [ instance.distance_to_best(perm) for perm in instance.solutions]))
