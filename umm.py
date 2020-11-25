@@ -100,7 +100,7 @@ def UMM(instance,
             fitnesses.append(instance.fitness(perm))
         else:
             fitnesses.append(instance.fitness(np.argsort(perm)))
-        print(f"UMM: eval={m}\tF={fitnesses[-1]}\tbest_known={instance.best_fitness}")
+        # print(f"UMM: eval={m}\tF={fitnesses[-1]}\tbest_known={instance.best_fitness}")
         # print(fitnesses,ws)
 
         # This is only used for reporting stats.
