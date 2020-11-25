@@ -28,3 +28,31 @@ rec13	2200
 rec19	2325
 # We need more cpu time to run these on CEGO
 #rec31	3525
+N-p40-20
+N-p40-19
+N-p40-18
+N-p40-17
+N-p40-16
+N-p40-15
+N-p40-14
+N-p40-13
+N-p40-12
+N-p40-11
+N-p40-10
+N-p40-09
+N-p40-08
+N-p40-07
+N-p40-06
+N-p40-05
+N-p40-04
+N-p40-03
+N-p40-02
+N-p40-01
+N-econ36
+N-pal31
+N-pal27
+N-atp24
+N-pal23
+N-pal19
+N-pal13
+N-pal11

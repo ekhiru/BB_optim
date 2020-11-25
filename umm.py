@@ -55,7 +55,7 @@ def UMM(instance,
         m_ini,
         budgetMM,
         ratio_samples_learn,
-        weight_mass_learn):
+        weight_mass_learn, eval_ranks):
     np.random.seed(seed)
     n = instance.n
     sample = [np.random.permutation(range(n)) for _ in range(m_ini)]
@@ -96,7 +96,10 @@ def UMM(instance,
         # FIXME: This should already be an array of int type.
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
-        fitnesses.append(instance.fitness(perm))
+        if eval_ranks:
+            fitnesses.append(instance.fitness(perm))
+        else:
+            fitnesses.append(instance.fitness(np.argsort(perm)))
         print(f"UMM: eval={m}\tF={fitnesses[-1]}\tbest_known={instance.best_fitness}")
         # print(fitnesses,ws)
 

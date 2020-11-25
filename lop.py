@@ -57,22 +57,25 @@ class LOP(Problem):
     problem_name = "LOP"
 
     @classmethod
-    def generate_synthetic(cls, n, m, phi, seed = None):
+    def generate_synthetic(cls, n, m, phi, seed = None, eval_ranks=True):
         if seed is None:
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
-        # FIXME: This worst is not the worst.
-        worst_sol = best_sol[::-1]
+        if eval_ranks: # we evaluate rankings, so we do *not* invert in the function evaluation
+            best_sol = np.argsort(best_sol)
+            worst_sol = best_sol[::-1]
+        else:
+            worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
     @classmethod
-    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv"):
+    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv", eval_ranks=True):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
             print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
-            return cls.generate_synthetic(int(n), int(m), float(phi), int(seed))
+            return cls.generate_synthetic(int(n), int(m), float(phi), int(seed), bool(eval_ranks))
         else:
             print(f"Reading instance from {filename}")
             with open(filename) as f:
@@ -103,7 +106,6 @@ class LOP(Problem):
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
-        xinverse = np.argsort(x) # Important: We evaluate the inverse permutation
         # Sum of the lower triangle. We have to minimize this.
-        f = np.tril(self.instance[np.ix_(xinverse, xinverse)]).sum()
+        f = np.tril(self.instance[np.ix_(x, x)]).sum()
         return f
