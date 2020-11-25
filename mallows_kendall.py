@@ -4,7 +4,7 @@ import scipy as sp
 from scipy import optimize
 #fit MM
 
-# FIXME: Isn't this specific to Kendall?
+# MANUEL: Isn't this specific to Kendall? If so, perhaps we should have a class for distance metrics.
 def max_dist(n):
     return int(n * (n - 1) / 2)
 

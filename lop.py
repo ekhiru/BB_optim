@@ -49,7 +49,8 @@ def synthetic_LOP(n, m, phi):
         for j in range(i+1, n):
             instance[i, j] = (s[:, i] < s[:, j]).sum() / m
             instance[j, i] = 1 - instance[i, j]
-    return instance, central
+    best_sol = np.argsort(central)
+    return instance, best_sol
 
 # Linear Ordering Problem
 class LOP(Problem):
@@ -63,7 +64,6 @@ class LOP(Problem):
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
         # print(instance[np.ix_(best_sol, best_sol)])
-        best_sol = np.argsort(best_sol)
         # print(instance[np.ix_(best_sol, best_sol)])
         # print(np.tril(instance[np.ix_(best_sol, best_sol)]))
         # print(np.tril(instance[np.ix_(best_sol, best_sol)]).sum())
