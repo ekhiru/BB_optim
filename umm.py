@@ -114,4 +114,5 @@ def UMM(instance,
     df['budgetMM'] = budgetMM
     df['ratio_samples_learn'] = ratio_samples_learn
     df['weight_mass_learn'] = weight_mass_learn
+    df['eval_ranks'] = eval_ranks
     return df
