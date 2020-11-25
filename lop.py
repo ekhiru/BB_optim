@@ -62,13 +62,17 @@ class LOP(Problem):
             seed = np.random.randint(1, 123456789, 1)[0]
         np.random.seed(seed)
         instance, best_sol = synthetic_LOP(n, m, phi)
+        # print(instance[np.ix_(best_sol, best_sol)])
         best_sol = np.argsort(best_sol)
+        # print(instance[np.ix_(best_sol, best_sol)])
+        # print(np.tril(instance[np.ix_(best_sol, best_sol)]))
+        # print(np.tril(instance[np.ix_(best_sol, best_sol)]).sum())
         worst_sol = best_sol[::-1]
         return cls(n, instance, best_sol = best_sol, worst_sol = worst_sol,
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
     @classmethod
-    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv", eval_ranks=True):
+    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv"):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
             print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
