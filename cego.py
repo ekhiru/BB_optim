@@ -103,11 +103,9 @@ optimCEGO <- function (x = NULL, fun, control = list())
             break
         }
         res$count <- res$count + 1
-        if (!duplicate && ((improved || useEI))) {
+        if ((!duplicate && (improved || useEI)) || distanceHasParam) {
             res$x[[res$count]] <- optimres$xbest
-        }
-        else {
-            if (!distanceHasParam) {
+        } else { # !distanceHasParam
                 designSize <- length(res$x) + 1
                 if (is.list(distanceFunction)) 
                   dfun <- distanceFunction[[1]]
@@ -116,10 +114,8 @@ optimCEGO <- function (x = NULL, fun, control = list())
                   designSize, control = list(budget = control$creationRetries, 
                     distanceFunction = dfun))
                 res$x[[res$count]] <- xc[[designSize]]
-            }
-            else {
-                res$x[[res$count]] <- optimres$xbest
-            }
+                # Modified to print
+                print(paste0("Random solution:", res$count))
         }
         res$x <- CEGO::removeDuplicates(res$x, creationFunction)
         res$y <- c(res$y, fn(res$x[res$count]))
