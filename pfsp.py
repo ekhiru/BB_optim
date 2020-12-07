@@ -15,9 +15,12 @@ class PFSP(Problem):
             # jobs, machines
             n, m = f.readline().strip().split()
             n, m = int(n), int(m)
-            P = np.loadtxt(f, max_rows=n)
-            # Processing times: each even column is useless.
-            P = P[:,1::2]
+            # P = np.loadtxt(f, max_rows=n)
+            # # Processing times: each even column is useless.
+            # P = P[:,1::2]
+            P = np.loadtxt(f, max_rows=n)# 
+            P = P.transpose()
+            print(P)
             assert P.shape[0] == n
             assert P.shape[1] == m
 
@@ -26,14 +29,14 @@ class PFSP(Problem):
             with open(opt_filename) as f:
                 for line in f:
                     name, best_sol = line.strip().split()
-                    if filename.find(name) >= 0: 
+                    if filename.find(name) >= 0:
                         best_sol = np.fromstring(best_sol, dtype=int, sep=",")
                         best_sol -= 1 # 0-indexed
                         print(f"Reading best solution {best_sol} from {opt_filename}")
                         break
-                    
+
         return PFSP(P, instance_name = filename, best_sol = best_sol)
-        
+
     def __init__(self, P, best_sol = None, worst_sol = None, instance_name = "(generated)"):
         # Processing times matrix
         self.P = np.asarray(P)
@@ -54,7 +57,7 @@ class PFSP(Problem):
     def makespan(self, x):
         C = self.completion_times(x)
         return C[self.n - 1, self.m - 1]
-    
+
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
