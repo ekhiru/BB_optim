@@ -8,17 +8,17 @@ import pandas as pd
 def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
                       # 0 <= w_i <= 1, w is sorted increasingly,
                       rho_ini=1, rho_end=0, tol=0.001):
-  try:
-      w = np.asarray(w)
-      assert np.all(w >= 0.0)
-      assert np.all(w <= 1.0)
+  w = np.asarray(w)
+  assert np.all(w >= 0.0)
+  assert np.all(w <= 1.0)
 
-      #if pos is None we take the largest 4th.
-      # Find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
-      # codes as a recursive binary search in (0,1)
-      pos = int(len(w) * ratio_samples_learn)
-      # print(pos,len(w),ratio_samples_learn)
-      rho_med = rho_ini + (rho_end - rho_ini) / 2
+  #if pos is None we take the largest 4th.
+  # Find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
+  # codes as a recursive binary search in (0,1)
+  pos = int(len(w) * ratio_samples_learn)
+  # print(pos,len(w),ratio_samples_learn)
+  rho_med = rho_ini + (rho_end - rho_ini) / 2
+  try:
       acum = np.cumsum(rho_med ** w)
       a = acum[pos]
       b = acum[-1]
@@ -28,16 +28,18 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
           mid, last = rho_ini, rho_med
       else:
           mid, last = rho_med, rho_end
+      return binary_search_rho(w, ratio_samples_learn, weight_mass_learn, mid, last)
   except: # MANUEL: How can the above fail?
        print(w)
        pos = int(len(w) * ratio_samples_learn)
-       # print(pos,len(w),ratio_samples_learn)
+       print(pos,len(w),ratio_samples_learn)
        rho_med = rho_ini + (rho_end - rho_ini) / 2
        acum = np.cumsum(rho_med ** w)
        a = acum[pos]
        b = acum[-1]
-       print(a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
-  return binary_search_rho(w, ratio_samples_learn, weight_mass_learn, mid, last)
+       print("Error in binary_search_rho:", 
+             a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
+       return rho_med 
 
 def get_expected_distance(iterat, n, budget):
   # MANUEL: Should this be Kendall max dist?

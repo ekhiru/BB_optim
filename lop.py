@@ -72,7 +72,7 @@ class LOP(Problem):
                    instance_name = f"LOP-synthetic,seed={seed},n={n},m={m},phi={phi}")
 
     @classmethod
-    def read_instance(cls, filename, opt_filename = "./lop/best_knowns.csv"):
+    def read_instance(cls, filename, opt_filename = None):
         if "synthetic" in filename:
             seed, n, m, phi = re.search("seed=([0-9]+),n=([0-9]+),m=([0-9]+),phi=([^ ]+)", filename).group(1,2,3,4)
             print(f"Generating synthetic LOP instance with seed={seed} n={n} m={m} phi={phi}")
@@ -84,10 +84,13 @@ class LOP(Problem):
                 instance = np.loadtxt(f, max_rows=n)
             best_fitness = None
             if opt_filename is not None:
-                best_fitness = read_best_known(opt_filename, filename)
-                if best_fitness != None:
-                    best_fitness = instance.sum() - best_fitness
-                    print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
+                try: 
+                    best_fitness = read_best_known(opt_filename, filename)
+                    if best_fitness != None:
+                        best_fitness = instance.sum() - best_fitness
+                        print(f"Reading best-known fitness {best_fitness} from {opt_filename}")
+                except:
+                    print("Cannot read best-known fitness from {opt_filename} !")
 
             return LOP(n, instance, best_fitness = best_fitness, instance_name = filename)
 

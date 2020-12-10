@@ -80,7 +80,7 @@ INSTANCES="\
 # pfsp/rec31.txt \
 
 ###### For LOLIB instances
-#INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 #INSTANCES=$(gen_lop_synthetic "")
