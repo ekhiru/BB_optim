@@ -12,16 +12,17 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
   assert np.all(w >= 0.0)
   assert np.all(w <= 1.0)
 
-  #if pos is None we take the largest 4th.
+  # If pos is None we take the largest 4th.
   # Find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
   # codes as a recursive binary search in (0,1)
   pos = int(len(w) * ratio_samples_learn)
-  # print(pos,len(w),ratio_samples_learn)
   rho_med = rho_ini + (rho_end - rho_ini) / 2
   try:
       acum = np.cumsum(rho_med ** w)
       a = acum[pos]
       b = acum[-1]
+      if b < tol: # If b is very small, all values are equal, the value of rho does not matter. Let's return 1.0 
+        return 1.0
       if abs(a / b - weight_mass_learn) < tol:
           return rho_med
       if a / b > weight_mass_learn:
@@ -39,7 +40,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
        b = acum[-1]
        print("Error in binary_search_rho:", 
              a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
-       return rho_med 
+       raise
 
 def get_expected_distance(iterat, n, budget):
   # MANUEL: Should this be Kendall max dist?
@@ -73,6 +74,7 @@ def UMM(instance, seed, budget,
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
         ws = ws - ws.min()
+        # FIXME: Handle if ws.max() == 0.
         ws = ws / ws.max()
         co = ws.copy()
         co.sort()
