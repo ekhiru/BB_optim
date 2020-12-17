@@ -15,12 +15,9 @@ class PFSP(Problem):
             # jobs, machines
             n, m = f.readline().strip().split()
             n, m = int(n), int(m)
-            # P = np.loadtxt(f, max_rows=n)
-            # # Processing times: each even column is useless.
-            # P = P[:,1::2]
-            P = np.loadtxt(f, max_rows=n)# 
-            P = P.transpose()
-            print(P)
+            P = np.loadtxt(f, max_rows=n)
+            # Processing times: each even column is useless.
+            P = P[:,1::2]
             assert P.shape[0] == n
             assert P.shape[1] == m
 
