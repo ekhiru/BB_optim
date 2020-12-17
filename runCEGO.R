@@ -1,5 +1,6 @@
-seed <- commandArgs(trailingOnly=TRUE)
-seed <- as.numeric(seed)
+argv <- commandArgs(trailingOnly=TRUE)
+seed <- as.numeric(argv[1])
+eval_ranks <- as.numeric(argv[2])
 
 library(CEGO)
 n <- 20
@@ -40,7 +41,6 @@ cF <- function() sample(n)
 #    print("antes del optimCEGO")
 budgetGA <- 10^3
 budget <- 400
-eval_ranks <- FALSE
 res <- optimCEGO(x = NULL,
                  fun = fun,
                  control = list(creationFunction=cF,
@@ -50,7 +50,7 @@ res <- optimCEGO(x = NULL,
                                                        recombinationFunction=rF),
                                 evalInit=10,budget=budget,verbosity=1,
                                 model=modelKriging,
-                                vectorized=FALSE, eval_ranks = eval_ranks))
+                                vectorized=FALSE, eval_ranks = as.logical(eval_ranks)))
 
 cegores <- data.frame(Fitness=res$y, Evals = seq(11, budget), eval_ranks = eval_ranks, seed=seed)
-saveRDS(cegores, paste0("cegores-er", ifelse(eval_ranks, 1,0), "-r", seed, ".rds")
+saveRDS(cegores, paste0("cegores-er", eval_ranks, "-r", seed, ".rds")
