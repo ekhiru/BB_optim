@@ -1,84 +1,66 @@
 import numpy as np
 import itertools as it
-import scipy as sp
 from scipy import optimize
-#fit MM
 
-# MANUEL: Isn't this specific to Kendall? If so, perhaps we should have a class for distance metrics.
-def max_dist(n):
+# NOTE: Everything related to alpha to beta may be removed because it is related to partial permutations.
+def kendall_max_dist(n):
     return int(n * (n - 1) / 2)
 
+def kendallTau(A, B=None):
+    # if any partial is B
+    if B is None : B = list(range(len(A)))
+    n = len(A)
+    pairs = it.combinations(range(n), 2)
+    distance = 0
+    # print("IIIIMNNMNNN",list(pairs),len(A))
+    for x, y in pairs:
+        #if not A[x]!=A[x] and not A[y]!=A[y]:#OJO no se check B
+        a = A[x] - A[y]
+        # MANUEL: How can this fail?
+        try:
+            b = B[x] - B[y]# if discordant (different signs)
+        except:
+            print("ERROR kendallTau, check b",A, B, x, y)
+        # print(b,a,b,A, B, x, y,a * b < 0)
+        if (a * b < 0):
+            distance += 1
+    return distance
+
+
+# FIXME: The comment says it searches for theta, but the function is called find_phi
 # These two functions search for theta for different E[D].
 # from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
-# FIXME: We should rename it as find_theta
-def find_phi_n(n, bins): #NO
-    ed, phi_ed = [], []
-    #expected dist en la uniforma para este n
-    # FIXME: Use max_dist(n) / 2
-    # FIXME: Is this an integer? should we divide by 2?
-    ed_uniform = (n*(n-1)/2)/2 # dist max div 2. AKA
-    # ed_uniform = np.mean([expected_dist_MM(n,-0.01), expected_dist_MM(n,0.01)])
-    # if k is not None : ed_uniform = np.mean([expected_V(n,theta=None, phi=0.99999,k=k).sum(), expected_V(n,theta=None, phi=1.00000001,k=k).sum()])
-    # print(ed_uniform, "find")
-    for dmin in np.linspace(0, ed_uniform - 1, bins):
-        ed.append(dmin)
-        phi_ed.append(find_phi(n, dmin, dmin+1))
-    return ed, phi_ed
-
 def find_phi(n, dmin, dmax): #NO
-    # 0.0, 1.0
-    imin, imax = np.float64(0), np.float64(1)
+    imin, imax = 0.0, 1.0
     iterat = 0
     while iterat < 500:
         med = imin + (imax - imin) / 2
-        d = expected_dist_MM(n, phi2theta(med))#mk.phi2theta(med)
+        # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
+        d = expected_dist_MM(n, theta = phi2theta(med))
         #print(imin, imax, med, d,imin==imax)
         if d < dmax and d > dmin: return med
         elif d < dmin : imin = med
         elif d > dmax : imax = med
         iterat  += 1
+    # FIXME: Is there a default?
+    assert False
 
 
 def compose(s, p):
     return np.asarray(s[p])
 
-# FIXME: Better than use np.nan, which is a float, use -1 to represent nan
-def compose_partial(partial, full):#s is partial
-    # FIXME: This is equivalent to:
-    # return np.where(np.isnan(full), np.nan, partial[full])
-    return [partial[i] if not np.isnan(i) else np.nan for i in full]
-
-def inverse_partial(sigma):
-    inv = np.array([np.nan]*len(sigma))
-    for i,j in enumerate(sigma):
-        if not np.isnan(j):
-            inv[int(j)] = i
-    return inv
-
 def inverse(s):
     return np.argsort(s)
 
-def alpha2beta(alpha, k):
-    inv = np.array([np.nan]*len(alpha))
-    for i,j in enumerate(alpha[:k]): inv[int(j)] = i
-    return inv
-
-
 def borda(rankings):
-    # Double argsort should cancel itself?
-    consensus =  np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+    # Ranks breaking ties randomly.
+    consensus = inverse(inverse(rankings.sum(axis=0)))
     return consensus
-
-def borda_partial(rankings):
-    # Double argsort should cancel itself?
-    borda = np.argsort(np.argsort(np.nanmean(rankings, axis=0))).astype(float)
-    mask = np.isnan(rankings).all(axis=0)
-    borda[mask] = np.nan
-    return borda
 
 def check_theta_phi(theta, phi):
     assert phi is not None or theta is not None, "check_theta_phi: you need to provide either theta or phi"
     if phi is None:
+        # In our case: theta and phi is always a number.
         if type(theta)!=list:
             phi = theta2phi(theta)
         else:
@@ -101,63 +83,23 @@ def expected_dist_MM(n, theta=None, phi=None):
     expected_dist = n * np.exp(-theta) / (1 - np.exp(-theta)) - np.sum([j * np.exp(-j*theta) / (1 - np.exp(-j*theta))  for j in range(1,n+1)])
     return expected_dist
 
-def variance_dist_MM(n,theta=None, phi=None):
-    theta, phi = check_theta_phi(theta, phi)
-    variance = (phi*n)/(1-phi)**2 - np.sum([(pow(phi,i) * i**2)/(1-pow(phi,i))**2  for i in range(1,n+1)])
-    return variance
-
-def expected_V(n,theta=None, phi=None,k=None):#txapu integrar
-    theta, phi = check_theta_phi(theta, phi)
-    if k is None: k = n-1
-    if type(theta)!=list: theta = [theta]*k
-    expected_v = [np.exp(-theta[j]) / (1-np.exp(-theta[j])) - (n-j) * np.exp(-(n-j)*theta[j]) / (1 - np.exp(-(n-j)*theta[j]))  for j in range(k)]
-    return np.array(expected_v)
-
-def variance_V(n,theta=None, phi=None,k=None):#txapu integrar es posibe q solo fuciones con MM
-    theta, phi = check_theta_phi(theta, phi)
-    if k is None: k = n-1
-    if type(phi)!=list: phi = [phi]*k
-    var_v = [phi[j]/(1-phi[j])**2 - (n-j)**2 * phi[j]**(n-j) / (1-phi[j]**(n-j))**2 for j in range(k)]
-    return np.array(var_v)
-
-def psiMM(n,theta=None,phi=None):
-    if theta is not None: return np.prod([(1-np.exp(-theta*j))/(1-np.exp(-theta)) for j in range(2,n+1)])
-    if phi is not None:  return np.prod([(1-np.power(phi,j))/(1-phi) for j in range(2,n+1)])
-    theta, phi = check_theta_phi(theta, phi) #por si acaso
-    #np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
-
-def prob_mode(n, theta):
-    #theta as array
-    # FIXME: You do not need the for-loop
-    psi = np.array([(1 - np.exp(( - n + i )*(theta[i])))/(1 - np.exp( -theta[i])) for i in range(n-1)])
-    return np.prod(1.0/psi)
-
 def prob(n, theta, dist):
     # FIXME: You do not need the for-loop
     psi = np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
     psi = np.prod(psi)
     return np.exp(-theta*dist) / psi
 
-def prob_sample(perms,sigma,theta=None,phi=None):
-    m,n = perms.shape
-    theta, phi = check_theta_phi(theta, phi)
-    # FIXME: You do not need the for-loop
-    psi = np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
-    psi = np.prod(psi)
-    return np.array([np.exp(-theta*kendallTau(perm, sigma)) / psi for perm in perms])
-
 def fit_MM(rankings, s0=None): #returns sigma, phi
     m, n = rankings.shape
     if s0 is None:
-        # FIXME: Double argsort cancels?
-        s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+        s0 = borda(rankings)
     dist_avg = np.mean([kendallTau(s0, perm) for perm in rankings])
     s0, phi = fit_MM_phi(n, dist_avg)
     return s0, phi
 
 def fit_MM_phi(n, dist_avg): #returns sigma, phi
     try:
-        theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
+        theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
         if dist_avg == 0.0:
             # FIXME: Why 5?
@@ -237,7 +179,7 @@ def ranking2v(perm):
     return np.array([np.sum([perm[i]<perm[j] for i in range(j+1,n)], dtype=int) for j in range(n)])
 
 def ranking2vinv(perm):
-    inv = np.argsort(perm)
+    inv = inverse(perm)
     n = len(perm)
     return np.array([np.sum([inv[i]<inv[j] for i in range(j+1,n)], dtype=int) for j in range(n)])
 
@@ -264,27 +206,6 @@ def discordancesToPermut(indCode, refer):
     #     ordering[i] = rem[indCode[i]]
     #     rem.pop(indCode[i])
     # return ordering#[i+1 for i in permut];
-
-def kendallTau(A, B=None):
-    # if any partial is B
-    if B is None : B = list(range(len(A)))
-    n = len(A)
-    pairs = it.combinations(range(n), 2)
-    distance = 0
-    # print("IIIIMNNMNNN",list(pairs),len(A))
-    for x, y in pairs:
-        #if not A[x]!=A[x] and not A[y]!=A[y]:#OJO no se check B
-        a = A[x] - A[y]
-        # MANUEL: How can this fail?
-        try:
-            b = B[x] - B[y]# if discordant (different signs)
-        except:
-            print("ERROR kendallTau, check b",A, B, x, y)
-        # print(b,a,b,A, B, x, y,a * b < 0)
-        if (a * b < 0):
-            distance += 1
-    return distance
-
 
 def partial_ord2partial_rank(pord, n, k, type="beta"):#NO
     if type == "gamma": val = -1
@@ -347,12 +268,14 @@ def random_perm_at_dist(n, dist, sk):
         i += 1
     return v2ranking(v)
 
+
 def u_phi(sample, s0, ws):
     m, n = np.asarray(sample).shape
     #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
     dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
     try:
-        theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
+        # FIXME: This is the same as fit_MM, no?
+        theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
         #if dist_avg == 0.0: return s0, np.exp(-5)#=phi
         print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
@@ -360,15 +283,8 @@ def u_phi(sample, s0, ws):
         raise
     if theta < 0:
         theta = 0.001
-    return np.exp(-theta) # theta = - np.log(phi)
-
+    return theta2phi(theta)
 
 def uborda(sample, ws):
-    mul = (sample * ws[:, None]).sum(axis=0)
-    # FIXME: double argsort cancels
-    return np.argsort(np.argsort(mul))
+    return borda(sample * ws[:, None])
 
-
-
-
-# end
