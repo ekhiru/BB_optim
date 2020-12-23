@@ -1,7 +1,7 @@
 argv <- commandArgs(trailingOnly=TRUE)
 seed <- as.numeric(argv[1])
 eval_ranks <- as.numeric(argv[2])
-
+elapsed <- proc.time()
 library(CEGO)
 n <- 20
 m <- 15
@@ -51,6 +51,8 @@ res <- optimCEGO(x = NULL,
                                 evalInit=10,budget=budget,verbosity=1,
                                 model=modelKriging,
                                 vectorized=FALSE, eval_ranks = as.logical(eval_ranks)))
+elapsed <- proc.time() - elapsed
 
-cegores <- data.frame(Fitness=res$y, Evals = seq(11, budget), eval_ranks = eval_ranks, seed=seed)
+cegores <- data.frame(Fitness=res$y, Evals = 1:budget, eval_ranks = eval_ranks, seed=seed, time=elapsed[3])
+
 saveRDS(cegores, paste0("cegores-er", eval_ranks, "-r", seed, ".rds")

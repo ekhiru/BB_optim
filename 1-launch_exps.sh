@@ -87,8 +87,8 @@ INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 budget=400
 
-#eval_ranks=0
-eval_ranks=1
+#eval_ranks=1
+eval_ranks=0
 
 cego_m_ini=10
 budgetGA=3 # Actually, 10**budgetGA
