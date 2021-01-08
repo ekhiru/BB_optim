@@ -2,8 +2,8 @@ argv <- commandArgs(trailingOnly=TRUE)
 seed <- as.numeric(argv[1])
 eval_ranks <- as.numeric(argv[2])
 elapsed <- proc.time()
-seed <- 1
-eval_ranks <- 1
+seed <- 12345
+eval_ranks <- 0
 library(CEGO)
 cat("seed = ", seed, "  eval_ranks = ", eval_ranks, "\n")
 print(sessionInfo())
@@ -183,13 +183,8 @@ cF <- function() sample(n)
 # start optimization
 #    print("antes del optimCEGO")
 budgetGA <- 10^3
-<<<<<<< HEAD
-budget <- 400
-res <- my_optimCEGO(x = NULL,
-=======
 budget <- 100
 res <- optimCEGO(x = NULL,
->>>>>>> sync optbib
                  fun = fun,
                  control = list(creationFunction=cF,
                                 distanceFunction = distancePermutationSwap,
@@ -202,8 +197,6 @@ res <- optimCEGO(x = NULL,
 elapsed <- proc.time() - elapsed
 print(res$y)
 print(1:budget)
-print(eval_ranks)
-print(seed)
 print(elapsed[3])
 # We cannot use budget because optimCEGO may terminate before consuming the budget.
 cegores <- data.frame(Fitness=res$y, Instance=instance, Evals = seq(1,length(res$y)), eval_ranks = eval_ranks, seed=seed, time=elapsed[[3]])
