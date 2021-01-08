@@ -298,8 +298,7 @@ Assignment with Controllable Processing Times},
   pages =        {450--457},
 }
 
-
-@INPROCEEDINGS{AlaSolGhe2004:bioma,
+@inproceedings{AlaSolGhe2004:bioma,
   author =       {I. Alaya} #and# Solnon #and# { Khaled Gh{\'e}dira},
   title =        {Ant algorithm for the multi-dimensional knapsack
                   problem},
@@ -1557,6 +1556,16 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   address =      {Insbruck, Austria}
 }
 
+@Article{BasFra1990,
+  author =       {Basu, Atanu and Frazer, L. Neil},
+  title =        {Rapid Determination of the Critical Temperature in Simulated Annealing Inversion},
+  journal =      science,
+  year =         1990,
+  volume =       249,
+  number =       4975,
+  pages =        {1409--1412}
+}
+
 @InCollection{BasGoeLie2013gecco,
   author =       {Basseur, Matthieu} #and# Goeffon #and# Liefooghe #and# Verel,
   title =        {On Set-based Local Search for Multiobjective Combinatorial
@@ -1674,8 +1683,7 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   author =       {E. B. Baum},
   title =        {Towards {P}ractical ``{N}eural'' {C}omputation for
                   {C}ombinatorial {O}ptimization {P}roblems},
-  booktitle =    {Neural Networks for Computing, AIP Conference
-                  Proceedings},
+  booktitle =    {Neural Networks for Computing, AIP Conference Proceedings},
   year =         1986,
   pages =        {53--64}
 }
@@ -1692,7 +1700,7 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   doi =          {10.1016/j.ejor.2005.12.017},
 }
 
-@Article {Baumol1962,
+@Article{Baumol1962,
   author =       {Baumol, William J.},
   title =        {Management models and industrial applications of linear
                   programming},
@@ -1808,7 +1816,7 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   address =      {London, England},
   year =         1998,
   institution =  {The Management School, Imperial College},
- }
+}
 
 
 @InProceedings{BecGotStu05,
@@ -2459,7 +2467,8 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   title =        {A component-wise approach to multi-objective evolutionary
                   algorithms: from flexible frameworks to automatic design},
   school =       iridia-phd,
-  year =         2016
+  year =         2016,
+  annote =       {Supervised by } # Stuetzle # and # Lopez-Ibanez,
 }
 
 @Article{BiaBirMan2006jmma,
@@ -2601,7 +2610,7 @@ Local Search for the Probabilistic Traveling Salesman Problem},
                   the natural language toolkit},
   author =       {Bird, Steven and Klein, Ewan and Loper, Edward},
   year =         2009,
-  publisher =    {" O'Reilly Media, Inc."}
+  publisher =    {O'Reilly Media, Inc.}
 }
 
 
@@ -2905,27 +2914,24 @@ Local Search for the Probabilistic Traveling Salesman Problem},
   volume =       36,
   doi =         {10.1016/j.cor.2009.02.005},
   pdf =          {BluBleLop09-BeamSearch-LCS.pdf},
-  abstract =     { The longest common subsequence problem is a
-                  classical string problem that concerns finding the
-                  common part of a set of strings. It has several
-                  important applications, for example, pattern
-                  recognition or computational biology. Most research
-                  efforts up to now have focused on solving this
-                  problem optimally. In comparison, only few works
-                  exist dealing with heuristic approaches. In this
-                  work we present a deterministic beam search
-                  algorithm. The results show that our algorithm
-                  outperforms the current state-of-the-art approaches
-                  not only in solution quality but often also in
-                  computation time.},
+  abstract =     {The longest common subsequence problem is a classical string
+                  problem that concerns finding the common part of a set of
+                  strings. It has several important applications, for example,
+                  pattern recognition or computational biology. Most research
+                  efforts up to now have focused on solving this problem
+                  optimally. In comparison, only few works exist dealing with
+                  heuristic approaches. In this work we present a deterministic
+                  beam search algorithm. The results show that our algorithm
+                  outperforms the current state-of-the-art approaches not only
+                  in solution quality but often also in computation time.},
 }
 
 @article{BluCaBle2015swarm,
   author =       Blum #and# "Borja Calvo" #and# Blesa,
   title =        {{FrogCOL} and {FrogMIS}: new decentralized algorithms for finding large independent sets in graphs},
   journal =      swarm,
-  year =         {2015},
-  volume =       {9},
+  year =         2015,
+  volume =       9,
   number =       {2-3},
   pages =        {205--227},
   doi =          {10.1007/s11721-015-0110-1},
@@ -3179,6 +3185,18 @@ Los Angeles, CA},
   title =        {M{\'e}moire sur les {\'E}lections au Scrutin},
   year =         1781,
   keywords =     "ranking"
+}
+
+
+@inproceedings{BosGuyVap1992,
+  author    = {Bernhard E. Boser and
+               Isabelle Guyon and
+               Vladimir Vapnik},
+  title     = {A Training Algorithm for Optimal Margin Classifiers},
+  pages     = {144--152},
+  crossref = "COLT1992",
+  doi       = {10.1145/130385.130401},
+  annote = "Proposed SVM"
 }
 
 
@@ -3802,6 +3820,17 @@ Los Angeles, CA},
   year =         2017,
 }
 
+@article{BurFin1983,
+  title =        {The asymptotic probabilistic behaviour of quadratic sum assignment problems},
+  author =       Burkard #and# {Fincke, Ulrich},
+  journal =      zor,
+  volume =       27,
+  number =       1,
+  pages =        {73--81},
+  year =         1983,
+  publisher =    springer
+}
+
 @Article{BurFraMos2004:joh,
   author =       {Luciana Buriol} #and# {Paulo M. Fran{\c c}a} #and# Moscato,
   title =        {A New Memetic Algorithm for the Asymmetric Traveling Salesman Problem},
@@ -3929,13 +3958,25 @@ Los Angeles, CA},
 }
 
 @Article{CabLuqMol2002promoin,
-  author =       "Caballero, R. and Luque, M. and Molina, J. and Ruiz, F.",
-  title =        "{PROMOIN}: An Interactive System for Multiobjective Programming",
+  author =       "Caballero, R." #and# Luque_M #and# "Molina, J. and Ruiz, F.",
+  title =        "{PROMOIN}: An Interactive System for Multiobjective
+                  Programming",
   journal =      itdm,
-  year =         {2002},
-  volume =       {1},
+  year =         2002,
+  volume =       1,
   pages =        {635--656},
-  keywords =       {preferences, multi interactive methods framework}
+  keywords =     {preferences, multi interactive methods framework}
+}
+
+@PhdThesis{Perez-Caceres2017phd,
+  author =       Perez_L #and# Stuetzle,
+  title =        "Automatic Algorithm Configuration: Analysis, Improvements and
+                  Applications",
+  school =       iridia-phd,
+  year =         2017,
+  annote =       {Supervised by } # Stuetzle # and # Lopez-Ibanez,
+  eprint =
+                  "http://hdl.handle.net/2013/ULB-DIPOT:oai:dipot.ulb.ac.be:2013/262048",
 }
 
 @Article{CacStu2017:endm,
@@ -5090,7 +5131,7 @@ Los Angeles, CA},
 @Article{CosGolGol2012:esa,
   title =        "Hybridizing {VNS} and path-relinking on a particle swarm
                   framework to minimize total flowtime ",
-  journal =      esa,
+  journal =      eswa,
   volume =       39,
   number =       18,
   pages =        "13118--13126",
@@ -5837,6 +5878,21 @@ Los Angeles, CA},
   keywords =     {irace},
 }
 
+
+
+
+
+@article{DelKar1990interactive,
+  title =        {An interactive {MCDM} weight space reduction method utilizing
+                  a {T}chebycheff utility function},
+  author =       {Dell, Robert F. and Karwan, Mark H.},
+  journal =      nrl,
+  volume =       37,
+  number =       2,
+  pages =        {263--277},
+  year =         1990,
+}
+
 @Article{DelTru1993,
   author =       {Mauro Dell'Amico and Marco Trubian},
   title =        {Applying Tabu Search to the Job Shop Scheduling Problem},
@@ -5904,8 +5960,7 @@ Los Angeles, CA},
   title =        {A practical tutorial on the use of nonparametric statistical
                   tests as a methodology for comparing evolutionary and swarm
                   intelligence algorithms},
-  author =       {Derrac, Joaqu{\'\i}n and Garc{\'\i}a, Salvador and Molina,
-                  Daniel} #and# Herrera_F,
+  author =       {Derrac, Joaqu{\'\i}n and Garc{\'\i}a, Salvador} #and# Molina_D #and# Herrera_F,
   journal =      swec,
   volume =       1,
   number =       1,
@@ -7478,7 +7533,7 @@ doi =           {10.1007/978-3-642-38516-2_16},
 @Article{FerFra2018,
   author = 	 Fernandez-Viagas #and# Framinan,
   title = 	 {Iterated-greedy-based algorithms with beam search initialization for the permutation flowshop to minimise total tardiness},
-  journal = 	 esa,
+  journal = 	 eswa,
   year = 	 2018,
   volume = 	 94,
   pages = 	 {58--69}
@@ -7499,7 +7554,7 @@ doi =           {10.1007/978-3-642-38516-2_16},
   author = 	 {Alberto Ferrer and Daniel Guimarans} #and# Ramalhinho_Lourenco #and# {Angel A. Juan},
   title = 	 {A {BRILS} Metaheuristic for Non-smooth Flow-shop Problems with Failure-risk
                Costs},
-  journal = 	 esa,
+  journal = 	 eswa,
   year = 	 2016,
   volume = 	 44,
   pages = 	 {177--186}
@@ -7562,7 +7617,7 @@ doi =           {10.1007/978-3-642-38516-2_16},
 @Article{FerValFra2018,
   author   = Fernandez-Viagas #and# Valente #and# Framinan,
   title    = {Iterated-greedy-based algorithms with Beam Search Initialization for the Permutation Flowshop to Minimise Total Tardiness},
-  journal  = esa,
+  journal  = eswa,
   volume   = 94,
   pages    = {58--69},
   year     = 2018,
@@ -8492,7 +8547,6 @@ doi =           {10.1007/978-3-642-38516-2_16},
   alias =        {GamTaiAga99:newideas},
 }
 
-
 @Incollection{GanDelKin04:ants2004,
   author =       Gandibleux #and# Delorme #and# TKindt,
   title =        {An Ant Colony Optimisation Algorithm for the Set
@@ -8641,6 +8695,20 @@ doi =           {10.1007/978-3-642-38516-2_16},
   year =         1976,
   volume =       1,
   pages =        {117--129}
+}
+
+@article{GarMolLoz2009joh,
+  author =       {Garc{\'\i}a, Salvador} #and# Molina_D #and# Lozano_M #and#
+                  Herrera_F,
+  journal =      joh,
+  number =       617,
+  title =        {A study on the use of non-parametric tests for analyzing the
+                  evolutionary algorithms' behaviour: a case study on the
+                  {CEC'2005} {Special} {Session} on {Real} {Parameter}
+                  {Optimization}},
+  volume =       15,
+  year =         2009,
+  doi =          "10.1007/s10732-008-9080-4"
 }
 
 @article{GarOliAlb2013tec,
@@ -9492,6 +9560,16 @@ doi =           {10.1007/978-3-642-38516-2_16},
   pages =        {409--433}
 }
 
+@article{HaaSakTam2001,
+  title =       {An adaptive {M}etropolis algorithm},
+  author =      {Haario, Heikki and Saksman, Eero and Tamminen, Johanna},
+  journal =     bernoulli,
+  volume =      7,
+  number =      2,
+  pages =       {223--242},
+  year =        2001
+}
+
 @inCollection{HaasAttEib2011racing,
   title =        {Racing to improve on-line, on-board evolutionary robotics},
   author =       {Haasdijk, Evert and Atta-ul-Qayyum, Arif} #and# Eiben,
@@ -10032,7 +10110,7 @@ Traveling Salesman Heuristic},
 }
 
 @MISC{HerLozMol2010test,
-  author =       Herrera_F #and# Lozano_M #and# "D. Molina",
+  author =       Herrera_F #and# Lozano_M #and# Molina_D,
   title =        "Test suite for the special issue of {S}oft
                   {C}omputing on scalability of evolutionary
                   algorithms and other metaheuristics for large scale
@@ -10862,18 +10940,17 @@ Traveling Salesman Heuristic},
 }
 
 @TECHREPORT{IRIDIA-2011-010,
-  author =       Liao_Tianjun #and# {Daniel Molina} #and# MontesDeOca
-                  #and# Stuetzle,
-  title =        "A Note on the Effects of Enforcing Bound Constraints
-                  on Algorithm Comparisons using the {IEEE CEC'05}
-                  Benchmark Function Suite",
+  author =       Liao_Tianjun #and# Molina_D #and# MontesDeOca #and# Stuetzle,
+  title =        "A Note on the Effects of Enforcing Bound Constraints on
+                  Algorithm Comparisons using the {IEEE CEC'05} Benchmark
+                  Function Suite",
   institution =  iridia,
   year =         2011,
   number =       {TR/IRIDIA/2011-010}
 }
 
 @TECHREPORT{IRIDIA-2011-022,
-  author =       Liao_Tianjun #and# {Daniel Molina} #and# MontesDeOca
+  author =       Liao_Tianjun #and# Molina_D #and# MontesDeOca
                   #and# Stuetzle,
   title =        "Computational Results for an Automatically Tuned {IPOP-CMA-ES} on the {CEC'05} Benchmark Set",
   institution =  iridia,
@@ -11467,6 +11544,17 @@ Traveling Salesman Heuristic},
   author =       Jerrum_M #and# Sinclair_A,
   pages =        {482--520},
   crossref =     "Hochbaum1996"
+}
+
+@Article{JerSor1998dam,
+  title =        {The {M}etropolis algorithm for graph bisection},
+  author =       Jerrum_M #and# {Sorkin, Gregory},
+  journal =      dam,
+  volume =       82,
+  number =       1,
+  pages =        {155--175},
+  year =         1998,
+  publisher =    elsevier
 }
 
 @Article{Jerrum1992,
@@ -12965,6 +13053,16 @@ Traveling Salesman Heuristic},
   pages =        {44--57}
 }
 
+@article{Kuhn2008:jss,
+  author =       {Kuhn, Max},
+  title =        {Building Predictive Models in \proglang{R} Using the {\Rpackage{caret}} Package},
+  journal =      jss,
+  volume =       28,
+  number =       5,
+  year =         2008,
+  pages =        {1--26}
+}
+
 @InCollection{KukLam2005:gde3,
   author =       {Kukkonen, S. and Lampinen, J.},
   crossref =     {CEC2005},
@@ -13108,7 +13206,7 @@ Traveling Salesman Heuristic},
 }
 
 @InCollection{LacMolHer2013cec,
-  author =       "Benjamin Lacroix" #and# "Daniel Molina" #and#
+  author =       "Benjamin Lacroix" #and# Molina_D #and#
                   Herrera_F,
   title =        "Dynamically updated region based memetic algorithm
                   for the 2013 {CEC} Special Session and Competition
@@ -14694,7 +14792,7 @@ algorithm configuration techniques to multi-objective algorithms.}
                   #and# Ochoa,
   title =        {A unified hyper-heuristic framework for solving bin packing
                   problems},
-  journal =      esa,
+  journal =      eswa,
   volume =       41,
   number =       15,
   pages =        {6876--6889},
@@ -15512,7 +15610,7 @@ algorithm configuration techniques to multi-objective algorithms.}
 @Article{MasVidMic++2013,
   author =       {Renaud Masson} #and# Vidal_T #and# {Julien Michallet and Puca Huachi {Vaz Penna} and Vinicius Petrucci} #and# Subramanian #and# {Hugues Dubedout},
   title =        {An Iterated Local Search Heuristic for Multi-capacity Bin Packing and Machine Reassignment Problems},
-  journal =      esa,
+  journal =      eswa,
   year =         2013,
   volume =       40,
   number =       13,
@@ -15948,7 +16046,7 @@ algorithm configuration techniques to multi-objective algorithms.}
 @article{MesSilMelMir20152esa,
   author =       "Rafael G. Mesquita and Ricardo M. A. Silva and Carlos A. B. Mello and P\'{e}ricles B. C. Miranda",
   title =        "Parameter tuning for document image binarization using a racing algorithm",
-  journal =      esa,
+  journal =      eswa,
   volume =       42,
   number =       5,
   pages =        {2593--2603},
@@ -16762,6 +16860,13 @@ algorithm configuration techniques to multi-objective algorithms.}
   keywords =     "crossover, intermediate, line"
 }
 
+@InProceedings{MuhZim2000,
+  title =        {Size of neighborhood more important than temperature for stochastic local search},
+  author =       Muhlenbein #and# {Zimmermann, J{\"o}rg},
+  crossref =     "CEC2000",
+  pages =        {1017--1024}
+}
+
 @Book{Mulenthaler2015fair,
   title =        {Fairness in academic course timetabling},
   author =       {Moritz M{\"u}hlenthaler},
@@ -16858,7 +16963,7 @@ algorithm configuration techniques to multi-objective algorithms.}
 @Article{NagSol2012,
   author =       {Yuichi Nagata and David Soler},
   title =        {A New Genetic Algorithm for the Asymmetric {TSP}},
-  journal =      esa,
+  journal =      eswa,
   year =         2012,
   volume =       39,
   number =       10,
@@ -19244,6 +19349,46 @@ algorithm configuration techniques to multi-objective algorithms.}
   pages =        {159--187}
 }
 
+@Article{RivYanLop2021tweet,
+  title =        "Predicting tweet impact using a novel evidential reasoning
+                  prediction method",
+  author =       Rivadeneira_L #and# Yang_JB #and# Lopez-Ibanez,
+  year =         2021,
+  journal =      eswa,
+  doi =          "10.1016/j.eswa.2020.114400",
+  abstract =     "This study presents a novel evidential reasoning (ER)
+                  prediction model called MAKER-RIMER to examine how different
+                  features embedded in Twitter posts (tweets) can predict the
+                  number of retweets achieved during an electoral campaign. The
+                  tweets posted by the two most voted candidates during the
+                  official campaign for the 2017 Ecuadorian Presidential
+                  election were used for this research. For each tweet, five
+                  features including type of tweet, emotion, URL, hashtag, and
+                  date are identified and coded to predict if tweets are of
+                  either high or low impact. The main contributions of the new
+                  proposed model include its suitability to analyse tweet
+                  datasets based on likelihood analysis of data. The model is
+                  interpretable, and the prediction process relies only on the
+                  use of available data. The experimental results show that
+                  MAKER-RIMER performed better, in terms of misclassification
+                  error, when compared against other predictive machine
+                  learning approaches. In addition, the model allows observing
+                  which features of the candidates’ tweets are linked to high
+                  and low impact. Tweets containing allusions to the contender
+                  candidate, either with positive or negative connotations,
+                  without hashtags, and written towards the end of the
+                  campaign, were persistently those with the highest
+                  impact. URLs, on the other hand, is the only variable that
+                  performs differently for the two candidates in terms of
+                  achieving high impact. MAKER-RIMER can provide campaigners of
+                  political parties or candidates with a tool to measure how
+                  features of tweets are predictors of their impact, which can
+                  be useful to tailor Twitter content during electoral
+                  campaigns.",
+  keywords =     "Evidential reasoning rule,Belief rule-based inference,Maximum
+                  likelihood data analysis,Twitter,Retweet,Prediction"
+}
+
 @Manual{Rmanual,
   title =        {\proglang{R}: A Language and Environment for Statistical
                   Computing},
@@ -19365,6 +19510,28 @@ algorithm configuration techniques to multi-objective algorithms.}
   year =         1990,
 }
 
+@Article{Rothman1985,
+  title =        {Nonlinear inversion, statistical mechanics, and residual statics estimation},
+  author =       {Rothman, Daniel H.},
+  journal =      {Geophysics},
+  volume =       50,
+  number =       12,
+  pages =        {2784--2796},
+  year =         1985,
+  publisher =    {Society of Exploration Geophysicists}
+}
+
+@Article{Rothman1986,
+  title =        {Automatic estimation of large residual statics corrections},
+  author =       {Rothman, Daniel H.},
+  journal =      {Geophysics},
+  volume =       51,
+  number =       2,
+  pages =        {332--346},
+  year =         1986,
+  publisher =    {Society of Exploration Geophysicists}
+}
+
 @Article{Roy2010:ejor,
   author =       Roy,
   title =        "Robustness in operational research and decision
@@ -19415,8 +19582,7 @@ algorithm configuration techniques to multi-objective algorithms.}
   year =         2015,
   publisher =    {Springer International Publishing},
   pages =        {249--263},
-  author =       {Ana B. Ruiz and Mariano Luque and Kaisa Miettinen and
-                  Rub{\'{e}}n Saborido},
+  author =       {Ana B. Ruiz} #and# Luque_M #and# Miettinen #and# {Rub{\'{e}}n Saborido},
   title =        {An Interactive Evolutionary Multiobjective Optimization
                   Method: Interactive {WASF}-{GA}},
   crossref =     "EMO2015_2",
@@ -19625,6 +19791,16 @@ algorithm configuration techniques to multi-objective algorithms.}
   year =         2016,
   doi =          {10.1016/j.trb.2016.01.005},
   keywords =     {irace},
+}
+
+@article{Sambridge1999,
+  title =        {Geophysical inversion with a neighbourhood algorithm—I. Searching a parameter space},
+  author =       {Sambridge, Malcolm},
+  journal =      {Geophysical Journal International},
+  volume =       138,
+  number =       2,
+  pages =        {479--494},
+  year =         1999
 }
 
 @article{SanGalRub2008tec,
@@ -20103,7 +20279,7 @@ algorithm configuration techniques to multi-objective algorithms.}
 }
 
 @inproceedings{ScoMat1999,
-  title =        {Feature engineering for text classification},
+  title =        {Feature engineering for text classificatio}n,
   author =       {Scott, Sam and Matwin, Stan},
   booktitle =    {ICML},
   volume =       99,
@@ -20154,12 +20330,11 @@ algorithm configuration techniques to multi-objective algorithms.}
 }
 
 @InCollection{ShaFonNor1999cec,
-  author =       {K. J. Shaw} # and # Fonseca # and #
-                  {A. L. Nortcliffe and M. Thompson and J. Love} #and#
-                  Fleming,
+  author =       {K. J. Shaw} #and# Fonseca #and# {A. L. Nortcliffe and
+                  M. Thompson and J. Love} #and# Fleming,
   title =        {Assessing the performance of multiobjective genetic
-                  algorithms for optimization of a batch process
-                  scheduling problem},
+                  algorithms for optimization of a batch process scheduling
+                  problem},
   alias =        {Shaw99},
   crossref =     "CEC1999",
   pages =        {34--75},
@@ -22752,12 +22927,13 @@ Twin-Screw Extrusion Configuration Problem},
 }
 
 @incollection{WanDonChenLin2014,
-  author    = {Wang, Yanqi and Dong, Xingye and Chen, Ping and Lin, Youfang},
-  title     = {Iterated local search algorithms for the sequence-dependent setup times flow shop scheduling problem minimizing makespan},
-  booktitle = {Foundations of Intelligent Systems},
-  pages     = {329--338},
-  year      = 2014,
-  publisher = springer
+  author =       {Wang, Yanqi and Dong, Xingye and Chen, Ping and Lin, Youfang},
+  title =        {Iterated local search algorithms for the sequence-dependent
+                  setup times flow shop scheduling problem minimizing makespan},
+  booktitle =    {Foundations of Intelligent Systems},
+  pages =        {329--338},
+  year =         2014,
+  publisher =    springer
 }
 
 @article{WanLuGlo2013cor,
@@ -23510,6 +23686,18 @@ Integer Algorithm Parameters of Swarm Intelligence Algorithms},
   keywords =     "performance profiles"
 }
 
+@article{ZioWal1983interactive,
+  title =        {An interactive multiple objective linear programming method
+                  for a class of underlying nonlinear utility functions},
+  author =       {Zionts, Stanley and Wallenius, Jyrki},
+  journal =      ms,
+  volume =       29,
+  number =       5,
+  pages =        {519--529},
+  year =         1983,
+  publisher =    {INFORMS}
+}
+
 @InCollection{ZitBroThi2007emo,
   author =       Zitzler #and# Brockhoff #and# Thiele,
   title =        {The Hypervolume Indicator Revisited: On the Design
@@ -23708,6 +23896,15 @@ Integer Algorithm Parameters of Swarm Intelligence Algorithms},
   pages =        {137--268},
 }
 
+@misc{nevergrad,
+  author =       {J. Rapin and O. Teytaud},
+  title =        {Nevergrad: A gradient-free optimization platform},
+  year =         2018,
+  publisher =    {GitHub},
+  journal =      {GitHub repository},
+  howpublished = {\url{https://GitHub.com/FacebookResearch/Nevergrad}},
+}
+
 @Misc{oscar,
   author =       "{OscaR Team}",
   title =        "{O}sca{R}: {S}cala in {O}{R}",
@@ -23717,10 +23914,9 @@ Integer Algorithm Parameters of Swarm Intelligence Algorithms},
 
 @InCollection{paquete18,
   author =       Paquete #and# Stuetzle,
-  title =        {Stochastic Local Search Algorithms for
-                  Multiobjective Combinatorial Optimization: A Review},
-  booktitle =    {Handbook of Approximation Algorithms and
-                  Metaheuristics},
+  title =        {Stochastic Local Search Algorithms for Multiobjective
+                  Combinatorial Optimization: A Review},
+  booktitle =    {Handbook of Approximation Algorithms and Metaheuristics},
   pages =        {29-1---29-15},
   publisher =    chapman,
   address =      chapman-ad,

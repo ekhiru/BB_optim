@@ -2,9 +2,12 @@ argv <- commandArgs(trailingOnly=TRUE)
 seed <- as.numeric(argv[1])
 eval_ranks <- as.numeric(argv[2])
 elapsed <- proc.time()
+seed <- 1
+eval_ranks <- 1
 library(CEGO)
-    print(sessionInfo())
-    # This is identical to the function in the package but takes also a maxTime parameter.
+cat("seed = ", seed, "  eval_ranks = ", eval_ranks, "\n")
+print(sessionInfo())
+# This is identical to the function in the package but takes also a maxTime parameter.
 my_optimCEGO <- function (x = NULL, fun, control = list()) 
 {
     con <- list(evalInit = 2, vectorized = FALSE, verbosity = 0, 
@@ -180,8 +183,13 @@ cF <- function() sample(n)
 # start optimization
 #    print("antes del optimCEGO")
 budgetGA <- 10^3
+<<<<<<< HEAD
 budget <- 400
 res <- my_optimCEGO(x = NULL,
+=======
+budget <- 100
+res <- optimCEGO(x = NULL,
+>>>>>>> sync optbib
                  fun = fun,
                  control = list(creationFunction=cF,
                                 distanceFunction = distancePermutationSwap,
