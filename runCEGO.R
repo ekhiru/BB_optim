@@ -2,8 +2,8 @@ argv <- commandArgs(trailingOnly=TRUE)
 seed <- as.numeric(argv[1])
 eval_ranks <- as.numeric(argv[2])
 elapsed <- proc.time()
-seed <- 12345
-eval_ranks <- 0
+#seed <- 12345
+#eval_ranks <- 1
 library(CEGO)
 cat("seed = ", seed, "  eval_ranks = ", eval_ranks, "\n")
 print(sessionInfo())
@@ -183,7 +183,7 @@ cF <- function() sample(n)
 # start optimization
 #    print("antes del optimCEGO")
 budgetGA <- 10^3
-budget <- 100
+budget <- 400
 res <- optimCEGO(x = NULL,
                  fun = fun,
                  control = list(creationFunction=cF,
