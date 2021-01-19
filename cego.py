@@ -163,7 +163,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
     res
     }
 
-    my_cego <- function(fun, dist, n, m_ini = 5, budget = 15, seed = 0, budgetGA = 100, eval_ranks)
+    my_cego <- function(fun, dist = distancePermutationSwap, n, m_ini = 5, budget = 15, seed = 0, budgetGA = 100, eval_ranks)
     {
     set.seed(seed)
     # mutation
@@ -178,7 +178,6 @@ optimCEGO <- function (x = NULL, fun, control = list())
                      fun = fun,
                      control = list(creationFunction=cF,
                                      distanceFunction = dist,
-                                     #distanceFunction = distancePermutationSwap,
                                      optimizerSettings=list(budget=budgetGA,popsize=20,
                                                             mutationFunction=mF,
                                                             recombinationFunction=rF),
@@ -192,7 +191,8 @@ optimCEGO <- function (x = NULL, fun, control = list())
     rcode = STAP(rstring, "rcode")
     r_fitness = instance.make_r_fitness()
     best_x, best_fitness, x, y = rcode.my_cego(r_fitness,
-                                               dist = r_kendallTau,
+    #                                           dist = r_kendallTau,
+                                               #dist = distancePermutationSwap,
                                                n = instance.n,
                                                m_ini = m_ini,
                                                budget = budget,

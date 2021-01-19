@@ -33,7 +33,7 @@ my_optimCEGO <- function (x = NULL, fun, control = list())
     fun
     if (!vectorized) { 
         fn <- if (control$eval_ranks) function(x) unlist(lapply(x, fun)) 
-              else function(x) unlist(lapply(x, function(y) fun(order(y) - 1))) 
+              else function(x) unlist(lapply(x, function(y) fun(order(y)))) 
     } else {
      # fn <- fun
      stop("We do not handle vectorized functions")

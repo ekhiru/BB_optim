@@ -4,6 +4,7 @@ set -o pipefail
 
 # Find our own location.
 BINDIR=$(dirname "$(readlink -f "$(type -P $0 || echo $0)")")
+OUTDIR="$HOME/scratch-new"
 
 # This function launches one job $1 is the job name, the other arguments is the job to submit.
 qsub_job() {
@@ -24,7 +25,7 @@ qsub_job() {
 #      a     Mail is sent when the job is aborted or rescheduled.
 #      s     Mail is sent when the job is suspended.
 #
-#$ -o ${JOBNAME}.stdout
+#$ -o $OUTDIR/${JOBNAME}.stdout
 #$ -j y
 #$ -cwd
 module load apps/anaconda3
@@ -75,12 +76,13 @@ INSTANCES="\
  qap/tho30.dat \
  pfsp/rec05.txt \
  pfsp/rec13.txt \
- pfsp/rec19.txt \
+pfsp/rec19.txt \
+pfsp/rec31.txt \
 "
-# pfsp/rec31.txt \
+
 
 ###### For LOLIB instances
-INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+#INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 #INSTANCES=$(gen_lop_synthetic "")
@@ -101,14 +103,14 @@ umm_m_ini=10
 counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
-    RESULTS="results-er${eval_ranks}/$instance"
+    RESULTS="$OUTDIR/results-er${eval_ranks}/$instance"
     mkdir -p $RESULTS
     for run in $(seq 1 $nruns); do
        	### Uncomment for running CEGO
 	$LAUNCHER cego-$counter-r$run ./target-runner-cego.py cego $counter-r$run-$$ $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks --output $RESULTS/cego-r$run
 
 	### Uncomment for running UMM
-	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
+#	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
         
     done
 done

@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #$ -cwd
-#$ -t 1-60
+#$ -t 1-30
 #$ -l ivybridge
 #$ -M manuel.lopez-ibanez@manchester.ac.uk
 #$ -m ase
