@@ -120,6 +120,9 @@ if [ $RERUN_params -eq 0 ]; then
     exit 0
 fi
 
+# LOP: eval_ranks=1
+# QAP: eval_ranks=0
+# 
 counter=0
 for instance in $INSTANCES; do
     for r_1 in $(seq 0.1 0.1 0.5); do
