@@ -2,8 +2,8 @@ argv <- commandArgs(trailingOnly=TRUE)
 seed <- as.numeric(argv[1])
 eval_ranks <- as.numeric(argv[2])
 elapsed <- proc.time()
-#seed <- 12345
-#eval_ranks <- 1
+#seed <- 1
+#eval_ranks <- 0
 library(CEGO)
 cat("seed = ", seed, "  eval_ranks = ", eval_ranks, "\n")
 print(sessionInfo())
@@ -32,8 +32,16 @@ my_optimCEGO <- function (x = NULL, fun, control = list())
         control$initialDesignSettings$distanceFunction <- distanceFunction
     fun
     if (!vectorized) { 
-        fn <- if (control$eval_ranks) function(x) unlist(lapply(x, fun)) 
-              else function(x) unlist(lapply(x, function(y) fun(order(y)))) 
+      fn <- if (control$eval_ranks) { function(x) unlist(lapply(x, fun))
+            } else { 
+              function(x) {
+                ## print(x)
+                ## print(lapply(x,order))
+                ## print(lapply(x, fun))
+                ## print(lapply(lapply(x, order), fun))
+                return(unlist(lapply(lapply(x, order), fun)))
+              }
+            }
     } else {
      # fn <- fun
      stop("We do not handle vectorized functions")
@@ -143,7 +151,7 @@ my_optimCEGO <- function (x = NULL, fun, control = list())
     res$message <- msg
     res$distances <- NULL
     res
-    }
+}
 
 n <- 20
 m <- 15
@@ -184,7 +192,7 @@ cF <- function() sample(n)
 #    print("antes del optimCEGO")
 budgetGA <- 10^3
 budget <- 400
-res <- optimCEGO(x = NULL,
+res <- my_optimCEGO(x = NULL,
                  fun = fun,
                  control = list(creationFunction=cF,
                                 distanceFunction = distancePermutationSwap,
