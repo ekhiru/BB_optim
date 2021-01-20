@@ -420,9 +420,10 @@ The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
 assigns higher probability values to the permutations with known (or expected)
 minimal fitness values. This is achieved by means of the uBorda ranking
-(Section~\ref{sec:uborda}) with $w(\sigma) = \rho^f(\sigma)$, with $\rho \in (0,1)$, which can be seen as replicating each permutation
-$\sigma \in S$ a number of times inversely proportional to its fitness
-$f(\sigma)$, i.e., it behaves as if there were many copies of the best
+(Section~\ref{sec:uborda}) with $w(\sigma) = \rho^{f(\sigma)}$ and $\rho \in (0,1)$, which %  can be seen as replicating each permutation
+% $\sigma \in S$ a number of times inversely proportional to its fitness
+% $f(\sigma)$, i.e., it 
+behaves as if there were many copies of the best
 solutions and few of the bad ones. A property of UMM is that the
 computational complexity of working with the original sample (Borda) and with the
 transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are the update
