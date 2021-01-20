@@ -453,7 +453,7 @@ $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
 controlled by parameter $\rho \in (0,1)$. %
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
-the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,
+the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,\MANUEL{Reviewer 3:  Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}
 %
 \begin{equation}
   \begin{split}
@@ -476,13 +476,13 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
 \end{equation}
 
-Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution), and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
+Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution),\MANUEL{Reviewer 3: "At the first iteration, $\theta$ is set so that $E[D] = {n \choose 4}$". Why?} and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
 
 
 A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
 
-To avoid sampling the same points more than once and increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
+To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
 
 
