@@ -26,8 +26,8 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
     library(CEGO)
     print(sessionInfo())
     # This is identical to the function in the package but takes also a maxTime parameter.
-optimCEGO <- function (x = NULL, fun, control = list()) 
-{
+    my_optimCEGO <- function (x = NULL, fun, control = list()) 
+    {
     con <- list(evalInit = 2, vectorized = FALSE, verbosity = 0, 
         plotting = FALSE, targetY = -Inf, budget = 100, creationRetries = 100, 
         distanceFunction = distancePermutationHamming, creationFunction = solutionFunctionGeneratorPermutation(6), 
@@ -51,7 +51,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
     fun
     if (!vectorized) { 
         fn <- if (control$eval_ranks) function(x) unlist(lapply(x, fun)) 
-              else function(x) unlist(lapply(x, function(y) fun(order(y) - 1))) 
+              else function(x) unlist(lapply(x, function(y) fun(order(y) - 1)))
     } else {
      # fn <- fun
      stop("We do not handle vectorized functions")
@@ -174,7 +174,7 @@ optimCEGO <- function (x = NULL, fun, control = list())
     cF <- function() sample(n)
     # start optimization
 #    print("antes del optimCEGO")
-    res <- optimCEGO(x = NULL,
+    res <- my_optimCEGO(x = NULL,
                      fun = fun,
                      control = list(creationFunction=cF,
                                      distanceFunction = dist,
