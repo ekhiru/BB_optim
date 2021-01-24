@@ -30,18 +30,18 @@ qsub_job() {
 #$ -j y
 #$ -cwd
 module load apps/anaconda3
-echo "running: ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
+echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
 echo -n "$instance,$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks,$value" > $OUTFILE
-./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+$BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
 EOF
 
 }
 launch_local() {
     JOBNAME=umm-$counter-r$run-$$
     OUTFILE=$RESULTS/$JOBNAME
-    echo "running: ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
+    echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
     echo -n "$instance,$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks,$value" > $OUTFILE
-    ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+    $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
 }
 
 # Generate LOP synthetic
@@ -71,17 +71,18 @@ LAUNCHER=qsub_job
 
 ## For QAP, PFSP instances
 INSTANCES="\
-  qap/kra30a.dat \
-  qap/kra30b.dat \
- qap/nug30.dat \
- qap/tho30.dat \
- pfsp/rec13.txt \
+qap/kra30a.dat \
+qap/kra30b.dat \
+qap/nug30.dat \
+qap/tho30.dat \
+pfsp/rec13.txt \
 pfsp/rec19.txt \
+lop/RandB/N-p40-02 \
+lop/IO/N-t59d11xx \
+lop/SGB/N-sgb75.02 \
+lop/xLOLIB/N-be75eec_150 \
 "
 
-
-###### For LOLIB instances
-#INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 INSTANCES=$(gen_lop_synthetic $INSTANCES)
