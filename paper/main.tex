@@ -149,7 +149,12 @@ $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
 short budgets.
 %Finally, we note that learning Budget-constrained Combinatorial is a hot topic for a variety of structures besides permutation~\cite{manchanda2020}. 
-
+\manuel{- the authors assigned to black-box optimization problems characteristics that they do not own. For instance they say that "local search cannot be used".
+ they mixed expensive to evaluate functions with black-box functions and of course they are different. In fact much of the metaheuristics do not mind
+ if the problem is withe-box or black-box as they do not use static information from the function in the optimization process. In this case I understand
+ that they have a black-box problem where the objective function is costly to evaluate. This should be clear and I would recommend to delete other comments
+ related with white-box and black-box.
+}{}
 
 In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
 population-based probabilistic algorithm specifically designed for optimizing
@@ -305,6 +310,7 @@ and, the same as Borda, orders the items $i \in [n]$ increasingly by their score
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. Otherwise, uBorda ranking will be closer to the rankings in $S$ with larger value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with high values of $w(\sigma$).
 The choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain.
+\ekhine{reesribe y ojo an grater / less}{}
 %% MANUEL: To save space.
 %For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{IruLobPer2020arxiv}.
 %
@@ -415,6 +421,8 @@ As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $
 Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
 Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
+\ekhine{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
+I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}{}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -485,7 +493,7 @@ A purely explotation approach would always generate $\sigma_0$ in the sampling s
 To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
 
-
+\ekhine{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}{}
 
 
 
