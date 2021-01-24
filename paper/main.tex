@@ -156,6 +156,8 @@ short budgets.
  related with white-box and black-box.
 }{}
 
+\ekhine{6. When the main contribution of the paper is discussed it is stated that this contribution is the Unbalanced Mallows *model* (which does not seem to be true as the models used in the paper seem to be known already). Right after that it is stated that the contribution is *a novel algorithm* which, I think, reflects the contents of the paper much better.
+}{}
 In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
 population-based probabilistic algorithm specifically designed for optimizing
 black-box problems over a permutation landscape under a limited budget. There
@@ -206,9 +208,9 @@ adapted by controlling the variance of the probabilistic Mallows model.
 %   \end{itemize}
 % }
 
-This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
+This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
 
-
+\manuel{9. Please use some newer references instead of [11] and, especially, [14]}{}
 
 
 % \ldots\MANUEL{what is the inspiration}
@@ -261,15 +263,14 @@ This paper structured as follows. Section~\ref{sec:backgroud} summarizes fundame
 
 \section{Background}\label{sec:backgroud}
 
-\subsection{Permutations}
+\subsection{Permutations: rankings vs orderings}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We represent permutations as an ordered vector and, we say that position $i$ contains value $j$ whenever $\sigma(i)=j$. We denote permutations with Greek letters.
-% \MANUEL{Do we use $e$ anywhere? If not, we do not need this definition ``with exception of the identity permutation denoted as $e=(1, 2, 3, \dotsc,n)$.''}
-We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We will use the one-line notation and denote permutations with Greek letters, $\sigma  = (\sigma(1), \ldots , \sigma(n))$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi$ and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
 
+Permutation $\sigma$ represents a ranking of item:  $\sigma(i)=j$ denotes that item $i$ has rank $j$. The ordering associated with $\sigma$ is given by its inverse $\sigma^{-1}$, therefore,  $\sigma(i)=j \Leftrightarrow  \sigma^{-1}(j)=i$. This distinction is in order since statistical methodologies are devoted for rankings and optimizaiton literature for orderings and mixing both concepts is a very common mistake. We will illustrate in the experimental section the consequences of this confusion. 
 
-Distance in permutation space can be measured in various ways.  Kendall's-$\tau$ counts the number of items ranked in different order in both permutations:
-%
+Kendall's-$\tau$ distance is the metric for rankings that counts the pairs of items ranked in different order in both permutations:
+
 \begin{equation}
 \begin{split}
 d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
@@ -278,7 +279,7 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
  \label{eq:kendall_decomp}
 \end{equation}
 
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made in $\sigma_1^{-1}$ to obtain $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}.
+An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \ekhine{ojo, aqui lo dice bien o  mal?}{}
 
 
 \subsection{Distributions over permutations}
@@ -310,11 +311,6 @@ and, the same as Borda, orders the items $i \in [n]$ increasingly by their score
 
 Borda and uBorda are equivalent when $w(\sigma)$ is constant for every $\sigma$. Otherwise, uBorda ranking will be closer to the rankings in $S$ with larger value of $w(\sigma)$. Roughly speaking, it is equivalent to replicating in the sample the $\sigma$ with high values of $w(\sigma$).
 The choice of  $w(\sigma)$ depends on the relevant property of a ranking in a particular domain.
-\ekhine{reesribe y ojo an grater / less}{}
-%% MANUEL: To save space.
-%For example, uBorda has been shown to have nice theoretical properties for the online estimation of the parameters of a sample with concept drift~\cite{IruLobPer2020arxiv}.
-%
-% In this paper, we would like to replicate each permutation $\sigma$ a number of times that is inversely proportional to $f(\sigma)$. Therefore, we will use $w(\sigma)=\rho^{f(\sigma)}$ for a $\rho\in(0,1)$.
 Finally, uBorda is computed in polynomial time.
 
 
@@ -338,35 +334,6 @@ as constructive  heuristics and local search, leading to
 a particularly challenging scenario, perhaps even more challenging than its continuous
 counter-part.
 
-\subsection{Combinatorial Efficient Global Optimization (CEGO)}
-
-
-CEGO~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
-method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
-optimization problems. In EGO, Gaussian process models are used as a surrogate
-of the landscape of the expensive original problem. An optimization method
-searches for solutions in the surrogate model by optimizing the expected
-improvement criterion, which balances the expected mean and variance of the
-chosen solution. Once a solution is chosen, it is evaluated on the actual
-fitness function and the result is used to update the surrogate-model,
-hopefully increasing its predictive power.
-
-CEGO replaces the Euclidean distance measure, used by the surrogate model in
-EGO, with a distance measure appropriate to combinatorial
-landscapes~\citep{ZaeStoBar2014:ppsn}, such as Kendall's-$\tau$ distance for
-permutations (Eq.~\ref{eq:kendall_decomp}). In CEGO, the surrogate model is
-explored by a GA with crossover and mutation operators appropriate for the
-particular combinatorial problem. The original paper notes that coupling the GA
-with local search does not improve the results significantly since the model is
-anyway an inexact estimation of the original fitness
-function~\citep[p.~875]{ZaeStoFriFisNauBar2014}. A thorough comparison of CEGO
-with other optimizers for expensive black-box combinatorial optimization ranked
-it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
-
-
-\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
-
-
 
 \section{Unbalanced Mallows model (UMM)}\label{sec:umm}
 
@@ -386,6 +353,8 @@ In this section we describe our main contribution: Unbalanced Mallows model
 permutation spaces. This algorithm is a probabilistic method based on the
 Mallows model and uBorda learning.
 
+\ekhine{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway.
+}{}
 
 \begin{algorithm}[t]
  \caption{UMM: Unbalanced Mallows Model for Black-Box Optimization}
@@ -472,7 +441,7 @@ the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.
 %
 i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
-
+\ekhine{4. Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}{}
 
 \subsubsection{Sampling step}\label{sec:sampling}
 In this step, the algorithm samples from the distribution the new data point to be evaluated. 
@@ -487,7 +456,7 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution),\MANUEL{Reviewer 3: "At the first iteration, $\theta$ is set so that $E[D] = {n \choose 4}$". Why?} and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
 
-
+\ekhine{5. "At the first iteration, Theta is set so that $E[D] = {n \choose 4}$". Why?}{}
 A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
 
 To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
@@ -495,6 +464,8 @@ To increase the exploration of the search space, the algorithm samples $\beta$ p
 
 \ekhine{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}{}
 
+\subsection{Convergence guarantees}
+\ekhine{}{completar}
 
 
 
@@ -505,11 +476,37 @@ To increase the exploration of the search space, the algorithm samples $\beta$ p
 UMM uses the same budget of evaluations ($\FEmax$) as CEGO
 and initially samples $\minit=10$ solutions uniformly. The other two parameters
 of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
-exploitation. In the experimental section we will study their impact. implemented UMM using Python 3.
+exploitation. In the experimental section we will study their impact. %implemented UMM using Python 3.
 At each sampling step, we set $\beta=10$, meaning that 10 permutations are generated and the farthest from $S$ is selected for evaluation. 
 
-\subsubsection{CEGO}
-%
+\subsubsection{CEGO} \ekhine{tenemos una pagina entera dedicada a CEGO :s}{}
+Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
+method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
+optimization problems. In EGO, Gaussian process models are used as a surrogate
+of the landscape of the expensive original problem. An optimization method
+searches for solutions in the surrogate model by optimizing the expected
+improvement criterion, which balances the expected mean and variance of the
+chosen solution. Once a solution is chosen, it is evaluated on the actual
+fitness function and the result is used to update the surrogate-model,
+hopefully increasing its predictive power.
+
+CEGO replaces the Euclidean distance measure, used by the surrogate model in
+EGO, with a distance measure appropriate to combinatorial
+landscapes~\citep{ZaeStoBar2014:ppsn}, such as Kendall's-$\tau$ distance for
+permutations (Eq.~\ref{eq:kendall_decomp}). In CEGO, the surrogate model is
+explored by a GA with crossover and mutation operators appropriate for the
+particular combinatorial problem. The original paper notes that coupling the GA
+with local search does not improve the results significantly since the model is
+anyway an inexact estimation of the original fitness
+function~\citep[p.~875]{ZaeStoFriFisNauBar2014}. A thorough comparison of CEGO
+with other optimizers for expensive black-box combinatorial optimization ranked
+it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
+
+
+\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
+
+
+
 We use the original implementation of GECO.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
 Although it is never stated in the original paper, the implementation of CEGO
 generates a set of initial solutions of size $\minit=10$ by means of a
@@ -557,12 +554,12 @@ limited.
 
 \subsubsection{Benchmark problems}
 %
-Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems.
+Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. \ekhine{cambio la definition de LOP}{In this section, and following the consensus on the optimization literature, the permutations denote orderings. }
 
 The \emph{Linear Ordering Problem (LOP)}, when minimizing, is defined as
 %\footnote{For consistency with the other problems, we minimise the lower triangle instead of maximising the upper triangle.} 
 \begin{equation}\label{eq:lop}
-  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma^{-1}(i), \sigma^{-1}(j)}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma(i), \sigma(j)}
 \end{equation}
 where $[a_{i,j}]$ is a matrix of size $n \times n$ and $\sigma^{-1}$ is the inverse of $\sigma$.
 
@@ -585,9 +582,8 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 
 \subsubsection{Datasets}
 %
-For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
-
-Moreover, we consider real LOP datasets from the LOLIB
+%For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
+We consider real LOP datasets from the LOLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
 particular, we consider the following types: IO, Random instances of type A and
 Random instances of type B of various sizes $n \in \{50, 100, 150, 200,
@@ -670,87 +666,87 @@ computationally feasible.  For consistency, in the following sections, we run
 UMM with this parameter configuration.  Moreover, we recommend this
 configuration as the current default of UMM.
 
-\subsection{Analysis of UMM and CEGO on synthetic LOP instances}
-
-To better understand the behavior of the algorithms, we record the fitness of
-the solution evaluated at each step of each run and we average those values
-over 10 runs with different random seeds on the same problem instance.  As an
-example, each line in Fig.~\ref{fig:lop_synth} shows the mean fitness of the
-solutions evaluated by either UMM or CEGO on one synthetic LOP instance. The
-shaded area shows one standard deviation around the mean. Ideally, each new
-evaluation will monotonically improve in fitness, since each solution evaluated
-helps to refine the model and leads to a better solution being evaluated in the
-next step.  However, it is possible that new solutions are worse
-than their predecessors. %Nevertheless, in this example, there is a clear
-% overall improvement as more evaluations are performed.
-The minimum values
-achieved in the plot up to a particular number of function evaluations gives an
-estimation of the mean fitness of the best-so-far solution up to that point in
-the run. The algorithms do not return the final solution shown but rather the
-best one (minimum fitness) of each run.
-
-
-%: LOP syntéticas, todas en una gráfica. 
-\begin{figure}[tb]
-  \centering%
-  \includegraphics[width=\textwidth]{../img/synthetic_LOP_combined}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
-\end{figure}
-
-When we compare the behavior of CEGO and
-UMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}), we observe a clear
-pattern independently of the uniformity of the instances. In particular, we see
-a linear convergence to the optimal value for UMM.  This is due to the linear
-decrease in the parameter $\theta$ (line~\ref{line:theta} in
-Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the
-internal probability model of the UMM over the $\FEmax$ functions
-evaluations. Overall, the mean fitness returned by UMM at $\FEmax=400$ is better than the one returned by  CEGO, regardless the uniformity of the instances.
-
-
-
-%UMM converges much more slowly than CEGO, only reaching the
-%same fitness values around evaluation 250. 
-
-%Yet, UMM is able to keep the rate of
-%improvement and completely overtake CEGO around evaluation 350. As in the case
-%of CEGO, lower uniformity values lead to worse performance, although the
-%difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
-
-On the other hand, % \EKHINE{cambio el orden}
-CEGO starts with 10 random initial solutions, % with are quite poor as
-% expected,
-followed by building and updating the Kriging model based on new
-evaluations, which leads to an impressive improvement in less than 50
-evaluations. However, progress is halted at this point and CEGO seems to
-have trouble finding better solutions. Around evaluation 200, the search
-becomes fully random. Lower uniformity values, e.g., 0.5, show worsening
-evaluations despite the increase in solutions used to build the model. In
-summary, the Kriging model clearly helps CEGO to quickly identify good
-solutions in very few evaluations. However, CEGO is not able
-to further improve those solutions given more data. Given what we know about
-Kriging~\citep{EriPeaGar2019scalable}, it appears that the surrogate model cannot model the local step
-necessary to reach the optimal solution and switches to an exploration strategy
-that ends up being completely random.
-
-% This may due to the model not being able to produce accurate
-% predictions or the underlying optimizer not being able to find improved
-% solutions using the model.
-%\MANUEL{perhaps we should measure the
-%  prediction error and see if it grows or decreases. That would answer this
-%  question.}
-
-
-
-%: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
-\begin{figure}[!tb]
-  \centering%
-  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandB_N-p50-01}\\
-  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d100_01}\\
-  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d150_01}\\
-%  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d200_01}\\
-    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on three instances from LOLIB.\label{fig:lolib}}
-  \end{figure}
-
+%\subsection{Analysis of UMM and CEGO on synthetic LOP instances}
+%
+%To better understand the behavior of the algorithms, we record the fitness of
+%the solution evaluated at each step of each run and we average those values
+%over 10 runs with different random seeds on the same problem instance.  As an
+%example, each line in Fig.~\ref{fig:lop_synth} shows the mean fitness of the
+%solutions evaluated by either UMM or CEGO on one synthetic LOP instance. The
+%shaded area shows one standard deviation around the mean. Ideally, each new
+%evaluation will monotonically improve in fitness, since each solution evaluated
+%helps to refine the model and leads to a better solution being evaluated in the
+%next step.  However, it is possible that new solutions are worse
+%than their predecessors. %Nevertheless, in this example, there is a clear
+%% overall improvement as more evaluations are performed.
+%The minimum values
+%achieved in the plot up to a particular number of function evaluations gives an
+%estimation of the mean fitness of the best-so-far solution up to that point in
+%the run. The algorithms do not return the final solution shown but rather the
+%best one (minimum fitness) of each run.
+%
+%
+%%: LOP syntéticas, todas en una gráfica. 
+%\begin{figure}[tb]
+%  \centering%
+%  \includegraphics[width=\textwidth]{../img/synthetic_LOP_combined}
+%  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on LOP synthetic instances.\label{fig:lop_synth}}
+%\end{figure}
+%
+%When we compare the behavior of CEGO and
+%UMM on synthetic LOP instances (Fig.~\ref{fig:lop_synth}), we observe a clear
+%pattern independently of the uniformity of the instances. In particular, we see
+%a linear convergence to the optimal value for UMM.  This is due to the linear
+%decrease in the parameter $\theta$ (line~\ref{line:theta} in
+%Algorithm~\ref{alg:umm}), which imposes a linear variance decrease on the
+%internal probability model of the UMM over the $\FEmax$ functions
+%evaluations. Overall, the mean fitness returned by UMM at $\FEmax=400$ is better than the one returned by  CEGO, regardless the uniformity of the instances.
+%
+%
+%
+%%UMM converges much more slowly than CEGO, only reaching the
+%%same fitness values around evaluation 250. 
+%
+%%Yet, UMM is able to keep the rate of
+%%improvement and completely overtake CEGO around evaluation 350. As in the case
+%%of CEGO, lower uniformity values lead to worse performance, although the
+%%difference is much smaller for UMM than it was for CEGO.\MANUEL{If there is anything else we can say here, please go ahead and say it}
+%
+%On the other hand, % \EKHINE{cambio el orden}
+%CEGO starts with 10 random initial solutions, % with are quite poor as
+%% expected,
+%followed by building and updating the Kriging model based on new
+%evaluations, which leads to an impressive improvement in less than 50
+%evaluations. However, progress is halted at this point and CEGO seems to
+%have trouble finding better solutions. Around evaluation 200, the search
+%becomes fully random. Lower uniformity values, e.g., 0.5, show worsening
+%evaluations despite the increase in the number of solutions used to build the model. In
+%summary, the Kriging model clearly helps CEGO to quickly identify good
+%solutions in very few evaluations. However, CEGO is not able
+%to further improve those solutions given more data. Given what we know about
+%Kriging~\citep{EriPeaGar2019scalable}, it appears that the surrogate model cannot model the local step
+%necessary to reach the optimal solution and switches to an exploration strategy
+%that ends up being completely random.
+%
+%% This may due to the model not being able to produce accurate
+%% predictions or the underlying optimizer not being able to find improved
+%% solutions using the model.
+%%\MANUEL{perhaps we should measure the
+%%  prediction error and see if it grows or decreases. That would answer this
+%%  question.}
+%
+%
+%
+%%: LOP reales: he puesto 3 de diferentes tamanos. Me ha parecido interesante que, a pesar de que CEGO parece que va mejor, esta diferencia se va reduciendo segun se aumenta el tamano del problema (que se puede ver en el nombre del problema y en el títutlo de la gráfica)
+%\begin{figure}[!tb]
+%  \centering%
+%  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandB_N-p50-01}\\
+%  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d100_01}\\
+%  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d150_01}\\
+%%  \includegraphics[width=\textwidth]{../img/fitness_real_lop_RandA1_N-t1d200_01}\\
+%    \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on three instances from LOLIB.\label{fig:lolib}}
+%  \end{figure}
+%
 
 %Results are quite different on the 
 %The fast initial convergence of CEGO for synthetic LOP instances does not seem
@@ -773,31 +769,41 @@ that ends up being completely random.
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
 \subsection{Analysis of UMM and CEGO on LOP, QAP and PFSP}
+To  understand the behavior of the algorithms, we record the fitness of
+the solution evaluated at each step of each run and we average those values
+over 10 runs with different random seeds on the same problem instance.  As an
+example, each line in Fig.~\ref{fig:lop_synth} shows the mean fitness of the
+\ekhine{solutions evaluated by either UMM or CEGO on one synthetic LOP instance}{ojo}. The
+shaded area shows one standard deviation around the mean. Ideally, each new
+evaluation will monotonically improve in fitness, since each solution evaluated
+helps to refine the model and leads to a better solution being evaluated in the
+next step.  However, it is possible that new solutions are worse
+than their predecessors. %Nevertheless, in this example, there is a clear
+% overall improvement as more evaluations are performed.
+The minimum values
+achieved in the plot up to a particular number of function evaluations gives an
+estimation of the mean fitness of the best-so-far solution up to that point in
+the run. The algorithms do not return the final solution shown but rather the
+best one (minimum fitness) of each run.
 
-In the following paragraphs we analyze the results over real-world instances. %
-Figure~\ref{fig:lolib} shows the results on the instances taken from LOLIB.
+Figure~\ref{fig:lolib} shows the results on the real-world instances taken from LOLIB. 
   %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
   % \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
-The type of instances differs greatly from the synthetic LOP instances, and,
-thus, so does the landscape. However, UMM shows a very similar behavior: there
+%The type of instances differs greatly from the synthetic LOP instances, and,
+%thus, so does the landscape. However, UMM shows a very similar behavior: 
+We can see that for UMM there 
 is a (close to) linear decrease of the fitness of new solutions over each new
 evaluation. This suggests that UMM is able to model the fitness
-landscape. Regarding CEGO, we observe a similar behavior to UMM for the first
+landscape. Regarding CEGO, \ekhine{we observe a similar behavior to UMM for the first
 50-100 evaluations, however, in several instances CEGO reaches the time limit
 of 144 hours, so no observations can be made for longer budgets. In smaller
-instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.
-%Overall, the improvement from the first  to the last
-%solutions is 2-3 times larger in UMM than CEGO. %
-%\MANUEL{But this is a bit misleading because UMM runs for 4 times more
-%  evaluations, perhaps we should also measure up to the evaluation that CEGO
-%  reaches so we report both values?}
-%
+instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.}{ the objective function decrease slowly?}
 
-In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
+\ekhine{In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
  obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
 instance considered here. The lack of any apparent convergence suggests that
 the models (both Bayesian and probabilistic) are not learning anything about
-the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).
+the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{}
 % \manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
 % that other distance measures are more suited than Kendall's-$\tau$ distance for
 % the PFSP, the reported fitness differences between various distance metrics are
@@ -903,7 +909,23 @@ QAP
 \vspace*{-1em}
  \end{table}
 
+\subsection{Rankings and orderings}
+%\ekhine{}{rellenar}
+In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of this mistakes. We remind the readear that statistical models (Borda or the Kendall distance) are defined for rankings while standard literature in optimization considers orderings. As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. A natural question is what happens if we did not invert the ranking. 
 
+In CEGO, the objects modeled and evaluated are the same: There is no inversion between the objects sampled from the model and the objects evaluated. This means that botha re rankings or both are orders. For modelling the Kendall distance is used, that as stated is meant for rankings. A natural question is what happens if we did invert the ranking. 
+
+Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
+
+\begin{figure}[tp]
+  \centering%
+  \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
+  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.}
+  \label{fig:rankorder}
+\end{figure}
+
+We compare this results with the numerical results provided in the original paper. These results are consistent with the setting of no inversion for CEGO. 
+\ekhine{probar con m=100 para ver ci podemos competir en instancias cortas}{}
 
 \section{Conclusions}\label{sec:conclusions}
 
