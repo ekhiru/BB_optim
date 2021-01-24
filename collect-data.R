@@ -7,4 +7,5 @@ for(i in 1:30) {
 saveRDS(cegores, file="cegores.rds")
 write.csv(cegores, file="cegores.csv", row.names=FALSE)
 aggregate(cegores$time, list(er=cegores$eval_ranks), mean)
-print(cegores)
+head(cegores[cegores$eval_ranks == 0,])
+head(cegores[cegores$eval_ranks == 1,])
