@@ -43,7 +43,7 @@ launch_local() {
 
 # Generate LOP synthetic
 gen_lop_synthetic() {
-    INSTANCES=$@
+    instances=""
     LOP_n=20
     LOP_m=200
     LOP_seed=123456
@@ -53,12 +53,12 @@ gen_lop_synthetic() {
         for m in $LOP_m; do
             for seed in $LOP_seed; do
                 for phi in $LOP_phi; do
-                    INSTANCES="$INSTANCES LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+                    instances="$instances LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
                 done
             done
         done
     done
-    echo $INSTANCES
+    echo $instances
 }
 
 nruns=10
@@ -82,10 +82,10 @@ pfsp/rec31.txt \
 
 
 ###### For LOLIB instances
-#INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
-#INSTANCES=$(gen_lop_synthetic "")
+INSTANCES="$INSTANCES $(gen_lop_synthetic)"
 
 budget=400
 
@@ -93,7 +93,7 @@ budget=400
 eval_ranks=0
 
 cego_m_ini=10
-budgetGA=3 # Actually, 10**budgetGA
+budgetGA=4 # Actually, 10**budgetGA
 
 r_1=0.1
 r_2=0.9
@@ -112,28 +112,5 @@ for instance in $INSTANCES; do
 	### Uncomment for running UMM
 #	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
         
-    done
-done
-
-RERUN_params=0
-if [ $RERUN_params -eq 0 ]; then
-    exit 0
-fi
-
-# LOP: eval_ranks=1
-# QAP: eval_ranks=0
-# 
-counter=0
-for instance in $INSTANCES; do
-    for r_1 in $(seq 0.1 0.1 0.5); do
-	for r_2 in "$(seq 0.6 0.1 0.9) 0.99"; do
-	    counter=$((counter+1))
-	    RESULTS="results-r1r2/$instance"
-	    mkdir -p $RESULTS
-	    for run in $(seq 1 $nruns); do
-		### Uncomment for running UMM
-		$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
-	    done
-	done
     done
 done
