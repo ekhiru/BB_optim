@@ -24,7 +24,7 @@ class Problem:
                 assert self.worst_fitness == worst_fitness
         self.reset()
 
-    def check_permutation(x):
+    def check_permutation(self, x):
         # Assumes numpy array
         return ((x >= 0) & (x < self.n)).all() and np.unique(x).shape[0] == x.shape[0]
 
