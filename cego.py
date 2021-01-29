@@ -51,7 +51,7 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
     fun
     if (!vectorized) { 
         fn <- if (control$eval_ranks) function(x) unlist(lapply(x, fun)) 
-              else function(x) unlist(lapply(x, function(y) fun(order(y) - 1)))
+              else function(x) unlist(lapply(x, function(y) fun(order(y))))
     } else {
      # fn <- fun
      stop("We do not handle vectorized functions")
@@ -189,6 +189,7 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
     }
     """
     rcode = STAP(rstring, "rcode")
+    # This function already converts from 1-based (R) to 0-based (Python)
     r_fitness = instance.make_r_fitness()
     best_x, best_fitness, x, y = rcode.my_cego(r_fitness,
     #                                           dist = r_kendallTau,
