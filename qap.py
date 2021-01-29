@@ -37,4 +37,5 @@ class QAP(Problem):
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
+        assert check_permutation(x), f"{x}"
         return np.sum(self.A * self.B[np.ix_(x, x)])

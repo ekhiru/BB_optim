@@ -58,4 +58,5 @@ class PFSP(Problem):
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
+        assert check_permutation(x), f"{x}"
         return self.makespan(x)
