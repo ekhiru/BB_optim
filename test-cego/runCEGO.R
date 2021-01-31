@@ -190,8 +190,8 @@ rF <- recombinationPermutationCycleCrossover
 cF <- function() sample(n)
 # start optimization
 #    print("antes del optimCEGO")
-budgetGA <- 10^3
-budget <- 400
+budgetGA <- 10^4
+budget <- 200
 res <- my_optimCEGO(x = NULL,
                  fun = fun,
                  control = list(creationFunction=cF,
@@ -203,9 +203,9 @@ res <- my_optimCEGO(x = NULL,
                                 model=modelKriging,
                                 vectorized=FALSE, eval_ranks = as.logical(eval_ranks)))
 elapsed <- proc.time() - elapsed
-print(res$y)
-print(1:budget)
-print(elapsed[3])
+## print(res$y)
+## print(1:budget)
+## print(elapsed[3])
 # We cannot use budget because optimCEGO may terminate before consuming the budget.
 cegores <- data.frame(Fitness=res$y, Instance=instance, Evals = seq(1,length(res$y)), eval_ranks = eval_ranks, seed=seed, time=elapsed[[3]])
 
