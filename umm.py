@@ -60,6 +60,7 @@ def UMM(instance, seed, budget,
     np.random.seed(seed)
 
     if eval_ranks: # If True, the objective function works with ranks
+      # FIXME: Do we really need this lambda?
       f_eval = lambda p: instance.fitness(p)
     else: # Otherwise, it works with orders
       f_eval = lambda p: instance.fitness(np.argsort(p))
@@ -73,6 +74,7 @@ def UMM(instance, seed, budget,
 
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
+        # FIXME: For maximization, this need to be changed.
         ws = ws - ws.min()
         # FIXME: Handle if ws.max() == 0.
         ws = ws / ws.max()
