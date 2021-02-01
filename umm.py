@@ -21,7 +21,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
       acum = np.cumsum(rho_med ** w)
       a = acum[pos]
       b = acum[-1]
-      if b < tol: # If b is very small, all values are equal, the value of rho does not matter. Let's return 1.0 
+      if b < tol: # If b is very small, all values are equal, the value of rho does not matter. Let's return 1.0
         return 1.0
       if abs(a / b - weight_mass_learn) < tol:
           return rho_med
@@ -38,7 +38,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
        acum = np.cumsum(rho_med ** w)
        a = acum[pos]
        b = acum[-1]
-       print("Error in binary_search_rho:", 
+       print("Error in binary_search_rho:",
              a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
        raise
 
@@ -56,14 +56,14 @@ def UMM(instance, seed, budget,
         m_ini, budgetMM,
         ratio_samples_learn,
         weight_mass_learn, eval_ranks):
-  
+
     np.random.seed(seed)
 
     if eval_ranks: # If True, the objective function works with ranks
       f_eval = lambda p: instance.fitness(p)
     else: # Otherwise, it works with orders
       f_eval = lambda p: instance.fitness(np.argsort(p))
-      
+
     n = instance.n
     sample = [ np.random.permutation(np.arange(n)) for _ in range(m_ini)]
     fitnesses = [f_eval(perm) for perm in sample]
@@ -90,7 +90,6 @@ def UMM(instance, seed, budget,
         phi_estim = mk.u_phi(sample, borda, ws)
         expected_dist = get_expected_distance(m, n, budget)
         phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
-        #phi_estim = 1 - (m+1)/(budget)
         perms = mk.samplingMM(budgetMM, n, phi=phi_sample, k=None)
         #perm = perm[borda]
         # Transforms from sampling space to Borda space.
