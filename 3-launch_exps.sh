@@ -39,10 +39,12 @@ EOF
 
 # FIXME: Not working right now
 launch_local() {
-    echo $1
-    shift
-    echo "running: $@"
-    $@
+    for run in $(seq 1 $nruns); do
+	echo $1
+	shift 1
+	echo "running: ./target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output $RESULTS/$ALGO-r$run"
+	./target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output $RESULTS/$ALGO-r$run
+    done
 }
 
 # Generate LOP synthetic
@@ -98,7 +100,7 @@ INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 ###### Synthetic LOP instances
 #INSTANCES="$INSTANCES $(gen_lop_synthetic)"
 
-budget=400
+budget=200
 
 #eval_ranks=1
 eval_ranks=0
@@ -117,14 +119,7 @@ for instance in $INSTANCES; do
     counter=$((counter+1))
     RESULTS="$OUTDIR/results/m${budget}-er${eval_ranks}/$instance"
     mkdir -p $RESULTS
-    $LAUNCHER cego $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks
-    #$LAUNCHER umm $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
-#     for run in $(seq 1 $nruns); do
-#        	### Uncomment for running CEGO
-# 	$LAUNCHER $cego-$counter-r$run ./target-runner-cego.py cego $counter-r$run-$$ $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks --output $RESULTS/cego-r$run
-
-# 	### Uncomment for running UMM
-# #	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
-        
-#     done
+    #$LAUNCHER cego $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks
+    $LAUNCHER umm $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
 done
+
