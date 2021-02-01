@@ -11,10 +11,12 @@ qsub_job() {
     PARALLEL_ENV=smp.pe
     # We would like to use $BASHPID here, but OS X version of bash does not
     # support it.
-    JOBNAME=$1-$$
+    ALGO=$1
     shift 1
+    JOBNAME=${ALGO}-$counter-$$
     qsub -v PATH <<EOF
 #!/bin/bash --login
+#$ -t 1-$nruns
 #$ -N $JOBNAME
 # -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
 #$ -l ivybridge
@@ -29,11 +31,13 @@ qsub_job() {
 #$ -j y
 #$ -cwd
 module load apps/anaconda3
-echo "running: $@"
-$@
+run=\$SGE_TASK_ID
+echo "running: ./target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output $RESULTS/$ALGO-r\$run"
+./target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output $RESULTS/$ALGO-r\$run
 EOF
 }
 
+# FIXME: Not working right now
 launch_local() {
     echo $1
     shift
@@ -80,12 +84,19 @@ pfsp/rec19.txt \
 pfsp/rec31.txt \
 "
 
+INSTANCES="\
+pfsp/rec05.txt \
+pfsp/rec13.txt \
+pfsp/rec19.txt \
+pfsp/rec31.txt \
+"
+
 
 ###### For LOLIB instances
 INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
-INSTANCES="$INSTANCES $(gen_lop_synthetic)"
+#INSTANCES="$INSTANCES $(gen_lop_synthetic)"
 
 budget=400
 
@@ -93,7 +104,8 @@ budget=400
 eval_ranks=0
 
 cego_m_ini=10
-budgetGA=4 # Actually, 10**budgetGA
+# Actually, 10**budgetGA
+budgetGA=4
 
 r_1=0.1
 r_2=0.9
@@ -103,14 +115,16 @@ umm_m_ini=10
 counter=0
 for instance in $INSTANCES; do
     counter=$((counter+1))
-    RESULTS="$OUTDIR/results-er${eval_ranks}/$instance"
+    RESULTS="$OUTDIR/results/m${budget}-er${eval_ranks}/$instance"
     mkdir -p $RESULTS
-    for run in $(seq 1 $nruns); do
-       	### Uncomment for running CEGO
-	$LAUNCHER cego-$counter-r$run ./target-runner-cego.py cego $counter-r$run-$$ $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks --output $RESULTS/cego-r$run
+    $LAUNCHER cego $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks
+    #$LAUNCHER umm $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
+#     for run in $(seq 1 $nruns); do
+#        	### Uncomment for running CEGO
+# 	$LAUNCHER $cego-$counter-r$run ./target-runner-cego.py cego $counter-r$run-$$ $run $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks --output $RESULTS/cego-r$run
 
-	### Uncomment for running UMM
-#	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
+# 	### Uncomment for running UMM
+# #	$LAUNCHER umm-$counter-r$run ./target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget  --eval_ranks $eval_ranks --output $RESULTS/umm-r$run
         
-    done
+#     done
 done
