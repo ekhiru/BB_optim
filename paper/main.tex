@@ -409,9 +409,9 @@ counter-part.
 In this section we describe our main contribution: Unbalanced Mallows model
 (UMM), a novel algorithm for the optimization of an expensive black-box function over
 permutation spaces. This algorithm is a probabilistic method based on the
-Mallows model and uBorda learning.
+Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorithm? otherwise people would complain. Or Unbalanced Mallows Algorithm (UMA)?}
 
-\EKHINE{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway.
+\EKHINE{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway. MANUEL: FIXED
 }
 
 \newcommand{\tuple}[1]{\ensuremath{\langle #1\rangle}}
@@ -458,8 +458,8 @@ As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $
 Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
 Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
-\ekhine{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
-I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}{}
+\EKHINE{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
+I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -488,17 +488,19 @@ the sampling from $MM(\sigma_0,\theta)$ (lines~\ref{line:sample}--\ref{line:dist
 \newcommand{\Edist}{\ensuremath{\mathbb{E}[D]}}
 
 
-\subsubsection{Learning step}
+\subsection{Learning step}
 %
 At each iteration, we start by fitting a MM to the sample $S$, which implies
 estimating $\hat\sigma_0$ and $\theta$. Parameter $\theta$ is updated
 deterministically at the sampling step.  The parameter $\sigma_0$, however, is
 learned from the current sample $S$ by using the uBorda algorithm with a weight
 $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
-controlled by parameter $\rho \in (0,1)$. %
+controlled by parameter $0 < \rho < 1$. \MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
-the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.,\MANUEL{Reviewer 3:  Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}
+the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
+%
+\MANUEL{Reviewer 3:  Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}
 %
 \begin{equation}
   \begin{split}
@@ -509,9 +511,7 @@ the weights is concentrated in the best $100r_2$\% of the solutions in $S$, i.e.
 %
 i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best corresponding fitness values in $F$. %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
-\ekhine{4. Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}{}
-
-\subsubsection{Sampling step}\label{sec:sampling}
+\subsection{Sampling step}\label{sec:sampling}
 In this step, the algorithm samples from the distribution the new data point to be evaluated. 
 Sampling from $MM(\sigma_0,\theta)$  can be done efficiently given the parameters  $\sigma_0$ and $\theta$, as studied by \citet{IruCalLoz2016permallows}, where the computational complexity is $O(n\log n)$. % and $O(n^2)$.\MANUEL{X respectively? more than 2}
 %
@@ -523,18 +523,18 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 
 Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution),\MANUEL{Reviewer 3: "At the first iteration, $\theta$ is set so that $E[D] = {n \choose 4}$". Why?} and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
-
-\ekhine{5. "At the first iteration, Theta is set so that $E[D] = {n \choose 4}$". Why?}{}
+\EKHINE{5. "At the first iteration, Theta is set so that $E[D] = {n \choose 4}$". Why?}
 A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
 
 To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
 
-\ekhine{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}{}
+\EKHINE{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}
 
 \subsection{Convergence guarantees}
 \ekhine{}{completar}
 
+\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
 
 
 \section{Experimental setup}\label{sec:setup}
@@ -547,7 +547,7 @@ of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
 exploitation. In the experimental section we will study their impact. %implemented UMM using Python 3.
 At each sampling step, we set $\beta=10$, meaning that 10 permutations are generated and the farthest from $S$ is selected for evaluation. 
 
-\subsubsection{CEGO} \ekhine{tenemos una pagina entera dedicada a CEGO :s}{}
+\subsubsection{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
 method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
 optimization problems. In EGO, Gaussian process models are used as a surrogate
@@ -571,7 +571,6 @@ with other optimizers for expensive black-box combinatorial optimization ranked
 it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
 
 
-\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
 
 
 
@@ -1073,20 +1072,24 @@ landscapes.
 % \item Can we plot the posterior probability of the optimal solution?
 % \end{itemize}
 
+\subsubsection{Reproducibility.} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
+%  \vspace*{-1em}
+%\begin{acks}
 %% MANUEL: Blind, so no acknowledgments yet.
-\begin{smaller}
-  \paragraph*{Reproducibility.} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
-  \vspace*{-1em}
-\paragraph*{Acknowledgements.} Blind
+%\paragraph*{Acknowledgements.} Blind
 % M.\@ L\'opez-Ib\'a\~nez is a ``Beatriz Galindo'' Senior Distinguished Researcher (BEAGAL 18/00053) funded by the Ministry of Science and Innovation of the Spanish Government.
 %
 %\manuel{}{: We should also thank the COST ACTION: Ask Carlos?} \ekhine{}{Sure!, esto no habra q ponerlo aun por ser blind, no?}
 %Thanks to: Hao Wang (Leiden University) for pointing us to the arguments of
 %\citep{EriPeaGar2019scalable}; Thomas Stützle (Université libre de Bruxelles) for suggesting works
 %about differences between QAPLIB instances; and Ahmed Boujaada for the experimental support. 
-
-\end{smaller}
-
+  % supported by the \grantsponsor{GS501100001809}{National Natural
+  %   Science Foundation of
+  %   China}{http://dx.doi.org/10.13039/501100001809} under Grant
+  % No.:~\grantnum{GS501100001809}{61273304}
+  % and~\grantnum[http://www.nnsf.cn/youngscientists]{GS501100001809}{Young
+  %   Scientists' Support Program}.
+%\end{acks}
 
 %\renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
 \bibliographystyle{ACM-Reference-Format-abbrv}
