@@ -541,11 +541,12 @@ To increase the exploration of the search space, the algorithm samples $\beta$ p
 
 \subsubsection{UMM}
 %
-UMM uses the same budget of evaluations ($\FEmax$) as CEGO
-and initially samples $\minit=10$ solutions uniformly. The other two parameters
-of UMM are $r_1$ and $r_2$, which determine the balance between exploration and
-exploitation. In the experimental section we will study their impact. %implemented UMM using Python 3.
-At each sampling step, we set $\beta=10$, meaning that 10 permutations are generated and the farthest from $S$ is selected for evaluation. 
+UMM uses the same budget of evaluations ($\FEmax$) as CEGO and initially
+samples $\minit=10$ solutions uniformly.  At each sampling step, we set
+$\beta=10$, meaning that 10 permutations are generated and the farthest from
+$S$ is selected for evaluation.  The other two parameters of UMM are $r_1$ and
+$r_2$, which determine the balance between exploration and exploitation. In the
+experimental section we will study their impact.
 
 \subsubsection{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
@@ -608,35 +609,36 @@ to understand CEGO parameters.
 \subsubsection{Other settings}
 %
 For simplicity, we use Kendall's-$\tau$
-distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments. Nevertheless,
-\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-when using Hamming distance and the same may apply to UMM.
+distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments.
+%Nevertheless,
+%\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
+%when using Hamming distance and the same may apply to UMM.
 We plan to extend UMM to other distance measures in the future.  In all
 experiments, we consider a maximum budget of $\FEmax=400$ evaluations of the
 actual objective function. In a white-box context, state-of-the-art algorithms
-for the problems considered here typically evaluate thousands of solutions,
+for the LOP and PFSP typically evaluate thousands of solutions,
 thus, the budget considered here for the black-box context is extremely
 limited.
 
 
 \subsubsection{Benchmark problems}
 %
-Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. \ekhine{cambio la definition de LOP}{In this section, and following the consensus on the optimization literature, the permutations denote orderings. }
+Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. \ekhine{cambio la definition de LOP}{In this section, and following the consensus on the optimization literature, the permutations denote orderings. }\MANUEL{That seems strange, shouldn't be use the same everywhere? I would rather use rankings or orderings everywhere and I have a slight preference for orders since this is an optimization paper.}
 
 The \emph{Linear Ordering Problem (LOP)}, when minimizing, is defined as
 %\footnote{For consistency with the other problems, we minimise the lower triangle instead of maximising the upper triangle.} 
 \begin{equation}\label{eq:lop}
   \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma(i), \sigma(j)}
 \end{equation}
-where $[a_{i,j}]$ is a matrix of size $n \times n$ and $\sigma^{-1}$ is the inverse of $\sigma$.
-
-
-The \emph{Quadratic Assignment Problem (QAP)} is defined by:
-\begin{equation}\label{eq:qap}
-  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^n \sum_{j=1}^n a_{i,j} b_{\sigma(i), \sigma(j)}
-\end{equation}
 %
-where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
+where $[a_{i,j}]$ is a matrix of size $n \times n$ \manuel{and $\sigma^{-1}$ is the inverse of $\sigma$}{}.
+
+% The \emph{Quadratic Assignment Problem (QAP)} is defined as
+% \begin{equation}\label{eq:qap}
+%   \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^n \sum_{j=1}^n a_{i,j} b_{\sigma(i), \sigma(j)}
+% \end{equation}
+% %
+% where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
 
 The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
 \begin{equation}\label{eq:pfsp}
