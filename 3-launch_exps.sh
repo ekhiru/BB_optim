@@ -95,14 +95,16 @@ pfsp/rec31.txt \
 
 
 ###### For LOLIB instances
-INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+#INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 #INSTANCES="$INSTANCES $(gen_lop_synthetic)"
 
-budget=200
+budget=400
 
 #eval_ranks=1
+eval_ranks="0 1"
 eval_ranks=0
 
 cego_m_ini=10
@@ -115,11 +117,14 @@ budgetMM=10
 umm_m_ini=10
 
 counter=0
-for instance in $INSTANCES; do
-    counter=$((counter+1))
-    RESULTS="$OUTDIR/results/m${budget}-er${eval_ranks}/$instance"
-    mkdir -p $RESULTS
-    #$LAUNCHER cego $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $eval_ranks
-    $LAUNCHER umm $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
+for er in $eval_ranks; do
+    for instance in $INSTANCES; do
+	counter=$((counter+1))
+	RESULTS="$OUTDIR/results/m${budget}-er${eval_ranks}/$instance"
+	mkdir -p $RESULTS
+	$LAUNCHER umm $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $er
+	$LAUNCHER cego $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $er
+    done
 done
+
 

@@ -3,6 +3,7 @@ rsync -av $HOME/umm $HOME/scratch/ --exclude-from=- <<"EOF"
 .git
 results*
 old
+pickles
 paper
 *~
 img/
