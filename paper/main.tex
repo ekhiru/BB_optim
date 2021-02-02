@@ -97,22 +97,24 @@
 \begin{abstract}
 %The abstract should briefly summarize the contents of the paper in
 %150--250 words.
-  Black-box combinatorial optimization problems arise in practice when the
-  objective function is evaluated by means of a simulator or a real-world
-  experiment. In such cases, classical techniques such as mixed-integer
-  programming and local search cannot be applied. Moreover, each fitness
-  evaluation is often expensive in terms of time or resources, thus only a
-  limited number of evaluations is possible, typically several orders of
-  magnitude smaller than in white-box optimization problems. In the continuous
-  case, Bayesian optimization, in particular using Gaussian processes, has
-  proven very effective under these conditions. Much less research is available
-  in the combinatorial case. In this paper, we propose and analyze UMM, an
+  Expensive black-box combinatorial optimization problems arise in practice
+  when the objective function is evaluated by means of a simulator or a
+  real-world experiment. Since each fitness evaluation is expensive in terms of
+  time or resources, only a limited number of evaluations is possible,
+  typically several orders of magnitude smaller than in non-expensive problems. In
+  this scenario, classical optimization methods such as mixed-integer
+  programming and local search are not useful.  In the continuous case,
+  Bayesian optimization, in particular using Gaussian processes, has proven
+  very effective under these conditions. Much less research is available in the
+  combinatorial case. In this paper, we propose and analyze UMM, an
   estimation-of-distribution (EDA) algorithm based on a Mallows probabilistic
   model and unbalanced rank aggregation (uBorda). Experimental results on
   black-box versions of LOP, QAP and PFSP show that UMM is able to match, and
   sometimes surpass, the solutions obtained by CEGO, a Bayesian optimization
-  algorithm for combinatorial optimization. %, specially when the budget of solutions evaluated approaches 400. 
-  Moreover, the computational complexity of UMM increases linearly with both the number of function evaluations and the permutation size.
+  algorithm for combinatorial
+  optimization. %, specially when the budget of solutions evaluated approaches 400.
+  Moreover, the computational complexity of UMM increases linearly with both
+  the number of function evaluations and the permutation size.
 %  an order of magnitude smaller than CEGO, which makes it specially useful when
   %both computation time and number of evaluations are of concern.
   \sloppy
@@ -135,7 +137,7 @@ algorithms to the combinatorial case~\cite{MorKat2011:evo}, a notable example be
 Efficient Global Optimization
 (CEGO)~\citep{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}. However, the
 ruggedness of combinatorial landscapes, which makes local search particularly
-effective in the white-box context, lessens the effectiveness of global
+effective for combinatorial problems, lessens the effectiveness of global
 surrogate models~\citep{EriPeaGar2019scalable}. Moreover, surrogate models are
 expensive to train and optimize. The additional time required by the Bayesian
 optimizer may impose a significant overhead in computation time, specially if
@@ -149,20 +151,20 @@ $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
 short budgets.
 %Finally, we note that learning Budget-constrained Combinatorial is a hot topic for a variety of structures besides permutation~\cite{manchanda2020}. 
-\manuel{- the authors assigned to black-box optimization problems characteristics that they do not own. For instance they say that "local search cannot be used".
+\MANUEL{- the authors assigned to black-box optimization problems characteristics that they do not own. For instance they say that "local search cannot be used".
  they mixed expensive to evaluate functions with black-box functions and of course they are different. In fact much of the metaheuristics do not mind
  if the problem is withe-box or black-box as they do not use static information from the function in the optimization process. In this case I understand
  that they have a black-box problem where the objective function is costly to evaluate. This should be clear and I would recommend to delete other comments
- related with white-box and black-box.
-}{}
+ related with white-box and black-box. MANUEL: FIXED
+}
 
-\ekhine{6. When the main contribution of the paper is discussed it is stated that this contribution is the Unbalanced Mallows *model* (which does not seem to be true as the models used in the paper seem to be known already). Right after that it is stated that the contribution is *a novel algorithm* which, I think, reflects the contents of the paper much better.
-}{}
-In this work, we propose and analyze Unbalanced Mallows Model (UMM), a
+\EKHINE{6. When the main contribution of the paper is discussed it is stated that this contribution is the Unbalanced Mallows *model* (which does not seem to be true as the models used in the paper seem to be known already). Right after that it is stated that the contribution is *a novel algorithm* which, I think, reflects the contents of the paper much better.
+}
+In this work, we propose and analyze Unbalanced Mallows Model (UMM)\MANUEL{Perhaps we need to rename the algorithm to UMM Algorithm or UMM Optimizer to avoid the criticism of the reviewer that we do not propose the model?}, a
 population-based probabilistic algorithm specifically designed for optimizing
 black-box problems over a permutation landscape under a limited budget. There
 exists a wide body of research on probabilistic models for permutations, such
-as Mallows~\cite{FliVer1986}, that have already been been used in optimization
+as Mallows~\cite{FliVer1986}, that have already been  used in optimization
 problems successfully, with the most prominent examples being estimation of
 distribution algorithms
 (EDAs)~\cite{CebIruMen2014eda}. ACO may also be considered
