@@ -6,13 +6,16 @@ from scipy import optimize
 def kendall_max_dist(n):
     return int(n * (n - 1) / 2)
 
+# FIXME: Optimize this function
 def kendallTau(A, B=None):
     # if any partial is B
     if B is None : B = list(range(len(A)))
     n = len(A)
+    # FIXME: Since n is typically fixed, this could be done once outside this function.
     pairs = it.combinations(range(n), 2)
     distance = 0
     # print("IIIIMNNMNNN",list(pairs),len(A))
+    # FIXME: Avoid this loop: https://stackoverflow.com/questions/16003217/n-d-version-of-itertools-combinations-in-numpy
     for x, y in pairs:
         #if not A[x]!=A[x] and not A[y]!=A[y]:#OJO no se check B
         a = A[x] - A[y]

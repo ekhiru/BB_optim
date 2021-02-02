@@ -27,6 +27,7 @@
 \newcommand{\procedure}[1]{\textsf{#1}}
 \newcommand{\Inf}{\ensuremath{\infty}}
 \DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 
 \newcommand{\Prob}{\ensuremath{p}}
@@ -326,7 +327,7 @@ Permutations are defined as bijections of the set $[n]$ of integers onto itself.
 
 \manuel{P}{Throughout this paper and for consistency, p}ermutation $\sigma$ represents a \emph{ranking}:  $\sigma(i)=j$ denotes that item $i$ has rank $j$. The \emph{ordering} associated with $\sigma$ is given by its inverse $\sigma^{-1}$, therefore,  $\sigma(i)=j \Leftrightarrow  \sigma^{-1}(j)=i$. This distinction is in order since statistical methodologies \manuel{are devoted for}{typically assume} rankings \manuel{and}{whereas the} optimization literature \manuel{for}{often assumes} orderings. Mixing both concepts is a very common confusion with grave consequences, as we will illustrate in the experimental section.
 
-Kendall's-$\tau$ distance is the metric for rankings that counts the pairs of items ranked in different order in both permutations:
+Kendall's-$\tau$ distance is the metric for rankings that counts the pairs of items ranked in different order in two permutations:
 %
 \begin{equation}
 \begin{split}
@@ -336,7 +337,7 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
  \label{eq:kendall_decomp}
 \end{equation}
 
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \ekhine{ojo, aqui lo dice bien o  mal?}{}
+An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \EKHINE{ojo, aqui lo dice bien o  mal?}\MANUEL{Habría que mirarlo bien!}
 
 
 \subsection{Distributions over permutations}
@@ -346,7 +347,7 @@ Distributions over permutations are functions that assign a probability value  $
 \Prob(\sigma \mid \sigma_0, \theta )= \frac{\exp(-\theta d(\sigma, \sigma_0))}{\psi} \sim MM(\sigma_0, \theta)
 \end{equation}
 %
-with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's-$\tau$ distance (Eq.~\eqref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
+with two parameters, $\theta$ and $\sigma_0$. Permutation $\sigma_0\in S_n$ is a reference permutation and has the largest probability value, i.e., the mode of the distribution. The probability of every permutation $\sigma\in S_n$ decays exponentially as its distance $d(\sigma,\sigma_0)$ increases, and the dispersion parameter $\theta$  controls this decay.  The normalization constant $\psi$ can be easily computed for the Kendall's-$\tau$ distance (Eq.~\ref{eq:kendall_decomp}) as well as for the Hamming, Cayley and Ulam distances~\cite{IruCalLoz2016permallows}.
 
 
 We will use the standard maximum likelihood estimation (MLE) approach to fit the parameters of a MM for a given collection of permutations. 
@@ -387,7 +388,7 @@ production~\citep{FerAlvDiaIglEna2014ants}, where the fitness function may
 involve expensive simulations for which no closed-form mathematical description
 is available. The black-box formulation and limited budget preclude most of the
 optimization techniques that are successful in combinatorial optimization, such
-as constructive  heuristics and local search, leading to
+as constructive heuristics and local search, leading to
 a particularly challenging scenario, perhaps even more challenging than its continuous
 counter-part.
 
@@ -406,30 +407,40 @@ counter-part.
 
 
 In this section we describe our main contribution: Unbalanced Mallows model
-(UMM), a novel algorithm for the optimization of a black-box function over
+(UMM), a novel algorithm for the optimization of an expensive black-box function over
 permutation spaces. This algorithm is a probabilistic method based on the
 Mallows model and uBorda learning.
 
-\ekhine{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway.
-}{}
+\EKHINE{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway.
+}
+
+\newcommand{\tuple}[1]{\ensuremath{\langle #1\rangle}}
 
 \begin{algorithm}[t]
- \caption{UMM: Unbalanced Mallows Model for Black-Box Optimization}
+ \caption{UMM: Unbalanced Mallows Model Algorithm}
  \label{alg:umm}
   \begin{algorithmic}[1]
-    \Require $\minit$: number of initial permutations, $\FEmax$: total budget, $\rho$: learning rate
-    %\\ ?, $\FEmax$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
-    \State $S \assign $ generate $\minit$ permutations uniformly at random
-    \State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
+    \Require $\minit$: number of initial permutations, $\FEmax$: total budget,\newline\hspace*{5ex} \manuel{$\rho$: learning rate,}{$r_1, r_2$: parameters controlling the learning rate} 
+    % \\ ?, $\FEmax$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
+    \State $S \assign \{\}$
+    \For{$i \assign 0$ \textbf{to} $\minit$}
+    \State $\sigma \assign \text{generate uniformly at random}$
+    \State $S \assign S \cup \tuple{\sigma, f(\sigma)}$\Comment{Evaluate it}
+    \EndFor
+    %\State $S \assign $ generate  $\minit$ permutations uniformly at random
+    %\State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
-    \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}\Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
-    \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}\Comment{Generate $\beta$ permutations}
-    \State $\sigma\assign  \argmax_{\pi'\in \Sigma}\min_{ \pi \in S} d(\pi', \pi)   $ \Comment{Select the farthest from $S$}\label{line:distance}
+    \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}
+    \Statex \Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
+    \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
+    % \Comment{Generate $\beta$ permutations}
+    \State $\sigma\assign  \argmax_{\pi'\in \Sigma}\min_{ \pi \in S} d(\pi', \pi)   $ \label{line:distance}
+    \Statex \Comment{Select the farthest from $S$}
    % \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
-    \State $S \assign S \cup \{\sigma\}$, $\quad F \assign F \cup \{f(\sigma)\}$
+    \State $S \assign S \cup \tuple{\sigma, f(\sigma)}$\Comment{Evaluate it}
     \EndFor 
-    \State \Return $S$, $F$
+    \State \Return $\tuple{\sigma^\ast, f(\sigma^\ast)}\assign \argmin_{\tuple{\sigma, f(\sigma)}\in S} f(\sigma)$
   %   \Require $n$: ?, $m$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
   %   \For{$i \assign 1$ \textbf{to} $m$ \text{evaluations}}
   %   \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$
