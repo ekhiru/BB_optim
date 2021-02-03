@@ -11,11 +11,10 @@ qsub_job() {
     PARALLEL_ENV=smp.pe
     # We would like to use $BASHPID here, but OS X version of bash does not
     # support it.
-    JOBNAME=umm-$counter-r$run-$$
-    OUTFILE="${RESULTS}/$JOBNAME"
-    
+    JOBNAME=umm-$counter-$$
     qsub -v PATH <<EOF
 #!/bin/bash --login
+#$ -t 1-$nruns
 #$ -N $JOBNAME
 # -pe $PARALLEL_ENV $NB_PARALLEL_PROCESS 
 #$ -l ivybridge
@@ -30,18 +29,22 @@ qsub_job() {
 #$ -j y
 #$ -cwd
 module load apps/anaconda3
-echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
-echo -n "$instance,$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks,$value" > $OUTFILE
-$BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+run=\$SGE_TASK_ID
+OUTFILE="${RESULTS}/$JOBNAME-r\$run"
+echo "running: $BINDIR/target-runner-umm.py umm $counter-$$-r\$run \$run $@ > \$OUTFILE"
+echo -n "$instance,\$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks," > \$OUTFILE
+$BINDIR/target-runner-umm.py umm $counter-$$-r\$run \$run $@ >> \$OUTFILE
 EOF
 
 }
 launch_local() {
-    JOBNAME=umm-$counter-r$run-$$
-    OUTFILE=$RESULTS/$JOBNAME
-    echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
-    echo -n "$instance,$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks,$value" > $OUTFILE
-    $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+    for run in $(seq 1 $nruns); do
+	JOBNAME=umm-$counter-$$
+	OUTFILE=$RESULTS/${JOBNAME}-r$run
+	echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
+	echo -n "$instance,$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks," > $OUTFILE
+	$BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+    done
 }
 
 # Generate LOP synthetic
@@ -69,21 +72,17 @@ nruns=10
 LAUNCHER=qsub_job
 #LAUNCHER=launch_local
 
-## For QAP, PFSP instances
+## For PFSP instances
 INSTANCES="\
-qap/kra30a.dat \
-qap/kra30b.dat \
-qap/nug30.dat \
-qap/tho30.dat \
+pfsp/rec05.txt \
 pfsp/rec13.txt \
 pfsp/rec19.txt \
-lop/RandB/N-p40-02 \
-lop/IO/N-t59d11xx \
-lop/SGB/N-sgb75.02 \
-lop/xLOLIB/N-be75eec_150 \
+pfsp/rec31.txt \
 "
 
 
+###### For LOLIB instances
+INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 ###### Synthetic LOP instances
 INSTANCES=$(gen_lop_synthetic $INSTANCES)
 
@@ -104,9 +103,7 @@ for instance in $INSTANCES; do
     for r_1 in $r_1_values; do
 	for r_2 in $r_2_values; do
 	    counter=$((counter+1))
-	    for run in $(seq 1 $nruns); do
-		$LAUNCHER $counter $run $RESULTS $instance $umm_m_ini $budgetMM $r_1 $r_2 $budget $eval_ranks
-	    done
+	    $LAUNCHER $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
 	done
     done
 done

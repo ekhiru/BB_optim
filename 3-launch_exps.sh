@@ -33,8 +33,8 @@ qsub_job() {
 #$ -cwd
 module load apps/anaconda3
 run=\$SGE_TASK_ID
-echo "running: ./target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output ${OUTPUT}-r\$run"
-./target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output "${OUTPUT}-r\$run"
+echo "running: ${BINDIR}/target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output ${OUTPUT}-r\$run"
+${BINDIR}/target-runner-${ALGO}.py $ALGO $counter-$$-r\$run \$run $@ --output "${OUTPUT}-r\$run"
 EOF
 }
 
@@ -44,8 +44,8 @@ launch_local() {
     OUTPUT=$2
     shift 2
     for run in $(seq 1 $nruns); do
-	echo "running: ./target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output ${OUTPUT}-r$run"
-	./target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output "${OUTPUT}-r$run"
+	echo "running: ${BINDIR}/target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output ${OUTPUT}-r$run"
+	${BINDIR}/target-runner-${ALGO}.py $ALGO $counter-$$-r$run $run $@ --output "${OUTPUT}-r$run"
     done
 }
 
@@ -98,12 +98,12 @@ pfsp/rec31.txt \
 
 ###### For LOLIB instances
 INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
-#INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 #INSTANCES="$INSTANCES $(gen_lop_synthetic)"
 
-budget=400
+budget=100
 
 #eval_ranks=1
 eval_ranks="0 1"
@@ -115,18 +115,20 @@ budgetGA=4
 
 r_1=0.1
 r_2=0.9
-#budgetMM=10
-budgetMM=1
+beta=10
+#beta=1
 umm_m_ini=10
 
 counter=0
-for er in $eval_ranks; do
-    for instance in $INSTANCES; do
-	counter=$((counter+1))
-	RESULTS="$OUTDIR/results/m${budget}-er${eval_ranks}/$instance"
-	mkdir -p "$RESULTS"
-	$LAUNCHER umm "${RESULTS}/umm-b${budgetMM}" $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $er
-	#$LAUNCHER cego "${RESULTS}/cego" $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $budget --eval_ranks $er
+for m in $budget; do
+    for er in $eval_ranks; do
+	for instance in $INSTANCES; do
+	    counter=$((counter+1))
+	    RESULTS="$OUTDIR/results/m${m}-er${er}/$instance"
+	    mkdir -p "$RESULTS"
+	    $LAUNCHER umm "${RESULTS}/umm-b${beta}" $instance --m_ini $umm_m_ini --budgetMM $beta --rsl $r_1 --wml $r_2 --budget $m --eval_ranks $er
+	    #$LAUNCHER cego "${RESULTS}/cego" $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $m --eval_ranks $er
+	done
     done
 done
 
