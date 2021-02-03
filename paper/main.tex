@@ -654,19 +654,34 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 %For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 We consider real LOP datasets from the LOLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
-particular, we consider the following types: IO, Random instances of type A and
+particular, we have considered two instances of each class, focusing on relatively instances (the computation of CEGO grows rapidly with instance size):
+\texttt{N-p40-01}, \texttt{N-p40-02}, \texttt{N-p50-01}, \texttt{N-p50-02} (RandB), 
+lop/RandB/
+lop/IO/N-t59d11xx
+lop/IO/N-t59b11xx
+lop/SGB/N-sgb75.02
+lop/SGB/N-sgb75.01
+RandB/
+RandB/N-p50-02
+
+
+: IO, Random instances of type A and
 Random instances of type B of various sizes $n \in \{50, 100, 150, 200,
 250\}$. These are harder problems than the synthetic instances, not only
 because of the larger search space, but also because of the different instance
-types.
+types.\MANUEL{Needs updating}
 
-In the case of the QAP and PFSP, we consider the same instances as
-\citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e., \texttt{nug12},
-\texttt{nug30}, \texttt{tho30} and \texttt{kra32} for the QAP, with $n$ (the
-permutation length) equal to the number in the instance name, and
-\texttt{reC05}, \texttt{reC13} and \texttt{reC19} for the PFSP, with
-$n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
-later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
+In the case of the PFSP, we consider the same instances as
+\citet{ZaeStoBar2014:ppsn}, i.e., \texttt{reC05}, \texttt{reC13} and
+\texttt{reC19} for the PFSP, with $n \in \{20, 20, 30\}$, respectively.
+
+% In the case of the QAP and PFSP, we consider the same instances as
+% \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e., \texttt{nug12},
+% \texttt{nug30}, \texttt{tho30} and \texttt{kra32} for the QAP, with $n$ (the
+% permutation length) equal to the number in the instance name, and
+% \texttt{reC05}, \texttt{reC13} and \texttt{reC19} for the PFSP, with
+% $n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
+% later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
 
 \subsubsection{Computing environment.}
 % Due to the computational effort required, we used several computing systems to
@@ -686,26 +701,31 @@ Experiments were run on Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
 The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material~(\supplement).
 
 \begin{figure}[tb]
-  \centering%
+\centering%
   \begin{minipage}{0.49\linewidth}\centering
-    \texttt{N-t1d100.01} (LOP)\\[-0.2ex]
-    \includegraphics[width=\textwidth]{../img/heatmap_N-t1d100_01}
+    \texttt{N-t59d11xx} (LOP)\\[-0.2ex]
+    \includegraphics[width=\textwidth]{../img/heatmap_lop_IO_N-t59d11xx}
   \end{minipage}
   \begin{minipage}{0.49\linewidth}\centering
-    \texttt{N-t1d50.01} (LOP)\\[-0.2ex]
- \includegraphics[width=\textwidth]{../img/heatmap_N-t1d150_01}
+    \texttt{SGB_N-sgb75_02} (LOP)\\[-0.2ex]
+ \includegraphics[width=\textwidth]{../img/heatmap_lop_SGB_N-sgb75_02}
 \end{minipage}\\\vskip 1em
 \begin{minipage}{0.49\linewidth}
   \centering
-  \texttt{reC05} (PFSP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/heatmap_rec05}
+  \texttt{reC13} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/heatmap_pfsp_rec13_txt}
+\end{minipage}
+\begin{minipage}{0.49\linewidth}
+  \centering
+  \texttt{reC19} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/heatmap_pfsp_rec19_txt}
 \end{minipage}
 % \begin{minipage}{0.49\linewidth}
 %   \centering
 %   \texttt{kra32} (QAP)\\[-0.5ex]
 % \includegraphics[width=\textwidth]{../img/heatmap_kra32_dat}
 % \end{minipage}
-\caption{Mean fitness (over 10 runs) of different configurations of $r_1$ and $r_2$ (darker is better). Whitespace denotes missing data (runs that took longer than 6 hours).\label{fig:heatmaps}}
+\caption{Mean fitness (over 10 runs) of different configurations of $r_1$ and $r_2$ (darker is better).}\label{fig:heatmaps}}
 \end{figure}
 
 The plot shows that UMM is indeed very sensitive to the values of $r_1$ and
