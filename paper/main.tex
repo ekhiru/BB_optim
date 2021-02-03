@@ -654,26 +654,19 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 %For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 We consider real LOP datasets from the LOLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
-particular, we have considered two instances of each class, focusing on relatively instances (the computation of CEGO grows rapidly with instance size):
-\texttt{N-p40-01}, \texttt{N-p40-02}, \texttt{N-p50-01}, \texttt{N-p50-02} (RandB), 
-lop/RandB/
-lop/IO/N-t59d11xx
-lop/IO/N-t59b11xx
-lop/SGB/N-sgb75.02
-lop/SGB/N-sgb75.01
-RandB/
-RandB/N-p50-02
-
-
-: IO, Random instances of type A and
-Random instances of type B of various sizes $n \in \{50, 100, 150, 200,
-250\}$. These are harder problems than the synthetic instances, not only
-because of the larger search space, but also because of the different instance
-types.\MANUEL{Needs updating}
-
+particular, we have taken two instances of various types focusing on relatively
+small instances, since he computation time of CEGO grows rapidly with instance
+size: \texttt{N-p40-01}, \texttt{N-p40-02}, \texttt{N-p50-01} and
+\texttt{N-p50-02} of type \emph{RandB}; \texttt{N-t59d11xx} and
+\texttt{N-t59b11xx} of type \emph{IO}; and \texttt{N-sgb75.01} and
+\texttt{N-sgb75.02} of type \emph{SGB}.
+% Random instances of type B of various sizes $n \in \{50, 100, 150, 200,
+% 250\}$. These are harder problems than the synthetic instances, not only
+% because of the larger search space, but also because of the different instance
+% types.
 In the case of the PFSP, we consider the same instances as
-\citet{ZaeStoBar2014:ppsn}, i.e., \texttt{reC05}, \texttt{reC13} and
-\texttt{reC19} for the PFSP, with $n \in \{20, 20, 30\}$, respectively.
+\citet{ZaeStoBar2014:ppsn}, i.e., \texttt{reC05}, \texttt{reC13},
+\texttt{reC19} and \texttt{rec31}, with $n \in \{20, 20, 30, 50\}$ and $M \in \{5, 20, 10, 15\}$, respectively.
 
 % In the case of the QAP and PFSP, we consider the same instances as
 % \citet{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, i.e., \texttt{nug12},
@@ -698,10 +691,11 @@ Experiments were run on Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material~(\supplement).\MANUEL{TODO: Update (mine)}
+The first part of the experimental analysis concerns the analysis of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t59d11xx} and \texttt{N-sgb75.02} for the LOP, and \texttt{reC13} and \texttt{reC19} for the PFSP. Results for all the datasets can be found in the supplemental material~(\supplement).
 
 \begin{figure}[tb]
-\centering%
+  \centering%
+  \smaller
 \begin{minipage}{0.49\linewidth}
   \centering
     \texttt{N-t59d11xx} (LOP)\\[-0.2ex]
@@ -859,7 +853,7 @@ configuration as the current default of UMM.
 %\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
-\subsection{Analysis of UMM and CEGO on LOP, QAP and PFSP}
+\subsection{Analysis of UMM and CEGO on LOP and PFSP}
 To  understand the behavior of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
 over 10 runs with different random seeds on the same problem instance.  As an
@@ -908,27 +902,27 @@ the fitness landscape. Results for larger PFSP corroborate these conclusions (\s
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
 \end{figure}
 
-The situation is very similar for the QAP, where both algorithms show the same
-behaviour as in the PFSP for all instances tested, except for
-\texttt{kra} instances. As shown in Fig~\ref{fig:kra32}, for \texttt{kra32} both
-algorithms are able to improve over the number of evaluations, although not
-with ease. As in the synthetic LOP instances, we again observe that CEGO does
-improve faster than UMM initially, yet CEGO appears to get stuck around
-evaluation 250, and UMM overtakes it around evaluation 300. We believe the
-reason is the same as before, that is, the CEGO model is not able to adequately
-reflect the ruggedness of the actual landscape and, hence, the best solutions
-found by the GA searching the model are not improved solutions for the actual
-problem. Interestingly, there are well-known differences between
-\texttt{kra30a}, \texttt{kra30b}, \texttt{kra32}, on one hand, and \texttt{nug12}, \texttt{nug30} and
-\texttt{tho32}, on the other~\citep{AnsBriGou2002qap}. However, we cannot at
-this moment point out the root cause of this different behavior.
+% The situation is very similar for the QAP, where both algorithms show the same
+% behaviour as in the PFSP for all instances tested, except for
+% \texttt{kra} instances. As shown in Fig~\ref{fig:kra32}, for \texttt{kra32} both
+% algorithms are able to improve over the number of evaluations, although not
+% with ease. As in the synthetic LOP instances, we again observe that CEGO does
+% improve faster than UMM initially, yet CEGO appears to get stuck around
+% evaluation 250, and UMM overtakes it around evaluation 300. We believe the
+% reason is the same as before, that is, the CEGO model is not able to adequately
+% reflect the ruggedness of the actual landscape and, hence, the best solutions
+% found by the GA searching the model are not improved solutions for the actual
+% problem. Interestingly, there are well-known differences between
+% \texttt{kra30a}, \texttt{kra30b}, \texttt{kra32}, on one hand, and \texttt{nug12}, \texttt{nug30} and
+% \texttt{tho32}, on the other~\citep{AnsBriGou2002qap}. However, we cannot at
+% this moment point out the root cause of this different behavior.
 
-\begin{figure}[tp]
-  \centering%
-  \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
-  \vspace*{-1em}
-\end{figure}
+% \begin{figure}[tp]
+%   \centering%
+%   \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
+%   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
+%   \vspace*{-1em}
+% \end{figure}
 
 Table~\ref{tab:results} shows results over all instances evaluated (excluding
 the synthetic LOP instances). In particular, we show the mean fitness (and
@@ -942,9 +936,7 @@ would be even stronger.
 %
 In the PFSP, the differences are minor and/or not statistically
 significant, with the qualification that both algorithms appear to be
-performing a random search. Similar observations can be made for the QAP, where
-only on the smallest instance \texttt{nug12}, there is a significant difference
-in favour of CEGO.
+performing a random search.
 
 The overall conclusion from Table~\ref{tab:results} is that there is not a
 significant difference in performance between UMM and CEGO. For the larger LOP
@@ -1008,12 +1000,6 @@ In CEGO, the objects modeled and evaluated are the same: There is no inversion b
 
 Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
 
-\begin{figure}[tp]
-  \centering%
-  \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.}
-  \label{fig:rankorder}
-\end{figure}
 
 We compare this results with the numerical results provided in the original paper. These results are consistent with the setting of no inversion for CEGO. 
 \ekhine{probar con m=100 para ver ci podemos competir en instancias cortas}{}
@@ -1096,7 +1082,7 @@ landscapes.
 % \item Can we plot the posterior probability of the optimal solution?
 % \end{itemize}
 
-\subsubsection{Reproducibility.} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
+\subsubsection{Reproducibility} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
 %  \vspace*{-1em}
 %\begin{acks}
 %% MANUEL: Blind, so no acknowledgments yet.
