@@ -698,7 +698,7 @@ Experiments were run on Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
 
 \subsection{Analysis of $r_1$ and $r_2$ parameters}
 
-The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material~(\supplement).
+The first part of the experimental analysis concerns the {analyses} of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t1d100.01} and \texttt{N-t1d150.01} for the LOP, \texttt{reC05} for the PFSP, \texttt{kra32} for the QAP. We terminated runs that took longer than 6 hours and those combinations are shown as white.  Results for all the datasets can be found in the supplemental material~(\supplement).\MANUEL{TODO: Update (mine)}
 
 \begin{figure}[tb]
 \centering%
@@ -955,7 +955,7 @@ which is at least an order of magnitude faster.
 
 
 \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
-\begin{table}[tb]
+\begin{table*}[tb]
   \caption{Mean fitness (and standard deviation) of the best solution found. % at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean difference between the fitness of UMM minus the one of CEGO. 
   Mean runtime is shown in hours. 
   %CEGO runs were stopped after 144 hours. This was the case for all LOP instances.
@@ -998,11 +998,11 @@ QAP
 \bottomrule
 \end{tabular}}
 \vspace*{-1em}
- \end{table}
+ \end{table*}
 
 \subsection{Rankings and orderings}
+In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of this mistakes. We remind the reader that statistical models (Borda or the Kendall distance) are defined for rankings while standard literature in optimization considers orderings. As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. A natural question is what happens if we did not invert the ranking. 
 %\ekhine{}{rellenar}
-In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of this mistakes. We remind the readear that statistical models (Borda or the Kendall distance) are defined for rankings while standard literature in optimization considers orderings. As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. A natural question is what happens if we did not invert the ranking. 
 
 In CEGO, the objects modeled and evaluated are the same: There is no inversion between the objects sampled from the model and the objects evaluated. This means that botha re rankings or both are orders. For modelling the Kendall distance is used, that as stated is meant for rankings. A natural question is what happens if we did invert the ranking. 
 
