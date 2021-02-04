@@ -422,10 +422,11 @@ Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorith
     \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
     \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}
     \Statex \Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
-    \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
+   % \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
+     \State $\sigma \assign$ sample a permutation from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     % \Comment{Generate $\beta$ permutations}
-    \State $\sigma\assign  \argmax_{\pi'\in \Sigma}\min_{ \pi \in S} d(\pi', \pi)   $ \label{line:distance}
-    \Statex \Comment{Select the farthest from $S$}
+    %\State $\sigma\assign  \argmax_{\pi'\in \Sigma}\min_{ \pi \in S} d(\pi', \pi)   $ \label{line:distance}
+    %\Statex \Comment{Select the farthest from $S$}
    % \State $\sigma \assign$ sampled from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
     \State $S \assign S \cup \tuple{\sigma, f(\sigma)}$\Comment{Evaluate it}
     \EndFor 
@@ -516,10 +517,10 @@ Then the expected distance linearly decreases until the last iteration where $\t
 Setting $\Edist = \binom{n}{2}$ will generate random permutations at early stages, slowing the algorithm convergence. 
 A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs. It follows that the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
 
-To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
-%i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
+% To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
+% %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
 
-\EKHINE{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}
+% \EKHINE{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}
 
 \subsection{Convergence guarantees}
 \ekhine{}{completar}
@@ -532,11 +533,13 @@ To increase the exploration of the search space, the algorithm samples $\beta$ p
 \subsubsection{UMM}
 %
 UMM uses the same budget of evaluations ($\FEmax$) as CEGO and initially
-samples $\minit=10$ solutions uniformly.  At each sampling step, we set
-$\beta=10$, meaning that 10 permutations are generated and the farthest from
-$S$ is selected for evaluation.  The other two parameters of UMM are $r_1$ and
-$r_2$, which determine the balance between exploration and exploitation. In the
-experimental section we will study their impact.
+samples $\minit=10$ solutions uniformly.
+%At each sampling step, we set
+%$\beta=10$, meaning that 10 permutations are generated and the farthest from
+%$S$ is selected for evaluation.
+The other two parameters of UMM are $r_1$ and $r_2$, which determine the
+balance between exploration and exploitation. In the experimental section we
+will study their impact.
 
 \subsubsection{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
@@ -875,11 +878,11 @@ landscape. Regarding CEGO, \ekhine{we observe a similar behavior to UMM for the 
 of 144 hours, so no observations can be made for longer budgets. In smaller
 instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.}{ the objective function decrease slowly?}
 
-\ekhine{In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
- obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
-instance considered here. The lack of any apparent convergence suggests that
-the models (both Bayesian and probabilistic) are not learning anything about
-the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{kaka}
+% \ekhine{In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
+%  obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
+% instance considered here. The lack of any apparent convergence suggests that
+% the models (both Bayesian and probabilistic) are not learning anything about
+% the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{}
 % \manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
 % that other distance measures are more suited than Kendall's-$\tau$ distance for
 % the PFSP, the reported fitness differences between various distance metrics are
