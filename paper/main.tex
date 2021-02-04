@@ -850,9 +850,7 @@ configuration as the current default of UMM.
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$.\MANUEL{necesitamos las ecuaciones? Swap de una permutación es simplemente la distancia de kendall de la permutación inversa. .}
-\EKHINE{asi mas claro, no se van a perder con esto}
- %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
 As a consequence of this important distinction, when dealing with  permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
@@ -863,11 +861,16 @@ PFSP, respectively. This might seem an implementation detail but a failure to us
 %assumes rankings, i.e., it actually measures the \ken distance, yet CEGO did
 % not invert the permutation before evaluating the PFSP.
 During our experiments, we realized that CEGO claimed to use the Swap distance. Instead, CEGO implements the \ken distance, yet CEGO did
-not invert the permutation before evaluating the PFSP.\MANUEL{no me convence esta forma de expresarlo porque la crítica obvia sería que por qué invertimos la función objectivo y no la función de distancia?} \EKHINE{es lo mismo}We verified that this is
+not invert the permutation before evaluating the PFSP.
+%\MANUEL{no me convence esta forma de expresarlo porque la crítica obvia sería que por qué invertimos la función objectivo y no la función de distancia?} \EKHINE{es lo mismo}
+We verified that this is
 indeed how the implementation works and that those results match the published
-ones~\citep{ZaeStoBar2014:ppsn}. Of course, the obvious question arises about the effect of inverting the permutation before calling the objective
+ones~\citep{ZaeStoBar2014:ppsn}. 
+Note that using the Swap distance as claimed by CEGO is equivalent to using \ken distance and inverting the permutation before calling the objective
+function. Thus, the obvious question arises about the effect of inverting the permutation before calling the objective
 function, so that the rankings are transformed to ordering, as done by our UMM
-algorithm. Therefore, in the following, we show results of both variants, that is, the original CEGO (\CEGOorig) and our modified version that inverts the permutation before evaluation (\CEGOinv).
+algorithm. In the following, we show results of both variants, that is, the original CEGO (\CEGOorig) and our modified version that inverts the permutation before evaluation (\CEGOinv).
+
 
 %\manuel{}{The above replaces the text below?}
 %
@@ -970,7 +973,9 @@ We now turn our analysis to the best (minimum) fitness found at the end of the
 run by the two best algorithms, that is, \CEGOinv and UMM$_{400}$. We show in
 Table~\ref{tab:results} the mean fitness (and standard deviation) of the best
 solution found over the 10 runs of each algorithm, together with a 95\%
-confidence interval (CI) around their mean fitness difference. Except for PFSP
+confidence interval (CI) around their mean fitness difference. 
+The 
+Except for PFSP
 instances \texttt{rec05} and \texttt{rec31}, the differences are statistically
 significant in favour of \CEGOinv (the intervals do not contain the value
 zero). Nevertheless, the CIs indicate that the differences, although
@@ -986,7 +991,7 @@ Table~\ref{tab:results} shows a brief comparison of time and the full ones are g
 The average runtime for all the instances is around 0.3 minutes, 1.15 minutes and 4.5 minutes respectively for the  versions with 100, 200 and 400 fitness evaluations. 
 For CEGO in both versions the average time for 400 evaluations is more than 22 hour. This is 300 times slower than UMM for the same number of function evaluations. 
 Moreover, UMM scales good for larger instances in quality performance. 
-The computational complexity of UMM is $O(n \log n)$ at each iteration while both versions of CEGO need \ekhine{MANUEL, tu sabes}{?}. This difference is evident in the time performance of the algorithms. The details can be seen in Table~\ref{table:time}. 
+The computational complexity of UMM is $O(n \log n)$ at each iteration which causes the abrupt differencein the time performance of the algorithms. The details can be seen in Table~\ref{tab:results_time}. 
 
 
 
@@ -1003,7 +1008,7 @@ The computational complexity of UMM is $O(n \log n)$ at each iteration while bot
   \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p40-01}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
-  \texttt{N-p40-04} (LOP)\\[-0.5ex]
+  \texttt{N-p40-02} (LOP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p40-02}
 \end{minipage}
 \\
@@ -1012,16 +1017,16 @@ The computational complexity of UMM is $O(n \log n)$ at each iteration while bot
   \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
-  \texttt{N-sgb75-01} (LOP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
+  \texttt{N-t59d11xx} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59d11xx}
 \end{minipage}
 \\
 \begin{minipage}{0.49\linewidth}
-  \texttt{N-t59b11xx} (LOP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
+  \texttt{SGB\_N-sgb75\_01} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_01}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
-  \texttt{N-sgb75-01} (LOP)\\[-0.5ex]
+  \texttt{SGB\_N-sgb75\_01} (LOP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
 \end{minipage}
 \\
