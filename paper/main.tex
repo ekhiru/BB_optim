@@ -39,7 +39,7 @@
 \newcommand{\FEmax}{\ensuremath{m}}
 
 \newcommand{\supplement}{\href{http://doi.org/10.5281/zenodo.4500974}{doi:~10.5281/zenodo.4500974}}
-
+\newcommand{\ken}{Kendall's-$\tau$}
 %% Revision documents
 %\usepackage[dvipsnames]{xcolor}
 \usepackage[normalem]{ulem}
@@ -205,11 +205,9 @@ short budgets.
  related with white-box and black-box. MANUEL: FIXED
 }
 
-\EKHINE{6. When the main contribution of the paper is discussed it is stated that this contribution is the Unbalanced Mallows *model* (which does not seem to be true as the models used in the paper seem to be known already). Right after that it is stated that the contribution is *a novel algorithm* which, I think, reflects the contents of the paper much better.
-}
-In this work, we propose and analyze Unbalanced Mallows Model (UMM)\MANUEL{Perhaps we need to rename the algorithm to UMM Algorithm or UMM Optimizer to avoid the criticism of the reviewer that we do not propose the model?}, a
+In this work, we propose and analyze the Unbalanced Mallows Model (UMM) algorithm, a
 population-based probabilistic algorithm specifically designed for optimizing
-black-box problems over a permutation landscape under a limited budget. There
+black-box problems over a permutation landscape under a limited budget. There\EKHINE{En realidad está disenado para esto  pero podríamos probarlo para otros casos. Trabajo futuro}
 exists a wide body of research on probabilistic models for permutations, such
 as Mallows~\cite{FliVer1986}, that have already been  used in optimization
 problems successfully, with the most prominent examples being estimation of
@@ -328,7 +326,7 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
  \label{eq:kendall_decomp}
 \end{equation}
 
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \EKHINE{ojo, aqui lo dice bien o  mal?}\MANUEL{Habría que mirarlo bien!}
+An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
 
 
 \subsection{Distributions over permutations}
@@ -512,10 +510,11 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
 \end{equation}
 
-Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$ (half of the expected distance for the uniform distribution),\MANUEL{Reviewer 3: "At the first iteration, $\theta$ is set so that $E[D] = {n \choose 4}$". Why?} and then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
+Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$, i.e., half of the expected distance for the uniform distribution. 
+Then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
-\EKHINE{5. "At the first iteration, Theta is set so that $E[D] = {n \choose 4}$". Why?}
-A purely explotation approach would always generate $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs.  Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}.
+Setting $\Edist = \binom{n}{2}$ will generate random permutations at early stages, slowing the algorithm convergence. 
+A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs. It follows that the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
 
 To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
@@ -880,7 +879,7 @@ instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.}{
  obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
 instance considered here. The lack of any apparent convergence suggests that
 the models (both Bayesian and probabilistic) are not learning anything about
-the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{}
+the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{kaka}
 % \manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
 % that other distance measures are more suited than Kendall's-$\tau$ distance for
 % the PFSP, the reported fitness differences between various distance metrics are
@@ -888,11 +887,22 @@ the fitness landscape. Results for larger PFSP corroborate these conclusions (\s
 % Hence, we conjecture that the same behavior will be observed with other distance metrics.}{}\MANUEL{On second thought, I'm not sure we should say this, because we really have no idea and we actually hope it is not true.}
   
 
-\begin{figure}[tb]
+
+
+\begin{figure*}[tb]
   \centering%
-  \includegraphics[width=\textwidth]{../img/fitness_real_pfsp_rec05_txt}
+    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
+    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
+
+    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_RandB_N-p40-01}
+    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_RandB_N-p50-01}
+
+    \includegraphics[width=0.49\textwidth]{../img/fitness_pfsp_rec19_txt}
+    \includegraphics[width=0.49\textwidth]{../img/fitness_pfsp_rec31_txt}
+
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
-\end{figure}
+\end{figure*}
+
 
 % The situation is very similar for the QAP, where both algorithms show the same
 % behaviour as in the PFSP for all instances tested, except for
