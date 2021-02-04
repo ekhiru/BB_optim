@@ -537,12 +537,12 @@ A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in th
 
 \myparagraph{UMM}
 %
-UMM uses a budget of evaluations ($\FEmax$) of  $\minit=10$ solutions sampled uniformly.
+UMM initially samples $\minit=10$ solutions uniformly.
 The other two parameters of UMM are $r_1$ and $r_2$ that determine the learning rate $\rho$ in uBorda, and consequently, determine the
 balance between exploration and exploitation. In the experimental section we
 will study their impact.
 
-We consider 3 different values for the maximum budget of $\FEmax=100, 200,400$ evaluations of the
+We consider three different values $\FEmax \in\{100, 200,400\}$ for the maximum budget of  evaluations of the
 actual objective function. In a white-box context, state-of-the-art algorithms
 for the LOP and PFSP typically evaluate thousands of solutions,
 thus, the budget considered here for the black-box context is extremely
