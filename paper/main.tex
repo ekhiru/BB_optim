@@ -853,10 +853,17 @@ configuration as the current default of UMM.
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 \ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 
+<<<<<<< HEAD
 In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
 As a consequence of this important distinction, when dealing with data in the form of permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
+=======
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the counterpart of the  \ken distance  in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+
+As a consequence of this important distinction, when evaluating classical
+combinatorial problems, UMM transforms rankings to orderings by inverting the
+>>>>>>> 93e2de37fb43d00ad712f9162805cea037fa45f5
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
 
@@ -887,23 +894,28 @@ algorithm. Therefore, in the following, we show results of both variants, that i
 
 
 
-\subsection{Analysis of UMM and CEGO on LOP and PFSP}
-To  understand the behavior of the algorithms, we record the fitness of
-the solution evaluated at each step of each run and we average those values
-over 10 runs with different random seeds on the same problem instance.  As an
-example, each line in Fig.~\ref{fig:results} shows the mean fitness of the
-solutions evaluated by either UMM or CEGO on one instance. The
-shaded area shows one standard deviation around the mean. Ideally, each new
+\subsection{Experimental Analysis of UMM and CEGO} % on LOP and PFSP instances}
+
+To better analyze the behavior of the algorithms, we record the fitness of the
+solution evaluated at each step of each run. For each problem instance and each
+algorithm, we plot the mean fitness at each evaluation over 10 runs with
+different random seeds, as shown in Fig.~\ref{fig:results}.
+%
+The shaded area shows one standard deviation around the mean. Ideally, each new
 evaluation will monotonically improve in fitness, since each solution evaluated
 helps to refine the model and leads to a better solution being evaluated in the
-next step.  However, it is possible that new solutions are worse
-than their predecessors. %Nevertheless, in this example, there is a clear
+next step.  However, it is possible that new solutions are worse than their
+predecessors. %Nevertheless, in this example, there is a clear
 % overall improvement as more evaluations are performed.
-The minimum values
-achieved in the plot up to a particular number of function evaluations gives an
-estimation of the mean fitness of the best-so-far solution up to that point in
-the run. The algorithms do not return the final solution shown but rather the
-best one (minimum fitness) of each run. This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. 
+
+We chose to plot the fitness of each evaluated solution rather than the fitness
+of the best-so-far to better understand the behavior of the algorithms at each
+step. Nevertheless, the minimum values achieved in the plot up to a particular
+number of function evaluations gives an estimation of the mean fitness of the
+best-so-far solution up to that point in the run. The algorithms do not return
+the final solution shown but rather the best one (minimum fitness) of each run.
+
+This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. 
 
 \paragraph{Figure descriptiopn} Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
 \begin{itemize}
@@ -924,27 +936,36 @@ The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iterati
 
 
 \begin{figure*}[tb]
-  \small
-  \centering%
-    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
-    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
-\\
-    \includegraphics[width=0.49\textwidth]{../img/fitness_lop_RandB_N-p40-01}
-    \begin{minipage}{0.49\linewidth}
-          \texttt{RandB N-p50-01} (LOP)\\[-0.5ex]
-    \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p50-01}
-  \end{minipage}
-    \\
-    \begin{minipage}{0.49\linewidth}
-    \texttt{reC19} (PFSP)\\[-0.5ex]
-\includegraphics[width=\textwidth]{../img/fitness_pfsp_rec19_txt}
+\small
+\centering%
+\begin{minipage}{0.49\linewidth}
+  \texttt{N-t59b11xx} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
-    \texttt{reC31} (PFSP)\\[-0.5ex]
-    \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec31_txt}
-  \end{minipage}
+  \texttt{N-sgb75-01} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
+\end{minipage}
+\\
+\begin{minipage}{0.49\linewidth}
+  \texttt{N-p40-01} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p40-01}
+\end{minipage}
+\begin{minipage}{0.49\linewidth}
+  \texttt{N-p50-01} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p50-01}
+\end{minipage}
+\\
+\begin{minipage}{0.49\linewidth}
+  \texttt{reC19} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec19_txt}
+\end{minipage}
+\begin{minipage}{0.49\linewidth}
+  \texttt{reC31} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec31_txt}
+\end{minipage}
 \label{fig:results}
-  \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on various instances.\label{fig:rec05}}
+\caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on various instances.\label{fig:results}}
 \end{figure*}
 
 
