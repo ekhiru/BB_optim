@@ -399,10 +399,8 @@ counter-part.
 In this section we describe our main contribution: Unbalanced Mallows model
 (UMM), a novel algorithm for the optimization of an expensive black-box function over
 permutation spaces. This algorithm is a probabilistic method based on the
-Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorithm? otherwise people would complain. Or Unbalanced Mallows Algorithm (UMA)?}
+Mallows model and uBorda learning.%\MANUEL{Perhaps we should call it UMM Algorithm? otherwise people would complain. Or Unbalanced Mallows Algorithm (UMA)?}
 
-\EKHINE{10. In Algorithm 1 'S' and 'F' are *sets* (thus, unordered). Therefore, when adding sigma and f(sigma) the correspondence between the two elements seems to be lost. This mapping would be better represented as a set of *pairs* < sigma, f(sigma) >. You always add these elements to both sets at the same time in step 8, anyway. MANUEL: FIXED
-}
 
 \newcommand{\tuple}[1]{\ensuremath{\langle #1\rangle}}
 
@@ -448,9 +446,9 @@ Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorith
 As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are generated uniformly at random  (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
 Together with the parameter $\theta$, the algorithm defines the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter along iterations (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
-Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
-\EKHINE{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
-I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}
+Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}, also  in  Section~\ref{sec:sampling}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
+%\EKHINE{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
+%I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1 NOOO. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}
 
 The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
@@ -856,7 +854,7 @@ configuration as the current default of UMM.
 
 In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$.\MANUEL{necesitamos las ecuaciones? Swap de una permutación es simplemente la distancia de kendall de la permutación inversa.} %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
-As a consequence of this important distinction, when dealing with \manuel{data in the form of}{} permutations, in particular in 
+As a consequence of this important distinction, when dealing with  permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
@@ -927,11 +925,12 @@ predecessors. %Nevertheless, in this example, there is a clear
 configurations of UMM. We can see a common trend in all instances: After
 the 10 random initial permutations, the fitness of new solutions decreases
 with a linear trend along iterations. The (close to) linear decrease is given
-by the linear decrease in the expected distance\MANUEL{distance to the sampling model or variance of the sampling model?} of the sampling model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
+by the linear decrease in the expected distance of the model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
 does not seem to converge, not even for the longer runs of 400 evaluations. Therefore, we conjecture that longer runs are likely to produce further improved solutions. Moreover, a non-linear decrease in the expected distance should result in a faster convergence for larger evaluation budgets. \manuel{The
 average runtime for all the instances is around 0.3 minutes, 1.15 minutes and
 4.5 minutes respectively for the versions with 100, 200 and 400 fitness
 evaluations.}{}\MANUEL{We should discuss the time when discussing the tables.}
+\EKHINE{luego el detalle, que la gente no llega al final }
 
 \paragraph{Convergence analysis of CEGO}
 The red and the gold lines in the plots shown in Fig.~\ref{fig:results}
@@ -949,7 +948,6 @@ tremendous effect in performance. Therefore, we will focus our analysis on
 \CEGOinv.
 
 \myparagraph{Comparison of UMM and CEGO}
-
 When comparing the UMM and CEGO configurations shown in Fig.~\ref{fig:results},
 we can observe that all UMM configurations perform much better than the
 original CEGO (\CEGOorig), while they converge slower than our modified
@@ -1002,7 +1000,7 @@ The red and the gold lines correspond to CEGO, the original and our modified ver
 The performance of the UMM is clearly better than the performance of the original CEGO for the same problem. For CEGO\_inv on the other hand improves the results of the UMM with the current experimental setting. However, UMM seems to be improving the quality of the solutions until the last iteration while CEGO\_inv seems to be stucked at a local optimum. Further analysis lines will consider a larger budget of fitness evaluation. 
 
 Moreover, UMM seems to scale good for larger instances in quality performance. Note that the instances are order from top to bottom in the size of the permutations. 
-The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iteration while both versions of CEGO need \manuel{tu sabes}{?}. This difference is evident in the time performance of the algorithms. The details can be seen in Table~\ref{table:time}.
+The computational complexity of UMM is $O(n \log n)$ at each iteration while both versions of CEGO need \manuel{tu sabes}{?}. This difference is evident in the time performance of the algorithms. The details can be seen in Table~\ref{table:time}.
 
 
 \begin{figure*}[tb]
@@ -1014,7 +1012,7 @@ The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iterati
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
   \texttt{N-p50-01} (LOP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p50-01}
+  \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p40-02}
 \end{minipage}
 \\
 \begin{minipage}{0.49\linewidth}
