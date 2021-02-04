@@ -580,14 +580,12 @@ and the result is used to build the initial surrogate
 model. % \citet{ZaeStoBar2014:ppsn} uses \minit=10
 Following the authors of
 CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
-\ekhine{}{hay que actualizar essto??}
 the surrogate models with population size of 20, crossover rate of 0.5,
 mutation rate of $1/n$, tournament selection of size 2 with probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements) and
 cycle crossover for permutations. To generate each new solution, CEGO runs the
-GA using the model as a surrogate of the true fitness function.  The authors of
-CEGO used a budget of $10^4$ surrogate-model evaluations for each run of the
-GA and we use the same confuguration parameters.% However, with such a setting, a single run of CEGO with a budget of
+GA with a budget of $10^4$ evaluations of the model as a surrogate of the true fitness function.  
+%and we use the same configuration parameters.% However, with such a setting, a single run of CEGO with a budget of
 %$\FEmax=400$ true fitness evaluations requires \emph{more than a week} of
 %computation time, which was infeasible for our study. 
 %Due to extremely long
