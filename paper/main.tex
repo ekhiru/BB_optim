@@ -616,12 +616,12 @@ limited.
 
 \subsubsection{Benchmark problems}
 %
-Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. \ekhine{cambio la definition de LOP}{In this section, and following the consensus on the optimization literature, the permutations denote orderings. }\MANUEL{That seems strange, shouldn't be use the same everywhere? I would rather use rankings or orderings everywhere and I have a slight preference for orders since this is an optimization paper.}
-
+Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. \manuel{In this section, and following the consensus on the optimization literature, the permutations denote orderings.}{For consistency with the rest of the paper, a permutation $\sigma$ denotes a ranking also in this section, thus we use the inverse permutation $\sigma^{-1}$ in the definition of the problems. Later in the experimental section we discuss the effects of not performing this inversion.}
+%
 The \emph{Linear Ordering Problem (LOP)}, when minimizing, is defined as
 %\footnote{For consistency with the other problems, we minimise the lower triangle instead of maximising the upper triangle.} 
 \begin{equation}\label{eq:lop}
-  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma(i), \sigma(j)}
+  \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma^{-1}(i), \sigma^{-1}(j)}
 \end{equation}
 %
 where $[a_{i,j}]$ is a matrix of size $n \times n$ \manuel{and $\sigma^{-1}$ is the inverse of $\sigma$}{}.
@@ -633,12 +633,12 @@ where $[a_{i,j}]$ is a matrix of size $n \times n$ \manuel{and $\sigma^{-1}$ is 
 % %
 % where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
 
-The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
+The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma^{-1}(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
 \begin{equation}\label{eq:pfsp}
   \begin{split}
     \min_{\sigma \in S_n}\quad& f(\sigma) = C_{n,M}\\
     \text{s.t.}\quad & C_{1,j} = 0 \quad j\in [M], \qquad C_{i,1} = 0\quad i \in [n]\\
-    &C_{i,j} = p_{\sigma(i),j} + \max\{C_{i-1, j}, C_{i, j-1}\}  \ \  i \in \{2,\dotsc,n\},\\
+    &C_{i,j} = p_{\sigma^{-1}(i),j} + \max\{C_{i-1, j}, C_{i, j-1}\}  \ \  i \in \{2,\dotsc,n\},\\
     &\hspace{14.5em} j \in\{2,\dotsc, M\}
   \end{split}
 \end{equation}
