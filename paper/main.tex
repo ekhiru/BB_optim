@@ -1221,48 +1221,31 @@ Problem &    Instance &   CEGO\_inv &  CEGO\_orig &    UMM\_400 &       UMM\_200
 
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
-expensive black-box combinatorial problems on permutation landscapes when the
-budget of fitness evaluations is severely limited (here, up to $100$, $200$ and
-$400$ evaluations).  Our experiments presented here show that UMM is not far
-away from, and sometimes  is able to match, the results of the state-of-the-art
-Bayesian optimizer for expensive black-box optimization.
-%if the computation time of the optimizers is not a concern.
-
-In addition, UMM is specially well-suited for budget-limited scenarios that are
-still time-sensitive, e.g., when the overhead incurred by the optimizer should
-be no more than a few minutes added to each fitness evaluation. By comparison,
-CEGO may require around one day to perform 400 fitness evaluations, with the time
-increasing non-linearly with permutation size and larger budgets.  Hence, UMM
-is a computationally feasible alternative for relatively large problem sizes.
-
-In this paper, we discuss the importance of the representation of permutations in applied mathematics problems. In the context considered in this paper, permutations can bee seen as rankings or orderings of items. In other problems they could be matchings or cycles. 
-While certain functions are
-this discussion is usually omitted in the literature.
-We discuss the different concepts and show, experimentally, the consequences of misunderstanding both. 
-
+expensive black-box combinatorial problems on permutation landscapes when the budget
+of fitness evaluations is severely limited (here, up to $100$, $200$ and $400$ evaluations).
 Although we were inspired by previous work on ACO for expensive black-box
 combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
-knowledge, the first EDA specifically designed for such problems that is able
-to match (and sometimes even improve) the state-of-the-art
-optimizer. Moreover, it is overwhelmingly faster than the alternatives for
-large problem sizes.  The results presented here show that, despite the
-intrinsic difficulty of the expensive black-box combinatorial scenario, there
-are still significant advances yet to be made. Thus, we hope that this paper
-will motivate further research. 
+knowledge, the first EDA specifically designed for such problems. 
 
-In this paper, we focus on the UMM under the \ken distance. Therefore, we consider appropriate problems for it, such as the Linear Ordering Problem and the Permutation Flow-shop Scheduling Problem, where the pairwise ordering among the items is relevant (as opposed to the actual exact position of each item in the permutation)
+We also discuss the importance of the representation of permutations in applied mathematics problems. Permutations can bee seen as rankings or orderings of items and this difference is often neglected. Based on this differentiation, we propose an improvement for CEGO over the original version. The results of UMM clearly improve over the original CEGO and they are competitive with the improved version of CEGO proposed here.
 
-However, we are certain it is
-possible to extend UMM to other distance metrics, which will allow us to
-dynamically select among various distance metrics for an unknown black-box permutation landscape.
-Also, as shown by our
-experiments, the behavior of the parameters ($r_1$ and $r_2$) of UMM is not
-always obvious, thus a more detailed analysis would be needed to provide either
-generally good static values or an online adaptation approach. Finally, we have
-used here  different combinatorial problems (LOP, PFSP) as
-black-box benchmarks. However, an even more diverse range of problems would be
+In addition, UMM is specially well-suited for budget-limited scenarios that are still time-sensitive, e.g., when the overhead incurred by the optimizer should
+be no more than a few second per fitness evaluation (no more than one hour for $400$ evaluations), due to its quasi-linear time complexity.
+By comparison, CEGO may require several minutes per fitness evaluation (around 22 hours for $400$ evaluations), with the time increasing non-linearly with permutation size and larger budgets.  Hence, UMM is a computationally feasible alternative for relatively large problem sizes.
+
+The current version of UMM uses the \ken distance and, therefore, it is appropriate for problems where the pairwise ordering among the items is relevant (as opposed to the actual exact position of each item in the permutation), such as the Linear Ordering Problem and the Permutation Flow-shop Scheduling.
+However, we are certain that it is
+possible to extend UMM to other distance metrics such as Hamming, which will allow us to
+ dynamically select among various distance metrics for an unknown black-box permutation landscape.
+%Also, as shown by our
+%experiments, the behavior of the parameters ($r_1$ and $r_2$) of UMM is not always obvious, thus
+In addition, a more detailed analysis would be needed of the parameters ($r_1$ and $r_2$) of UMM to provide either
+generally good static values or an online adaptation approach.
+Finally, an even more diverse range of problems would be
 needed to understand the behavior of UMM on real-world black-box combinatorial
 landscapes.
+
+The results presented here show that, despite the intrinsic difficulty of the expensive black-box combinatorial scenario, there are still significant advances yet to be made. Thus, we hope that this paper will motivate further research. 
 
 
 % Bayesian optimization methods using a global GP model, such as CEGO, are known
