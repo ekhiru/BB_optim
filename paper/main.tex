@@ -853,17 +853,10 @@ configuration as the current default of UMM.
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 \ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 
-<<<<<<< HEAD
 In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
 As a consequence of this important distinction, when dealing with data in the form of permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
-=======
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the counterpart of the  \ken distance  in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
-
-As a consequence of this important distinction, when evaluating classical
-combinatorial problems, UMM transforms rankings to orderings by inverting the
->>>>>>> 93e2de37fb43d00ad712f9162805cea037fa45f5
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
 
