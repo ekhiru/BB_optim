@@ -526,12 +526,12 @@ A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in th
 \subsection{Convergence guarantees}
 \ekhine{}{completar}
 
-\renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
+\renewcommand{\myparagraph}[1]{\smallskip{}\noindent\textbf{#1}.}
 
 
 \section{Experimental setup}\label{sec:setup}
 
-\subsubsection{UMM}
+\myparagraph{UMM}
 %
 UMM uses the same budget of evaluations ($\FEmax$) as CEGO and initially
 samples $\minit=10$ solutions uniformly.
@@ -542,7 +542,7 @@ The other two parameters of UMM are $r_1$ and $r_2$, which determine the
 balance between exploration and exploitation. In the experimental section we
 will study their impact.
 
-\subsubsection{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
+\myparagraph{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
 method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
 optimization problems. In EGO, Gaussian process models are used as a surrogate
@@ -599,7 +599,7 @@ different trade-off may lead to different conclusions and more work is needed
 to understand CEGO parameters.
 
 
-\subsubsection{Other settings}
+\myparagraph{Other settings}
 %
 For simplicity, we use Kendall's-$\tau$
 distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments.
@@ -614,7 +614,7 @@ thus, the budget considered here for the black-box context is extremely
 limited.
 
 
-\subsubsection{Benchmark problems}
+\myparagraph{Benchmark problems}
 %
 Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. For consistency with the rest of the paper, a permutation $\sigma$ denotes a ranking also in this section, thus we use the inverse permutation $\sigma^{-1}$ in the definition of the problems. Later in the experimental section we discuss the effects of not performing this inversion.
 %
@@ -643,7 +643,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
   \end{split}
 \end{equation}
 
-\subsubsection{Datasets}
+\myparagraph{Datasets}
 %
 %For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
 We consider real LOP datasets from the LOLIB
@@ -670,7 +670,7 @@ In the case of the PFSP, we consider the same instances as
 % $n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
 % later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
 
-\subsubsection{Computing environment.}
+\myparagraph{Computing environment.}
 % Due to the computational effort required, we used several computing systems to
 % run experiments.
 % All UMM experiments were either on run on Intel Xeon
@@ -909,10 +909,11 @@ particular number of function evaluations gives an estimation of the mean
 fitness of the best-so-far solution up to that point in the run. We provide
 later an analysis of the best solution found by each run of the algorithm.
 
-For each problem instance and each algorithm, we plot the mean fitness of the
-solution evaluated at each step over 10 runs with different random
-seeds, as shown in Fig.~\ref{fig:results}.
-%
+Figure~\ref{fig:results} shows such plots for a few LOP instances from LOLIB
+and the PFSP.  For each problem instance and each algorithm, we plot the mean
+fitness of the solution evaluated at each step over 10 runs with different
+random seeds. The horizontal line indicates the best-known fitness for that instance.
+% 
 The shaded area shows one standard deviation around the mean. Ideally, each new
 evaluation will monotonically improve in fitness, since each solution evaluated
 helps to refine the model and leads to a better solution being evaluated in the
@@ -920,10 +921,67 @@ next step.  However, it is possible that new solutions are worse than their
 predecessors. %Nevertheless, in this example, there is a clear
 % overall improvement as more evaluations are performed.
 
-Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
+\myparagraph{Convergence analysis of UMM} We start our analysis with the three
+configurations of UMM. We can see a common trend in all instances: After
+the 10 random initial permutations, the fitness of new solutions decreases
+with a linear trend along iterations. The (close to) linear decrease is given
+by the linear decrease in the expected distance\MANUEL{distance to the sampling model or variance of the sampling model?} of the sampling model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
+does not seem to converge, not even for the longer runs of 400 evaluations. Therefore, we conjecture that longer runs are likely to produce further improved solutions. Moreover, a non-linear decrease in the expected distance should result in a faster convergence for larger evaluation budgets. \manuel{The
+average runtime for all the instances is around 0.3 minutes, 1.15 minutes and
+4.5 minutes respectively for the versions with 100, 200 and 400 fitness
+evaluations.}{}\MANUEL{We should discuss the time when discussing the tables.}
+
+\paragraph{Convergence analysis of CEGO}
+The red and the gold lines in the plots shown in Fig.~\ref{fig:results}
+correspond to the two variants of CEGO the original \CEGOorig and our modified
+version \CEGOinv. The different between these two variants is overwhelmingly in
+favour of \CEGOinv. With the exception of the \texttt{reC19} PFSP instance, the
+search behavior of \CEGOorig resembles a random search, after a brief
+improvement phase at the start of the run. By contrast, \CEGOinv shows a very
+fast improvement in fitness within the first 50 evaluations that tends to
+converge around the 150$^\text{th}$ evaluation, showing little improvement
+after that. Since the only difference between these two variants is the
+transformation from rankings to orderings before evaluating the objective
+function (Sec.~\ref{sec:exper_ro}), we must conclude that this difference has
+tremendous effect in performance. Therefore, we will focus our analysis on
+\CEGOinv.
+
+\myparagraph{Comparison of UMM and CEGO}
+
+When comparing the UMM and CEGO configurations shown in Fig.~\ref{fig:results},
+we can observe that all UMM configurations perform much better than the
+original CEGO (\CEGOorig), while they converge slower than our modified
+\CEGOinv. However, the rate of improvement of the UMM variants does not seem to
+slow down near the maximum budget given and, in several instances such as
+\texttt{rec31} and \texttt{N-sgb75-01}, matches and surpasses the solutions
+found by \CEGOinv. Interestingly, this is the case, even for the shorter budget
+configurations of UMM, i.e., UMM$_{100}$ and UMM$_{200}$. We also observe a
+pattern that UMM performs better, or \CEGOinv performs worse, on larger
+instances, as can be seen by comparing \texttt{rec19} with \texttt{rec31}.
+
+\myparagraph{Comparison of the best solutions found} We now turn our analysis
+to the best (minimum) fitness found at the end of the run by each algorithm. We
+show in Table~\ref{tab:results}
+
+
+
+
+For the reason for the abrupt change between both version for
+every instance, we refer the reader to Section~\ref{sec:exper_ro}. For the
+original version, there is a global decrease in the fitness function. However,
+a closer analysis of each iteration does not show a real convergence to any
+point. However, with the modified version in which rankings are modeled and
+orderings are evaluated we can appreciate the a decrease in terms of fitness
+per evaluation. Overall, the modified CEGO has a very abrupt decrease at the
+first 50 iterations. At one point, the algorithm seems to have converged and
+very little improvement is don from the 150-th iteration onwards.  The average
+running time is approximately 22 hours for the 400 function evaluations, which
+is 300 times slower than UMM for the same number of function evaluations.
+
 
 \manuel{%
 This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. }{}
+
 
 \paragraph{Figure descriptiopn} Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
 \begin{itemize}
@@ -947,21 +1005,21 @@ The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iterati
 \small
 \centering%
 \begin{minipage}{0.49\linewidth}
-  \texttt{N-t59b11xx} (LOP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
-\end{minipage}
-\begin{minipage}{0.49\linewidth}
-  \texttt{N-sgb75-01} (LOP)\\[-0.5ex]
-  \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
-\end{minipage}
-\\
-\begin{minipage}{0.49\linewidth}
   \texttt{N-p40-01} (LOP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p40-01}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
   \texttt{N-p50-01} (LOP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p50-01}
+\end{minipage}
+\\
+\begin{minipage}{0.49\linewidth}
+  \texttt{N-t59b11xx} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_IO_N-t59b11xx}
+\end{minipage}
+\begin{minipage}{0.49\linewidth}
+  \texttt{N-sgb75-01} (LOP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_lop_SGB_N-sgb75_02}
 \end{minipage}
 \\
 \begin{minipage}{0.49\linewidth}
@@ -1151,7 +1209,7 @@ landscapes.
 % \item Can we plot the posterior probability of the optimal solution?
 % \end{itemize}
 
-\subsubsection{Reproducibility} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
+\myparagraph{Reproducibility} Source code, datasets and scripts necessary to reproduce the results are available at \supplement.
 %  \vspace*{-1em}
 %\begin{acks}
 %% MANUEL: Blind, so no acknowledgments yet.
