@@ -896,31 +896,7 @@ We start our analysis with the three version of UMM. We can see a general trend 
 The average runtime for all the instances is around 0.3 minutes, 1.15 minutes and 4.5 minutes respectively for the  versions with 100, 200 and 400 fitness evaluations. 
 
 
-  %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
-  % \footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}}
-%The type of instances differs greatly from the synthetic LOP instances, and,
-%thus, so does the landscape. However, UMM shows a very similar behavior: 
-We can see that for UMM there 
-is a (close to) linear decrease of the fitness of new solutions over each new
-evaluation. This suggests that UMM is able to model the fitness
-landscape. Regarding CEGO, \ekhine{we observe a similar behavior to UMM for the first
-50-100 evaluations, however, in several instances CEGO reaches the time limit
-of 144 hours, so no observations can be made for longer budgets. In smaller
-instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.}{ the objective function decrease slowly?}
-
-% \ekhine{In the case of the PFSP, the progress of both algorithms resembles a random search, as illustrated by the results
-%  obtained on \texttt{rec05} (Fig.~\ref{fig:rec05}), which is the smallest PFSP
-% instance considered here. The lack of any apparent convergence suggests that
-% the models (both Bayesian and probabilistic) are not learning anything about
-% the fitness landscape. Results for larger PFSP corroborate these conclusions (\supplement).}{}
-% \manuel{Although previous studies~\citep{ZaeStoBar2014:ppsn} concluded
-% that other distance measures are more suited than Kendall's-$\tau$ distance for
-% the PFSP, the reported fitness differences between various distance metrics are
-% small.
-% Hence, we conjecture that the same behavior will be observed with other distance metrics.}{}\MANUEL{On second thought, I'm not sure we should say this, because we really have no idea and we actually hope it is not true.}
-  
-
-
+The red
 
 \begin{figure*}[tb]
   \centering%
@@ -936,6 +912,8 @@ instances (e.g., Figure~\ref{fig:lolib}, top), CEGO again appears to stagnate.}{
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
 \end{figure*}
 
+
+\paragraph{Discussion on other problems: the case of QAP}
 
 % The situation is very similar for the QAP, where both algorithms show the same
 % behaviour as in the PFSP for all instances tested, except for
