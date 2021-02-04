@@ -888,23 +888,28 @@ This means that both are rankings (or both are orderings). A natural question is
 
 
 
-\subsection{Analysis of UMM and CEGO on LOP and PFSP}
-To  understand the behavior of the algorithms, we record the fitness of
-the solution evaluated at each step of each run and we average those values
-over 10 runs with different random seeds on the same problem instance.  As an
-example, each line in Fig.~\ref{fig:results} shows the mean fitness of the
-solutions evaluated by either UMM or CEGO on one instance. The
-shaded area shows one standard deviation around the mean. Ideally, each new
+\subsection{Experimental Analysis of UMM and CEGO} % on LOP and PFSP instances}
+
+To better analyze the behavior of the algorithms, we record the fitness of the
+solution evaluated at each step of each run. For each problem instance and each
+algorithm, we plot the mean fitness at each evaluation over 10 runs with
+different random seeds, as shown in Fig.~\ref{fig:results}.
+%
+The shaded area shows one standard deviation around the mean. Ideally, each new
 evaluation will monotonically improve in fitness, since each solution evaluated
 helps to refine the model and leads to a better solution being evaluated in the
-next step.  However, it is possible that new solutions are worse
-than their predecessors. %Nevertheless, in this example, there is a clear
+next step.  However, it is possible that new solutions are worse than their
+predecessors. %Nevertheless, in this example, there is a clear
 % overall improvement as more evaluations are performed.
-The minimum values
-achieved in the plot up to a particular number of function evaluations gives an
-estimation of the mean fitness of the best-so-far solution up to that point in
-the run. The algorithms do not return the final solution shown but rather the
-best one (minimum fitness) of each run. This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. 
+
+We chose to plot the fitness of each evaluated solution rather than the fitness
+of the best-so-far to better understand the behavior of the algorithms at each
+step. Nevertheless, the minimum values achieved in the plot up to a particular
+number of function evaluations gives an estimation of the mean fitness of the
+best-so-far solution up to that point in the run. The algorithms do not return
+the final solution shown but rather the best one (minimum fitness) of each run.
+
+This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. 
 
 \paragraph{Figure descriptiopn} Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
 \begin{itemize}
@@ -949,7 +954,7 @@ The red and the gold lines correspond to CEGO, the original and our modified ver
   \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec31_txt}
 \end{minipage}
 \label{fig:results}
-\caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on various instances.\label{fig:rec05}}
+\caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on various instances.\label{fig:results}}
 \end{figure*}
 
 
