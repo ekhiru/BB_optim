@@ -948,6 +948,10 @@ tremendous effect in performance. Therefore, we will focus our analysis on
 \CEGOinv.
 
 \myparagraph{Comparison of UMM and CEGO}
+<<<<<<< HEAD
+=======
+%
+>>>>>>> ec512c03280280fdb53c0ecc73cc2040b7d98aed
 When comparing the UMM and CEGO configurations shown in Fig.~\ref{fig:results},
 we can observe that all UMM configurations perform much better than the
 original CEGO (\CEGOorig), while they converge slower than our modified
@@ -959,10 +963,24 @@ configurations of UMM, i.e., UMM$_{100}$ and UMM$_{200}$. We also observe a
 pattern that UMM performs better, or \CEGOinv performs worse, on larger
 instances, as can be seen by comparing \texttt{rec19} with \texttt{rec31}.
 
-\myparagraph{Comparison of the best solutions found} We now turn our analysis
-to the best (minimum) fitness found at the end of the run by each algorithm. We
-show in Table~\ref{tab:results} the mean fitness of the best solution found
-over the 10 runs of each algorithm.
+\myparagraph{Comparison of the best solutions found}
+%
+We now turn our analysis to the best (minimum) fitness found at the end of the
+run by the two best algorithms, that is, \CEGOinv and UMM$_{400}$. We show in
+Table~\ref{tab:results} the mean fitness (and standard deviation) of the best
+solution found over the 10 runs of each algorithm, together with a 95\%
+confidence interval (CI) around their mean fitness difference. Except for PFSP
+instances \texttt{rec05} and \texttt{rec31}, the differences are statistically
+significant in favour of \CEGOinv (the intervals do not contain the value
+zero). Nevertheless, the CIs indicate that the differences, although
+consistent, are relatively small.
+
+\myparagraph{Runtime comparison}
+%
+Table~\ref{tab:results} also shows the mean
+runtime of \CEGOinv and UMM$_{400}$ in hours. The difference in computational
+effort between \CEGOinv and UMM is at least two orders of magnitude.
+
 
 
 
@@ -1093,11 +1111,11 @@ which is at least an order of magnitude faster.
 
 \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
 \begin{table*}[tb]
-  \caption{Mean fitness (and standard deviation) of the best solution found. % at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean difference between the fitness of UMM minus the one of CEGO. 
+  \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean difference between the fitness of \CEGOinv minus the one of UMM$_{400}$. 
   Mean runtime is shown in hours. 
   %CEGO runs were stopped after 144 hours. This was the case for all LOP instances.
   \label{tab:results}}
-  \resizebox{\textwidth}{!}{%
+ % \resizebox{\textwidth}{!}{%
 \begin{tabular}{r@{\hskip -1ex}r*{2}{r@{\hskip 1ex}l}r@{\hskip 0.5ex}lr@{\hskip 0.75ex}r}
  \toprule
             &              & \mcolc{4}{Mean fitness (sd)} & \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI of the                                                                                       \\mean difference}}} & \mcolc{2}{Mean runtime} \\\cmidrule(lr){3-6}\cmidrule(lr){9-10}
@@ -1116,7 +1134,8 @@ PFSP        & rec05        & 1276.2                       & (15.1)              
        & rec19        & 2264.5                       & (45.0)                                                                          & 2304.8    & (37.7)    & {[}-79.4,& -1.2{]}         & 18.2 & 0.2 \\
        & rec31        & 3415.5                       & (62.1)                                                                          & 3419.3    & (37.0)    & {[}-52.6,& 45.0{]}         & 23.1 & 0.5 \\
 \bottomrule
-\end{tabular}}
+\end{tabular}
+%}
 \end{table*}
 
 
