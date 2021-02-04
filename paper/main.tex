@@ -327,7 +327,7 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
  \label{eq:kendall_decomp}
 \end{equation}
 
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. \EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
+An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. %\EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
 
 
 \subsection{Distributions over permutations}
@@ -446,8 +446,8 @@ Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorith
 
 
 As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are generated uniformly at random  (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
-Together with the parameter $\theta$, they define the Mallows model $MM(\hat\sigma_0, \theta)$. 
-A decreasing $\theta$ parameter (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
+Together with the parameter $\theta$, the algorithm defines the Mallows model $MM(\hat\sigma_0, \theta)$. 
+A decreasing $\theta$ parameter along iterations (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
 Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
 \EKHINE{(3) In section 3, second half of the second paragraph (from "Then, we sample a new candidate [...]"): the algorithm 1 is not properly described. Please provide a description in line with algorithm 1 and, above all, describe the rationale behind the choice of line 7 of algorithm 1.
 I like it, but it deserves to be better described. It seems to me a sort of "novelty-driven" optimization.(4) A small detail, but requires a clarification. In page 6, learning step paragraph: the weight formula uses fitness in the exponent, while the base rho is in (0,1). Clearly the authors are working with minimization problems and want to increase the weight when fitness improves/decreases. This is ok, but this only happens with their formula when fitnesses are greater than 1. I know this is quite usual in the problems analyzed by the authors, but it may not be so usual in general. Please add a clarification.}
@@ -456,10 +456,8 @@ The key idea behind UMM is that the probabilistic Mallows model (MM) used in
 UMM does not simply represent the current sample $S$. Instead, the model
 assigns higher probability values to the permutations with known (or expected)
 minimal fitness values. This is achieved by means of the uBorda ranking
-(Section~\ref{sec:uborda}) with $w(\sigma) = \rho^{f(\sigma)}$ and $\rho \in (0,1)$, which %  can be seen as replicating each permutation
-% $\sigma \in S$ a number of times inversely proportional to its fitness
-% $f(\sigma)$, i.e., it 
-behaves as if there were many copies of the best
+(Section~\ref{sec:uborda}) with $w(\sigma) = \rho^{f(\sigma)}$ and $\rho \in (0,1)$. %, which %  can be seen as replicating each permutation
+Intuitively, uBorda behaves as if there were many copies of the best
 solutions and few of the bad ones. A property of UMM is that the
 computational complexity of working with the original sample (Borda) and with the
 transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are the update
@@ -486,7 +484,9 @@ estimating $\hat\sigma_0$ and $\theta$. Parameter $\theta$ is updated
 deterministically at the sampling step.  The parameter $\sigma_0$, however, is
 learned from the current sample $S$ by using the uBorda algorithm with a weight
 $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
-controlled by parameter $0 < \rho < 1$. \MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
+controlled by parameter $0 < \rho < 1$. 
+\MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
+\EKHINE{es decreciente igual}
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
@@ -523,8 +523,10 @@ A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in th
 
 % \EKHINE{The algorithm uses a parameter $\beta$ that determines the number of points sampled, while the authors analyze the sensitivity of the results to the parameters r 1 and r 2, they do not do that with $\beta$. In my opinion the value of $\beta$ is quite relevant.}
 
-\subsection{Convergence guarantees}
-\ekhine{}{completar}
+%\paragraph{Quality guarantees}
+
+
+
 
 \renewcommand{\subsubsection}[1]{\smallskip{}\noindent\textbf{#1}.}
 
@@ -533,14 +535,18 @@ A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in th
 
 \subsubsection{UMM}
 %
-UMM uses the same budget of evaluations ($\FEmax$) as CEGO and initially
-samples $\minit=10$ solutions uniformly.
-%At each sampling step, we set
-%$\beta=10$, meaning that 10 permutations are generated and the farthest from
-%$S$ is selected for evaluation.
-The other two parameters of UMM are $r_1$ and $r_2$, which determine the
+UMM uses a budget of evaluations ($\FEmax$) of  $\minit=10$ solutions sampled uniformly.
+The other two parameters of UMM are $r_1$ and $r_2$ that determine the learning rate $\rho$ in uBorda, and consequently, determine the
 balance between exploration and exploitation. In the experimental section we
 will study their impact.
+
+In all
+experiments, we consider a maximum budget of $\FEmax=400$ evaluations of the
+actual objective function. In a white-box context, state-of-the-art algorithms
+for the LOP and PFSP typically evaluate thousands of solutions,
+thus, the budget considered here for the black-box context is extremely
+limited.
+
 
 \subsubsection{CEGO} \EKHINE{tenemos una pagina entera dedicada a CEGO :s}\MANUEL{Sugiere qué quitar usando el commando \textbackslash{}ekhine}
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
@@ -578,25 +584,27 @@ and the result is used to build the initial surrogate
 model. % \citet{ZaeStoBar2014:ppsn} uses \minit=10
 Following the authors of
 CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
+\ekhine{}{hay que actualizar essto??}
 the surrogate models with population size of 20, crossover rate of 0.5,
 mutation rate of $1/n$, tournament selection of size 2 with probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements) and
 cycle crossover for permutations. To generate each new solution, CEGO runs the
 GA using the model as a surrogate of the true fitness function.  The authors of
 CEGO used a budget of $10^4$ surrogate-model evaluations for each run of the
-GA. However, with such a setting, a single run of CEGO with a budget of
-$\FEmax=400$ true fitness evaluations requires \emph{more than a week} of
-computation time, which was infeasible for our study. Due to extremely long
-runtimes of CEGO and constraints in our computing system, we set the budget of
-the GA to $10^3$ and we stopped each run of CEGO after 144 hours of CPU-time.
-Although a higher GA budget could improve the results of CEGO reported here,
-our results are similar (and sometimes better) than the ones reported in the
-original papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to
-running CEGO with $\FEmax=400$ instead of $\FEmax=200$. We found that
-doubling $\FEmax$ produces a smaller increase in runtime than multiplying the
-GA budget by a factor of $10$. Nevertheless, we caution that choosing a
-different trade-off may lead to different conclusions and more work is needed
-to understand CEGO parameters.
+GA and we use the same confuguration parameters.% However, with such a setting, a single run of CEGO with a budget of
+%$\FEmax=400$ true fitness evaluations requires \emph{more than a week} of
+%computation time, which was infeasible for our study. 
+%Due to extremely long
+%runtimes of CEGO and constraints in our computing system, we set the budget of
+%the GA to $10^3$ and we stopped each run of CEGO after 144 hours of CPU-time.
+%Although a higher GA budget could improve the results of CEGO reported here,
+%our results are similar (and sometimes better) than the ones reported in the
+%original papers~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn} due to
+%running CEGO with $\FEmax=400$ instead of $\FEmax=200$. We found that
+%doubling $\FEmax$ produces a smaller increase in runtime than multiplying the
+%GA budget by a factor of $10$. Nevertheless, we caution that choosing a
+%different trade-off may lead to different conclusions and more work is needed
+%to understand CEGO parameters.
 
 
 \subsubsection{Other settings}
@@ -606,19 +614,14 @@ distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments.
 %Nevertheless,
 %\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
 %when using Hamming distance and the same may apply to UMM.
-We plan to extend UMM to other distance measures in the future.  In all
-experiments, we consider a maximum budget of $\FEmax=400$ evaluations of the
-actual objective function. In a white-box context, state-of-the-art algorithms
-for the LOP and PFSP typically evaluate thousands of solutions,
-thus, the budget considered here for the black-box context is extremely
-limited.
+We plan to extend UMM to other distance measures in the future.  
 
 
 \subsubsection{Benchmark problems}
 %
-Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. For consistency with the rest of the paper, a permutation $\sigma$ denotes a ranking also in this section, thus we use the inverse permutation $\sigma^{-1}$ in the definition of the problems. Later in the experimental section we discuss the effects of not performing this inversion.
-%
-The \emph{Linear Ordering Problem (LOP)}, when minimizing, is defined as
+Experiments with real-world expensive black-box problems would be computationally infeasible. Instead, we consider classical combinatorial optimization problems as black-box optimization problems. For consistency with the rest of the paper, a permutation $\sigma$ denotes a ranking also in this section. Recall that the ordering associated to ranking $\sigma$ is given by its inverse, $\sigma^{-1}$. Thus, we will use ordering $\sigma^{-1}$ to formulate the problems. Later in the experimental section we discuss the effects of not performing this inversion.
+
+The \emph{Linear Ordering Problem (LOP)}, when minimizing as in our case, is defined as
 %\footnote{For consistency with the other problems, we minimise the lower triangle instead of maximising the upper triangle.} 
 \begin{equation}\label{eq:lop}
   \min_{\sigma \in S_n} f(\sigma) = \sum_{i=1}^{n} \sum_{j=1}^{i-1}  a_{\sigma^{-1}(i), \sigma^{-1}(j)}
@@ -633,7 +636,7 @@ where $[a_{i,j}]$ is a matrix of size $n \times n$.
 % %
 % where $[a_{i,j}]$ and $[b_{i,j}]$ are two matrices of size $n \times n$.
 
-The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation of the jobs $\sigma$, $C_{i,j}$ denotes the completion time of job at position $\sigma^{-1}(i)$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
+The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix $[p_{ij}]$ of size $n \times M$ that gives the processing time of a job $i \in [n]$ on a machine $j \in [M]$. All jobs must be processed by all machines in the same order. Given a permutation (ranking) $\sigma$, $C_{i,j}$ denotes the completion time of job $\sigma^{-1}(i)$ at position $i$ on machine $j$, and $C_{\max} = C_{n,M}$  is the completion time of the last job on the last machine, i.e., the makespan. The objective of the PFSP is to find:
 \begin{equation}\label{eq:pfsp}
   \begin{split}
     \min_{\sigma \in S_n}\quad& f(\sigma) = C_{n,M}\\
@@ -670,7 +673,7 @@ In the case of the PFSP, we consider the same instances as
 % $n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
 % later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
 
-\subsubsection{Computing environment.}
+\subsubsection{Computing environment}
 % Due to the computational effort required, we used several computing systems to
 % run experiments.
 % All UMM experiments were either on run on Intel Xeon
@@ -852,11 +855,8 @@ configuration as the current default of UMM.
 
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 
-<<<<<<< HEAD
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, ${d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})}$. 
-=======
+
 In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$.\MANUEL{necesitamos las ecuaciones? Swap de una permutación es simplemente la distancia de kendall de la permutación inversa.} %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
->>>>>>> 0c3d2f7aa61b93e7e2b151d966d787160686024f
 
 As a consequence of this important distinction, when dealing with \manuel{data in the form of}{} permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
