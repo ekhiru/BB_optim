@@ -548,6 +548,8 @@ for the LOP and PFSP typically evaluate thousands of solutions,
 thus, the budget considered here for the black-box context is extremely
 limited.
 
+\myparagraph{CEGO}
+%
 Combinatorial Efficient Global Optimization (CEGO)~\citep{ZaeStoFriFisNauBar2014} is an extension of the well-known EGO
 method~\citep{JonSchWel98go} to unconstrained black-box combinatorial
 optimization problems. In EGO, Gaussian process models are used as a surrogate
@@ -560,8 +562,10 @@ hopefully increasing its predictive power.
 
 CEGO replaces the Euclidean distance measure, used by the surrogate model in
 EGO, with a distance measure appropriate to combinatorial
-landscapes~\citep{ZaeStoBar2014:ppsn}, such as Kendall's-$\tau$ distance for
-permutations (Eq.~\ref{eq:kendall_decomp}). In CEGO, the surrogate model is
+landscapes~\citep{ZaeStoBar2014:ppsn}.
+% , such as Kendall's-$\tau$ distance for permutations
+% (Eq.~\ref{eq:kendall_decomp}).
+In CEGO, the surrogate model is
 explored by a GA with crossover and mutation operators appropriate for the
 particular combinatorial problem. The original paper notes that coupling the GA
 with local search does not improve the results significantly since the model is
