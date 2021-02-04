@@ -20,6 +20,7 @@
 \usepackage{booktabs} % For formal tables
 \usepackage{enumitem}
 \usepackage{afterpage,tabularx}
+\hypersetup{draft}
 %\usepackage[colorlinks=true, allcolors=blue]{hyperref}
  
 \newcommand{\true}{\textsc{true}}
@@ -846,20 +847,41 @@ configuration as the current default of UMM.
 %\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
+\newcommand{\CEGOorig}{CEGO$_\text{ori}$\xspace}
+\newcommand{\CEGOinv}{CEGO$_\text{inv}$\xspace}
 
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
+
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+
+As a consequence of this important distinction, when evaluating classical
+combinatorial problems, we must convert rankings to orderings by inverting the
+permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
+PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
+
+During our experiments, we realized that the \emph{swap} distance used by CEGO
+assumes rankings, i.e., it actually measures the \ken distance, yet CEGO did
+not invert the permutation before evaluating the PFSP. We verified that this is
+indeed how the implementation works and that those results match the published
+ones~\citep{ZaeStoBar2014:ppsn}. Of course, the obvious question arises of what
+would be the effect of inverting the permutation before calling the objective
+function, so that the rankings are transformed to ordering, as done by our UMM
+algorithm. Therefore, in the following, we show results of both variants, that is, the original CEGO (\CEGOorig) and our modified version that inverts the permutation before evaluation (\CEGOinv).
+
+\manuel{}{The above replaces the text below?}
+
 \ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
 
 
+In Section~\ref{sec:permutations} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
+ 
 As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. This might seem an implementation detail but for the sake of consistency with the literature, we will expect objective functions to evaluate ordering. A natural question is what happens if we did not invert the ranking and evaluated a ranking with an optimization for orderings. For the anxious reader, we advance that the result is similar to the original version of CEGO. 
-
 
 In CEGO, the objects modeled and evaluated are the same. They claim that they use the swap distance but they are using the \ken  distance, meaning that the object model is a ranking. \ekhine{}{esto es demasido rude?}
 On the function evaluation the authors interpert their permutation as an ordering, as usual. 
 However, there is no inversion between the objects sampled from the model and the objects evaluated. 
 This means that both are rankings (or both are orderings). A natural question is what happens if we did invert the ranking. We have carried out all the experimentation with this modification of CEGO and we have denote this version CEGO\_inv. The original version of CEGO is denoted CEGO\_orig. 
-
 
 
 %Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
