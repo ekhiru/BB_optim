@@ -852,7 +852,7 @@ configuration as the current default of UMM.
 
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
 As a consequence of this important distinction, when evaluating classical
 combinatorial problems, we must convert rankings to orderings by inverting the
