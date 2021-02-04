@@ -844,12 +844,31 @@ configuration as the current default of UMM.
 %\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
+
+\subsection{Rankings and orderings}
+In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
+
+As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. This might seem an implementation detail but for the sake of consistency with the literature, we will expect objective functions to evaluate ordering. A natural question is what happens if we did not invert the ranking and evaluated a ranking with an optimization for orderings. For the anxious reader, we advance that the result is similar to the original version of CEGO. 
+
+
+In CEGO, the objects modeled and evaluated are the same. They claim that they use the swap distance but they are using the \ken  distance, meaning that the object model is a ranking. \ekhine{}{esto es demasido rude?}
+On the function evaluation the authors interpert their permutation as an ordering, as usual. 
+However, there is no inversion between the objects sampled from the model and the objects evaluated. 
+This means that both are rankings (or both are orderings). A natural question is what happens if we did invert the ranking. We have carried out all the experimentation with this modification of CEGO and we have denote this version CEGO\_inv. The original version of CEGO is denoted CEGO\_orig. 
+
+
+
+%Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
+
+
+
+
 \subsection{Analysis of UMM and CEGO on LOP and PFSP}
 To  understand the behavior of the algorithms, we record the fitness of
 the solution evaluated at each step of each run and we average those values
 over 10 runs with different random seeds on the same problem instance.  As an
-example, each line in Fig.~\ref{fig:lop_synth} shows the mean fitness of the
-\ekhine{solutions evaluated by either UMM or CEGO on one synthetic LOP instance}{ojo}. The
+example, each line in Fig.~\ref{fig:results} shows the mean fitness of the
+solutions evaluated by either UMM or CEGO on one instance. The
 shaded area shows one standard deviation around the mean. Ideally, each new
 evaluation will monotonically improve in fitness, since each solution evaluated
 helps to refine the model and leads to a better solution being evaluated in the
@@ -860,7 +879,7 @@ The minimum values
 achieved in the plot up to a particular number of function evaluations gives an
 estimation of the mean fitness of the best-so-far solution up to that point in
 the run. The algorithms do not return the final solution shown but rather the
-best one (minimum fitness) of each run.
+best one (minimum fitness) of each run. This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed here are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm. 
 
 Figure~\ref{fig:lolib} shows the results on the real-world instances taken from LOLIB. 
   %% MANUEL: Ya dimos la URL arriba, así que no la repetiría aquí
@@ -899,7 +918,7 @@ the fitness landscape. Results for larger PFSP corroborate these conclusions (\s
 
     \includegraphics[width=0.49\textwidth]{../img/fitness_pfsp_rec19_txt}
     \includegraphics[width=0.49\textwidth]{../img/fitness_pfsp_rec31_txt}
-
+\label{fig:results}
   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the PFSP instance \texttt{rec05}.\label{fig:rec05}}
 \end{figure*}
 
@@ -1016,17 +1035,6 @@ Problem &    Instance &   CEGO\_inv &   CEGO\_orig &   UMM\_400 &   UMM\_200 &  
 
 
 
-\subsection{Rankings and orderings}
-In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of this mistakes. We remind the reader that statistical models (Borda or the Kendall distance) are defined for rankings while standard literature in optimization considers orderings. As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. A natural question is what happens if we did not invert the ranking. 
-%\ekhine{}{rellenar}
-
-In CEGO, the objects modeled and evaluated are the same: There is no inversion between the objects sampled from the model and the objects evaluated. This means that botha re rankings or both are orders. For modelling the Kendall distance is used, that as stated is meant for rankings. A natural question is what happens if we did invert the ranking. 
-
-Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
-
-
-We compare this results with the numerical results provided in the original paper. These results are consistent with the setting of no inversion for CEGO. 
-\ekhine{probar con m=100 para ver ci podemos competir en instancias cortas}{}
 
 \section{Conclusions}\label{sec:conclusions}
 
