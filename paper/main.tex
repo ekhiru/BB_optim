@@ -515,7 +515,7 @@ Parameter $\theta$ is set automatically by the algorithm to control the diversif
 Then the expected distance linearly decreases until the last iteration $m$ where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
 Setting $\Edist = \binom{n}{2}$ will generate random permutations at early stages, slowing the algorithm convergence. 
-A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations ($m$) that the algorithm performs, thus \manuel{it follows that}{} the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
+A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations ($m$) that the algorithm performs, thus the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
 
 % To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 % %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
@@ -667,7 +667,7 @@ In the case of the PFSP, we consider the same instances as
 % $n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
 % later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
 
-\subsubsection{Computing environment}
+\myparagraph{Computing environment}
 % Due to the computational effort required, we used several computing systems to
 % run experiments.
 % All UMM experiments were either on run on Intel Xeon
@@ -937,7 +937,7 @@ with a linear trend along iterations. The (close to) linear decrease is given
 by the linear decrease in the expected distance of the model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
 does not seem to converge, not even for the longer runs of 400 evaluations. Therefore, we conjecture that longer runs are likely to produce further improved solutions. Moreover, a non-linear decrease in the expected distance should result in a faster convergence for larger evaluation budgets. 
 
-\paragraph{Convergence analysis of CEGO}
+\myparagraph{Convergence analysis of CEGO}
 The red and the gold lines in the plots shown in Fig.~\ref{fig:results}
 correspond to the two variants of CEGO the original \CEGOorig and our modified
 version \CEGOinv. The different between these two variants is overwhelmingly in
@@ -1218,18 +1218,20 @@ Problem &    Instance &   CEGO\_inv &  CEGO\_orig &    UMM\_400 &       UMM\_200
 
 
 \section{Conclusions}\label{sec:conclusions}
+
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
-black-box combinatorial problems on permutation landscapes and when the budget
-of fitness evaluations is severely limited (here, up to $100$, $200$ and $400$ evaluations).
-Our experiments presented here show that UMM is able to match the results of
-the state-of-the-art Bayesian optimizer for expensive black-box
-optimization if the computation time of the optimizers is not a concern.
+expensive black-box combinatorial problems on permutation landscapes when the
+budget of fitness evaluations is severely limited (here, up to $100$, $200$ and
+$400$ evaluations).  Our experiments presented here show that UMM is not far
+away from, and sometimes  is able to match, the results of the state-of-the-art
+Bayesian optimizer for expensive black-box optimization.
+%if the computation time of the optimizers is not a concern.
 
 In addition, UMM is specially well-suited for budget-limited scenarios that are
 still time-sensitive, e.g., when the overhead incurred by the optimizer should
 be no more than a few minutes added to each fitness evaluation. By comparison,
-CEGO may require up to one hour per fitness evaluation, with the time
+CEGO may require around one day to perform 400 fitness evaluations, with the time
 increasing non-linearly with permutation size and larger budgets.  Hence, UMM
 is a computationally feasible alternative for relatively large problem sizes.
 
