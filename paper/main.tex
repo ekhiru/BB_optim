@@ -413,7 +413,7 @@ Mallows model and uBorda learning.%\MANUEL{Perhaps we should call it UMM Algorit
   \begin{algorithmic}[1]
     \Require $\minit$: number of initial permutations, $\FEmax$: total budget,\newline\hspace*{5ex} $r_1, r_2$: parameters controlling the learning rate 
     % \\ ?, $\FEmax$: budget of evaluations,\newline $S$: initial permutations, $F$: their fitness values
-    \State $S \assign \{\}$
+    \State $S \assign \emptyset$
     \For{$i \assign 0$ \textbf{to} $\minit$}
     \State $\sigma \assign \text{generate uniformly at random}$
     \State $S \assign S \cup \tuple{\sigma, f(\sigma)}$\Comment{Evaluate it}
