@@ -419,7 +419,7 @@ Mallows model and uBorda learning.\MANUEL{Perhaps we should call it UMM Algorith
     %\State $S \assign $ generate  $\minit$ permutations uniformly at random
     %\State $F \assign \{ f(\sigma) \mid \sigma \in S\}$ \Comment{Evaluate them}
     \For{$i \assign \minit$ \textbf{to} $\FEmax$ \text{evaluations}}
-    \State $\hat\sigma_0 \assign \text{uBorda}(S, F,\rho)$\label{line:uborda}\Comment{Learning Step}
+    \State $\hat\sigma_0 \assign \text{uBorda}(S,\rho)$\label{line:uborda}\Comment{Learning Step}
     \State Initialize (first iteration) or decrease  $\theta$\label{line:theta}
     \Statex \Comment{See \emph{Sampling Step} and Eq.~\ref{eq:expectation}}
    % \State $\Sigma \assign$ sample $\beta$ permutations from  $MM(\hat\sigma_0, \theta)$\label{line:sample}
@@ -491,7 +491,7 @@ and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
 %
 \MANUEL{Reviewer 3:  Justify the form of the formula used to learn the "learning rate" $\rho$ (equation 4). Why this particular approach was chosen?}
-%
+% 
 \begin{equation}
 %  \begin{split}
     r_1 \cdot \sum_{\tuple{\sigma,f(\sigma)}\in S}\rho^{f(\sigma)} =  \sum_{\tuple{\sigma', f(\sigma')}\in S'}\rho^{f(\sigma')}  %\\
@@ -563,7 +563,6 @@ anyway an inexact estimation of the original fitness
 function~\citep[p.~875]{ZaeStoFriFisNauBar2014}. A thorough comparison of CEGO
 with other optimizers for expensive black-box combinatorial optimization ranked
 it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
-
 
 
 
@@ -848,6 +847,7 @@ configuration as the current default of UMM.
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
 
+
 \subsection{Rankings and orderings}
 In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
 
@@ -1038,7 +1038,6 @@ Problem &    Instance &   CEGO\_inv &   CEGO\_orig &   UMM\_400 &   UMM\_200 &  
 
 
 
-
 \section{Conclusions}\label{sec:conclusions}
 
 In this paper, we have introduced UMM, a population-based probabilistic
@@ -1137,6 +1136,7 @@ landscapes.
 %\end{acks}
 
 %\renewcommand{\doi}[1]{doi:\hspace{.16667em plus .08333em}\discretionary{}{}{}\href{https://doi.org/#1}{\urlstyle{rm}\nolinkurl{#1}}}
+
 \bibliographystyle{ACM-Reference-Format-abbrv}
 \bibliography{optbib/abbrev,optbib/authors,optbib/abbrevshort,optbib/journals,optbib/biblio,optbib/crossref}%,./mendeley}
 
