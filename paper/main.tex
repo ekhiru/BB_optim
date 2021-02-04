@@ -40,7 +40,9 @@
 \newcommand{\FEmax}{\ensuremath{m}}
 
 \newcommand{\supplement}{\href{http://doi.org/10.5281/zenodo.4500974}{doi:~10.5281/zenodo.4500974}}
-\newcommand{\ken}{Kendall's-$\tau$}
+
+\newcommand{\ken}{Kendall's-$\tau$\xspace}
+
 %% Revision documents
 %\usepackage[dvipsnames]{xcolor}
 \usepackage[normalem]{ulem}
@@ -199,16 +201,11 @@ $1\,000$ function evaluations.  On the other hand, $1\,000$ evaluations is
 still a relatively large budget for CEGO, whereas ACO was not designed for such
 short budgets.
 %Finally, we note that learning Budget-constrained Combinatorial is a hot topic for a variety of structures besides permutation~\cite{manchanda2020}. 
-\MANUEL{- the authors assigned to black-box optimization problems characteristics that they do not own. For instance they say that "local search cannot be used".
- they mixed expensive to evaluate functions with black-box functions and of course they are different. In fact much of the metaheuristics do not mind
- if the problem is withe-box or black-box as they do not use static information from the function in the optimization process. In this case I understand
- that they have a black-box problem where the objective function is costly to evaluate. This should be clear and I would recommend to delete other comments
- related with white-box and black-box. MANUEL: FIXED
-}
 
 In this work, we propose and analyze the Unbalanced Mallows Model (UMM) algorithm, a
 population-based probabilistic algorithm specifically designed for optimizing
-black-box problems over a permutation landscape under a limited budget. There\EKHINE{En realidad está disenado para esto  pero podríamos probarlo para otros casos. Trabajo futuro}
+black-box problems over a permutation landscape under a limited budget. There
+%\EKHINE{En realidad está disenado para esto  pero podríamos probarlo para otros casos. Trabajo futuro}
 exists a wide body of research on probabilistic models for permutations, such
 as Mallows~\cite{FliVer1986}, that have already been  used in optimization
 problems successfully, with the most prominent examples being estimation of
@@ -258,8 +255,7 @@ adapted by controlling the variance of the probabilistic Mallows model.
 
 This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
 
-\manuel{9. Please use some newer references instead of [11] and, especially, [14]}{}
-
+%\MANUEL{9. Please use some newer references instead of [11] and, especially, [14]}
 
 % \ldots\MANUEL{what is the inspiration}
 % \EKHINE{we propose a probabilistic algrithm that (like cego?) (1) iteratively adds solutions to the sample and (2) fits a surrogate model for every new sample obtained. However,  different fom cego, our surrogate model is an estimation of the predicted fitness function at each point. CEGO controls the  intensification-explotation balance with the expected improvement??? We mimic the intensification-explotation balance by automatically controllong the variance of our surrogate model.}
@@ -313,11 +309,15 @@ This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fund
 
 \subsection{Permutations: rankings vs orderings}\label{sec:permutations}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We will use the one-line notation\MANUEL{what is one-line?} and denote permutations with Greek letters, $\sigma  = (\sigma(1), \ldots , \sigma(n))$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi = (\sigma(\pi(1)), \ldots, \sigma(\pi(n)))$\MANUEL{Is this correct?} and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
+Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We will use the one-line notation
+% \MANUEL{what is one-line?}
+and denote permutations with Greek letters, $\sigma  = (\sigma(1), \ldots , \sigma(n))$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi = (\sigma(\pi(1)), \ldots, \sigma(\pi(n)))$
+% \MANUEL{Is this correct?}
+and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
 
-\manuel{P}{Throughout this paper and for consistency, p}ermutation $\sigma$ represents a \emph{ranking}:  $\sigma(i)=j$ denotes that item $i$ has rank $j$. The \emph{ordering} associated with $\sigma$ is given by its inverse $\sigma^{-1}$, therefore,  $\sigma(i)=j \Leftrightarrow  \sigma^{-1}(j)=i$. This distinction is in order since statistical methodologies \manuel{are devoted for}{typically assume} rankings \manuel{and}{whereas the} optimization literature \manuel{for}{often assumes} orderings. Mixing both concepts is a very common confusion with grave consequences, as we will illustrate in the experimental section.
+Throughout this paper and for consistency, permutation $\sigma$ represents a \emph{ranking}:  $\sigma(i)=j$ denotes that item $i$ has rank $j$. The \emph{ordering} associated with $\sigma$ is given by its inverse $\sigma^{-1}$, therefore,  $\sigma(i)=j \Leftrightarrow  \sigma^{-1}(j)=i$. This distinction is importante since statistical methodologies typically assume rankings whereas the optimization literature often assumes orderings. Mixing both concepts is a very common confusion with grave consequences, as we will illustrate in the experimental section.
 
-Kendall's-$\tau$ distance is the metric for rankings that counts the pairs of items ranked in different order in two permutations:
+\ken distance is the metric for rankings that counts the pairs of items ranked in different order in two permutations:
 %
 \begin{equation}
 \begin{split}
@@ -327,7 +327,7 @@ d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\rig
  \label{eq:kendall_decomp}
 \end{equation}
 
-An equivalent definition for the Kendall's-$\tau$ distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. %\EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
+An equivalent definition for the \ken distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. %\EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
 
 
 \subsection{Distributions over permutations}
@@ -349,7 +349,7 @@ The Borda ranking of a sample of permutations $S \subset S_n$ is computed as fol
 First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
-We introduce now the core for our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{IruLobPer2020arxiv}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
+We introduce now the core of our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{IruLobPer2020arxiv}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
 %
 \begin{equation}\label{eq:uborda_score}
 B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
@@ -363,7 +363,7 @@ Finally, uBorda is computed in polynomial time.
 
 
 
-\subsection{Black-box Combinatorial Optimization under a limited budget}
+\subsection{Black-box combinatorial optimization under a limited budget}
 
 Let us assume a black-box ``fitness'' function that must be minimized over a
 space of permutations $f\colon S_n \to \mathbb{R}$. Being black-box means that
@@ -483,8 +483,8 @@ deterministically at the sampling step.  The parameter $\sigma_0$, however, is
 learned from the current sample $S$ by using the uBorda algorithm with a weight
 $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
 controlled by parameter $0 < \rho < 1$. 
-\MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
-\EKHINE{es decreciente igual}
+% \MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
+% \EKHINE{es decreciente igual}
 In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
@@ -1019,11 +1019,11 @@ The computational complexity of UMM is $O(n \log n)$ at each iteration while bot
 \end{minipage}
 \\
 \begin{minipage}{0.49\linewidth}
-  \texttt{reC19} (PFSP)\\[-0.5ex]
+  \texttt{reC05} (PFSP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec05_txt}
 \end{minipage}
 \begin{minipage}{0.49\linewidth}
-  \texttt{reC31} (PFSP)\\[-0.5ex]
+  \texttt{reC13} (PFSP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec13_txt}
 \end{minipage}
 \\
