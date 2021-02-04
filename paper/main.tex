@@ -464,7 +464,7 @@ solutions and few of the bad ones. A property of UMM is that the
 computational complexity of working with the original sample (Borda) and with the
 transformed sample (uBorda) is the same, i.e., polynomial. The most important steps are the update
 (\emph{learning}) of the parameters $\sigma_0$, $\theta$ and $\rho$ (line~\ref{line:uborda} in Algorithm~\ref{alg:umm}) and
-the sampling from $MM(\sigma_0,\theta)$ (lines~\ref{line:sample}--\ref{line:distance}). % in Algorithm~\ref{alg:umm}).
+the sampling from $MM(\sigma_0,\theta)$ (line~\ref{line:sample}) %(lines~\ref{line:sample}--\ref{line:distance}). % in Algorithm~\ref{alg:umm}).
 
 
 % 'However, the question of how
@@ -513,10 +513,10 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 \end{equation}
 
 Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$, i.e., half of the expected distance for the uniform distribution. 
-Then the expected distance linearly decreases until the last iteration where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
+Then the expected distance linearly decreases until the last iteration $m$ where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
 Setting $\Edist = \binom{n}{2}$ will generate random permutations at early stages, slowing the algorithm convergence. 
-A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations that the algorithm performs. It follows that the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
+A purely explotation approach will set $\Edist = 0$  generating $\sigma_0$ in the sampling stage. However, the setting of a decreasing variance   controls the exploration-explotation tradeoff as a function of the number of function evaluations ($m$) that the algorithm performs, thus \manuel{it follows that}{} the behaviour is different for different choices of $m$. Similar approaches have been taken in different contexts~\cite{ArzCebPer2019qap}. 
 
 % To increase the exploration of the search space, the algorithm samples $\beta$ permutations, $\Sigma$. Then it selects  for evaluation the farthest from permutations already evaluated ($S$), as shown in line~\ref{line:distance} of Algorithm~\ref{alg:umm}.
 % %i.e.,  $\sigma\in \Sigma$ such that $\sigma = \argmax_{\sigma'\in \Sigma}\min d(\sigma', \pi)$ for every $\pi\in S$.
@@ -847,21 +847,23 @@ configuration as the current default of UMM.
 %\MANUEL{Eso es porque puedo interpretar los resultados de CEGO mejor que los de UMM. Si crees que hay alguna interpretación o conjetura sobre UMM que podemos mencionar aquí, sería bueno mencionarla.}
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
-\newcommand{\CEGOorig}{CEGO$_\text{ori}$\xspace}
-\newcommand{\CEGOinv}{CEGO$_\text{inv}$\xspace}
+\newcommand{\CEGOorig}{CEGO$_\textsc{ori}$\xspace}
+\newcommand{\CEGOinv}{CEGO$_\textsc{inv}$\xspace}
 
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
-\ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$.\MANUEL{necesitamos las ecuaciones? Swap de una permutación es simplemente la distancia de kendall de la permutación inversa.} %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
-As a consequence of this important distinction, when dealing with data in the form of permutations, in particular in 
+As a consequence of this important distinction, when dealing with \manuel{data in the form of}{} permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
 
+%During our experiments, we realized that the \emph{swap} distance used by CEGO
+%assumes rankings, i.e., it actually measures the \ken distance, yet CEGO did
+% not invert the permutation before evaluating the PFSP.
 During our experiments, we realized that CEGO claimed to use the Swap distance. Instead, CEGO implements the \ken distance, yet CEGO did
-not invert the permutation before evaluating the PFSP. We verified that this is
+not invert the permutation before evaluating the PFSP.\MANUEL{no me convence esta forma de expresarlo porque la crítica obvia sería que por qué invertimos la función objectivo y no la función de distancia?} We verified that this is
 indeed how the implementation works and that those results match the published
 ones~\citep{ZaeStoBar2014:ppsn}. Of course, the obvious question arises about the effect of inverting the permutation before calling the objective
 function, so that the rankings are transformed to ordering, as done by our UMM
@@ -889,10 +891,27 @@ algorithm. Therefore, in the following, we show results of both variants, that i
 
 \subsection{Experimental Analysis of UMM and CEGO} % on LOP and PFSP instances}
 
-To better analyze the behavior of the algorithms, we record the fitness of the
-solution evaluated at each step of each run. For each problem instance and each
-algorithm, we plot the mean fitness at each evaluation over 10 runs with
-different random seeds, as shown in Fig.~\ref{fig:results}.
+In the following, we compare 5 algorithm configurations. Three configurations
+of UMM (UMM$_{100}$, UMM$_{200}$, and UMM$_{400}$) that differ in their budget
+of evaluations ($m$). As mentioned in Sec.~\ref{sec:sampling}, the behavior of
+UMM depends on the value of $m$. The other two configurations correspond 
+to \CEGOorig and \CEGOinv, as defined above.
+
+Since there is a small number of evaluations and the algorithms evaluate just
+one solution at each step, we chose to record and plot the fitness of the
+solution evaluated at each step of each run, instead of the usual plots of the
+best-so-far solution over number of evaluations. We believe that plotting each
+evaluated solution provides better insights on the search dynamics of the
+algorithms analyzed here. Please note that the algorithms do not return the
+final solution shown in the plots, but rather the best one (minimum fitness) of
+each run. Nevertheless, the minimum values achieved in the plot up to a
+particular number of function evaluations gives an estimation of the mean
+fitness of the best-so-far solution up to that point in the run. We provide
+later an analysis of the best solution found by each run of the algorithm.
+
+For each problem instance and each algorithm, we plot the mean fitness of the
+solution evaluated at each step over 10 runs with different random
+seeds, as shown in Fig.~\ref{fig:results}.
 %
 The shaded area shows one standard deviation around the mean. Ideally, each new
 evaluation will monotonically improve in fitness, since each solution evaluated
@@ -901,14 +920,10 @@ next step.  However, it is possible that new solutions are worse than their
 predecessors. %Nevertheless, in this example, there is a clear
 % overall improvement as more evaluations are performed.
 
-We chose to plot the fitness of each evaluated solution rather than the fitness
-of the best-so-far to better understand the behavior of the algorithms at each
-step. Nevertheless, the minimum values achieved in the plot up to a particular
-number of function evaluations gives an estimation of the mean fitness of the
-best-so-far solution up to that point in the run. The algorithms do not return
-the final solution shown but rather the best one (minimum fitness) of each run.
+Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
 
-This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. 
+\manuel{%
+This result summarization is not the classical. However, due to the limited number of function evaluations, we can have a better picture of the behaviour of the algorithm at each step. As a consequence, results displayed in the figures are not comparable with the original paper of CEGO: for this comparison we provide in Table~\ref{table:fitness} the summary of the best solutions found by each algorithm, which are similar to the original study. }{}
 
 \paragraph{Figure descriptiopn} Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
 \begin{itemize}
