@@ -23,10 +23,11 @@ QAP;kra30b;91420;nan
 QAP;kra32;88700;nan
 QAP;nug30;6124;nan
 QAP;nug12;578;nan
-PFSP;rec05;1300;nan
-PFSP;rec13;2200;nan
-PFSP;rec19;2325;nan
-PFSP;rec31;3525;nan
+# Optimal from https://www.jstor.org/stable/4102375 
+PFSP;rec05;1242;nan
+PFSP;rec13;1930;nan
+PFSP;rec19;2093;nan
+PFSP;rec31;3045;nan
 LOP;N-t59d11xx;147354;9000.0
 LOP;N-t59b11xx;209320;93140.0
 LOP;N-pal13;nan;nan
