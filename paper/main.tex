@@ -851,37 +851,36 @@ configuration as the current default of UMM.
 \newcommand{\CEGOinv}{CEGO$_\text{inv}$\xspace}
 
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
+\ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually considers orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
-As a consequence of this important distinction, when evaluating classical
+As a consequence of this important distinction, when dealing with data in the form of permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
 
-During our experiments, we realized that the \emph{swap} distance used by CEGO
-assumes rankings, i.e., it actually measures the \ken distance, yet CEGO did
+During our experiments, we realized that CEGO claimed to use the Swap distance. Instead, CEGO implements the \ken distance, yet CEGO did
 not invert the permutation before evaluating the PFSP. We verified that this is
 indeed how the implementation works and that those results match the published
 ones~\citep{ZaeStoBar2014:ppsn}. Of course, the obvious question arises about the effect of inverting the permutation before calling the objective
 function, so that the rankings are transformed to ordering, as done by our UMM
 algorithm. Therefore, in the following, we show results of both variants, that is, the original CEGO (\CEGOorig) and our modified version that inverts the permutation before evaluation (\CEGOinv).
 
-\manuel{}{The above replaces the text below?}
-
-\ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
-In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
-
-
-In Section~\ref{sec:permutations} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
- 
-As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. This might seem an implementation detail but for the sake of consistency with the literature, we will expect objective functions to evaluate ordering. A natural question is what happens if we did not invert the ranking and evaluated a ranking with an optimization for orderings. For the anxious reader, we advance that the result is similar to the original version of CEGO. 
-
-In CEGO, the objects modeled and evaluated are the same. They claim that they use the swap distance but they are using the \ken  distance, meaning that the object model is a ranking. \ekhine{}{esto es demasido rude?}
-On the function evaluation the authors interpert their permutation as an ordering, as usual. 
-However, there is no inversion between the objects sampled from the model and the objects evaluated. 
-This means that both are rankings (or both are orderings). A natural question is what happens if we did invert the ranking. We have carried out all the experimentation with this modification of CEGO and we have denote this version CEGO\_inv. The original version of CEGO is denoted CEGO\_orig. 
-
+%\manuel{}{The above replaces the text below?}
+%
+%In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
+%
+%
+%In Section~\ref{sec:permutations} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
+% 
+%As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. This might seem an implementation detail but for the sake of consistency with the literature, we will expect objective functions to evaluate ordering. A natural question is what happens if we did not invert the ranking and evaluated a ranking with an optimization for orderings. For the anxious reader, we advance that the result is similar to the original version of CEGO. 
+%
+%In CEGO, the objects modeled and evaluated are the same. They claim that they use the swap distance but they are using the \ken  distance, meaning that the object model is a ranking. \ekhine{}{esto es demasido rude?}
+%On the function evaluation the authors interpert their permutation as an ordering, as usual. 
+%However, there is no inversion between the objects sampled from the model and the objects evaluated. 
+%This means that both are rankings (or both are orderings). A natural question is what happens if we did invert the ranking. We have carried out all the experimentation with this modification of CEGO and we have denote this version CEGO\_inv. The original version of CEGO is denoted CEGO\_orig. 
+%
 
 %Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
 
@@ -912,12 +911,17 @@ best one (minimum fitness) of each run. This result summarization is not the cla
 \item CEGO\_orig and CEGO\_inv are, respectively, the original version of CEGO and the modification of Section~\ref{sec:exper_ro}, i.e., the ranking generated by the CEGO algorithm at each iteration, $\sigma$, is inverted before being evaluated, so the evaluation is performed on $\sigma^{-1}$. 
 \end{itemize}
 
-
-We start our analysis with the three version of UMM. We can see a general trend for all the instances: After the 10 random initial permutations, the fitness of the new solutions decreases with a linear trend along iterations. The (close to) linear decrease is given by the linear decrease in the expected distance of the model which is sampled at each step, described in Section~\ref{sec:sampling}. Overall, the improvement does not seem to converge not even for the longer runs of 400 evaluations.
+\paragraph{Analysis} We start our analysis with the three version of UMM. We can see a general trend for all the instances: After the 10 random initial permutations, the fitness of the new solutions decreases with a linear trend along iterations. The (close to) linear decrease is given by the linear decrease in the expected distance of the model which is sampled at each step, described in Section~\ref{sec:sampling}. Overall, the improvement does not seem to converge not even for the longer runs of 400 evaluations.
 The average runtime for all the instances is around 0.3 minutes, 1.15 minutes and 4.5 minutes respectively for the  versions with 100, 200 and 400 fitness evaluations. 
 
 
-The red and the gold lines correspond to CEGO, the original and our modified versions
+The red and the gold lines correspond to CEGO, the original and our modified versions. For the reason for the abrupt change between both version for every instance, we refer the reader to Section~\ref{sec:exper_ro}. For the original version, there is a global decrease in the fitness function. However, a closer analysis of each iteration does not show a real convergence to any point. However, with the modified version in which rankings are modeled and orderings are evaluated we can appreciate the a decrease in terms of fitness per evaluation. Overall, the modified CEGO has a very abrupt decrease at the first 50 iterations. At one point, the algorithm seems to have converged and very little improvement is don from the 150-th iteration onwards.  The average running time is approximately 22 hours for the 400 function evaluations, which is 300 times slower than UMM for the same number of function evaluations. 
+
+The performance of the UMM is clearly better than the performance of the original CEGO for the same problem. For CEGO\_inv on the other hand improves the results of the UMM with the current experimental setting. However, UMM seems to be improving the quality of the solutions until the last iteration while CEGO\_inv seems to be stucked at a local optimum. Further analysis lines will consider a larger budget of fitness evaluation. 
+
+Moreover, UMM seems to scale good for larger instances in quality performance. Note that the instances are order from top to bottom in the size of the permutations. 
+The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iteration while both versions of CEGO need \manuel{tu sabes}{?}. This difference is evident in the time performance of the algorithms. The details can be seen in Table~\ref{table:time}.
+
 
 \begin{figure*}[tb]
   \small
@@ -968,19 +972,19 @@ The red and the gold lines correspond to CEGO, the original and our modified ver
 %   \vspace*{-1em}
 % \end{figure}
 
-Table~\ref{tab:results} shows results over all instances evaluated (excluding
-the synthetic LOP instances). In particular, we show the mean fitness (and
-standard deviation) of the best solution found at the end of each run. We also report the mean runtime in hours and, since CEGO sometimes reached the limit of 144 hours, also the number of fitness evaluations reached by CEGO.
+%Table~\ref{tab:results} shows results over all instances evaluated (excluding
+%the synthetic LOP instances). In particular, we show the mean fitness (and
+%standard deviation) of the best solution found at the end of each run. We also report the mean runtime in hours and, since CEGO sometimes reached the limit of 144 hours, also the number of fitness evaluations reached by CEGO.
 
-In the LOP, differences are mostly in favour of UMM, due to the time limit of
-144 hours, which resulted in CEGO typically achieving less than 200
-evaluations. In contrast, UMM was always able to reach 400 evaluations in less
-than 12.5 hours. If UMM was allowed to reach the 144 hours limit, the differences
-would be even stronger.
-%
-In the PFSP, the differences are minor and/or not statistically
-significant, with the qualification that both algorithms appear to be
-performing a random search.
+%In the LOP, differences are mostly in favour of UMM, due to the time limit of
+%144 hours, which resulted in CEGO typically achieving less than 200
+%evaluations. In contrast, UMM was always able to reach 400 evaluations in less
+%than 12.5 hours. If UMM was allowed to reach the 144 hours limit, the differences
+%would be even stronger.
+%%
+%In the PFSP, the differences are minor and/or not statistically
+%significant, with the qualification that both algorithms appear to be
+%performing a random search.
 
 The overall conclusion from Table~\ref{tab:results} is that there is not a
 significant difference in performance between UMM and CEGO. For the larger LOP
@@ -1063,9 +1067,9 @@ Problem &    Instance &   CEGO\_inv &   CEGO\_orig &   UMM\_400 &   UMM\_200 &  
 In this paper, we have introduced UMM, a population-based probabilistic
 algorithm based on an unbalanced Mallows model. The algorithm is designed for
 black-box combinatorial problems on permutation landscapes and when the budget
-of fitness evaluations is severely limited (here, up to $400$ evaluations).
+of fitness evaluations is severely limited (here, up to $100$, $200$ and $400$ evaluations).
 Our experiments presented here show that UMM is able to match the results of
-CEGO, a state-of-the-art Bayesian optimizer for expensive black-box
+the state-of-the-art Bayesian optimizer for expensive black-box
 optimization if the computation time of the optimizers is not a concern.
 
 In addition, UMM is specially well-suited for budget-limited scenarios that are
@@ -1075,30 +1079,15 @@ CEGO may require up to one hour per fitness evaluation, with the time
 increasing non-linearly with permutation size and larger budgets.  Hence, UMM
 is a computationally feasible alternative for relatively large problem sizes.
 
-
-%\MANUEL{UMM is able to model the LOP landscape
-%  at least as well as CEGO as shown by the plots where UMM shows a linear
-%  decrease in fitness.}  
-%  \EKHINE{me parece mas de CEGO q UMM y parece q UMM
-%  solo tiene de ventaja ir rápido. Primero destacaría lo bueno de UMM. Creo q
-%  es importante destaacar q UMM va MEJOR o IGUAL en TODOS los experimentos y
-%  luego que addemás es más rápido} 
-%  \MANUEL{Pero UMM es peor en rec13 y nug12, y
-%  en LOP es mejor porque CEGO no llega a 400, es decir, porque UMM es más
-%  rápido. No podemos saber qué pasaría si CEGO llegara a 400. Podríamos medir
-%  lo que pasa en el momento en que matamos a CEGO y dar también ese valor
-%  entonces la diferencia en velocidad no importaría. } 
-% The time required to train the surrogate-model of \ekhine{esta establecida la complexity de CEGO???}{UMM increases linearly with the permutation length $n$, while in }
-% CEGO  it sharply
-% increases with $n$, requiring 
-% sometimes more than hour per fitness evaluation as shown in the experimental section. 
-% Hence, UMM is a computationally
-% feasible alternative for relatively large problem sizes.
+In this paper, we discuss the importance of the representation of permutations in applied mathematics problems. In the context considered in this paper, permutations can bee seen as rankings or orderings of items. In other problems they could be matchings or cycles. 
+While certain functions are
+this discussion is usually ommited in the literature.
+We discuss the different concepts and show, experimentally, the consequences of misunderstanding both. 
 
 Although we were inspired by previous work on ACO for expensive black-box
 combinatorial problems~\citep{PerLopStu2015si}, UMM is, to the best of our
 knowledge, the first EDA specifically designed for such problems that is able
-to match (and sometimes even improve) the results of a Bayesian
+to match (and sometimes even improve) the state-of-the-art
 optimizer. Moreover, it is overwhelmingly faster than the alternatives for
 large problem sizes.  The results presented here show that, despite the
 intrinsic difficulty of the expensive black-box combinatorial scenario, there
@@ -1106,12 +1095,9 @@ are still significant advances yet to be made. Thus, we hope that this paper
 will motivate further research. % on such problems.
 %\MANUEL{I'm thinking about finishing here and commenting out the following paragraph}
 
-An interesting result is that the behavior of UMM (and the same for CEGO) on
-the PFSP (and some QAP instances) is close to random. %The same behavior is
-%observed for CEGO, which seems to have been never reported until now.
-This result may be due to the distance
-metric used, but further analysis is needed to corroborate this
-conjecture. Here, we have focused on Kendall's-$\tau$ distance, however, we are certain it is
+In this paper, we focus on the UMM under the \ken distance. Therefore, we consider appropiate problems for it, such as the Linear Ordering Problem and the Permutation Flowshop Scheduling Problem, where the pairwise ordering among the items is relevant (as opposed to the actual exat position of each item in the permutation)
+
+However, we are certain it is
 possible to extend UMM to other distance metrics, which will allow us to
 dynamically select among various distance metrics for an unknown black-box
 % \ekhine{}{estoy totalmente en contra de esto :) }
