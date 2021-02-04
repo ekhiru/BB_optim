@@ -963,7 +963,9 @@ instances, as can be seen by comparing \texttt{rec19} with \texttt{rec31}.
 
 \myparagraph{Comparison of the best solutions found} We now turn our analysis
 to the best (minimum) fitness found at the end of the run by each algorithm. We
-show in Table~\ref{tab:results}
+show in Table~\ref{tab:results} the mean fitness of the best solution found
+over the 10 runs of each algorithm.
+
 
 
 
@@ -1098,22 +1100,23 @@ which is at least an order of magnitude faster.
   %CEGO runs were stopped after 144 hours. This was the case for all LOP instances.
   \label{tab:results}}
   \resizebox{\textwidth}{!}{%
-\begin{tabular}{r*{5}{r}r@{\hskip 0.5ex}l*{2}{r}}
+\begin{tabular}{r@{\hskip -1ex}r*{2}{r@{\hskip 1ex}l}r@{\hskip 0.5ex}lr@{\hskip 0.75ex}r}
  \toprule
             &              & \mcolc{4}{Mean fitness (sd)} & \mcolc{2}{\multirow[b]{2.45}{*}{\shortstack{95\% CI of the                                                                                       \\mean difference}}} & \mcolc{2}{Mean runtime} \\\cmidrule(lr){3-6}\cmidrule(lr){9-10}
-\bf Problem & \bf Instance & \mcolc{2}{CEGO}              & \mcolc{2}{UMM}                                                                  &           &           & \bf CEGO                  & \bf UMM    \\\midrule
+\bf Problem & \bf Instance & \mcolc{2}{\CEGOinv}              & \mcolc{2}{UMM$_{400}$}                                                                  &           &           & \bf \CEGOinv                  & \bf UMM$_{400}$    \\\midrule
 LOP         & N-p40-01     & 10496.6                      & (116.8)                                                                         & 12369.1   & (389.9)   & {[}-2157.1,& -1587.9{]}    & 19.9 & 0.3 \\
-LOP         & N-p40-02     & 11714.7                      & (84.7)                                                                          & 13160.5   & (454.8)   & {[}-1773.5,& -1118.1{]}    & 20.1 & 0.3 \\
-LOP         & N-t59b11xx   & 102408.0                     & (3800.2)                                                                        & 114075.5  & (5389.2)  & {[}-16084.2,& -7250.8{]}   & 21.1 & 0.4 \\
-LOP         & N-t59d11xx   & 12692.2                      & (1097.9)                                                                        & 16662.9   & (2155.3)  & {[}-5618.5,& -2322.9{]}    & 21.2 & 0.4 \\
-LOP         & N-p50-02     & 19090.5                      & (285.4)                                                                         & 21746.6   & (645.4)   & {[}-3140.6,& -2171.6{]}    & 22.9 & 0.5 \\
-LOP         & N-p50-01     & 18197.7                      & (225.6)                                                                         & 21161.8   & (657.4)   & {[}-3447.4,& -2480.8{]}    & 23.2 & 0.5 \\
-LOP         & N-sgb75.01   & 1893533.2                    & (28594.6)                                                                       & 1992059.9 & (40235.7) & {[}-131577.1,& -65476.3{]} & 33.2 & 1.0 \\
-LOP         & N-sgb75.02   & 1895801.8                    & (82847.9)                                                                       & 1967132.3 & (49228.1) & {[}-136421.2,& -6239.8{]}  & 33.3 & 1.1 \\
+         & N-p40-02     & 11714.7                      & (84.7)                                                                          & 13160.5   & (454.8)   & {[}-1773.5,& -1118.1{]}    & 20.1 & 0.3 \\
+         & N-t59b11xx   & 102408.0                     & (3800.2)                                                                        & 114075.5  & (5389.2)  & {[}-16084.2,& -7250.8{]}   & 21.1 & 0.4 \\
+         & N-t59d11xx   & 12692.2                      & (1097.9)                                                                        & 16662.9   & (2155.3)  & {[}-5618.5,& -2322.9{]}    & 21.2 & 0.4 \\
+         & N-p50-02     & 19090.5                      & (285.4)                                                                         & 21746.6   & (645.4)   & {[}-3140.6,& -2171.6{]}    & 22.9 & 0.5 \\
+         & N-p50-01     & 18197.7                      & (225.6)                                                                         & 21161.8   & (657.4)   & {[}-3447.4,& -2480.8{]}    & 23.2 & 0.5 \\
+         & N-sgb75.01   & 1893533.2                    & (28594.6)                                                                       & 1992059.9 & (40235.7) & {[}-131577.1,& -65476.3{]} & 33.2 & 1.0 \\
+         & N-sgb75.02   & 1895801.8                    & (82847.9)                                                                       & 1967132.3 & (49228.1) & {[}-136421.2,& -6239.8{]}  & 33.3 & 1.1 \\
+         \midrule
 PFSP        & rec05        & 1276.2                       & (15.1)                                                                          & 1276.3    & (8.4)     & {[}-11.8,& 11.6{]}         & 18.3 & 0.1 \\
-PFSP        & rec13        & 1992.9                       & (27.6)                                                                          & 2057.8    & (22.8)    & {[}-88.8,& -41.0{]}        & 18.5 & 0.1 \\
-PFSP        & rec19        & 2264.5                       & (45.0)                                                                          & 2304.8    & (37.7)    & {[}-79.4,& -1.2{]}         & 18.2 & 0.2 \\
-PFSP        & rec31        & 3415.5                       & (62.1)                                                                          & 3419.3    & (37.0)    & {[}-52.6,& 45.0{]}         & 23.1 & 0.5 \\
+       & rec13        & 1992.9                       & (27.6)                                                                          & 2057.8    & (22.8)    & {[}-88.8,& -41.0{]}        & 18.5 & 0.1 \\
+       & rec19        & 2264.5                       & (45.0)                                                                          & 2304.8    & (37.7)    & {[}-79.4,& -1.2{]}         & 18.2 & 0.2 \\
+       & rec31        & 3415.5                       & (62.1)                                                                          & 3419.3    & (37.0)    & {[}-52.6,& 45.0{]}         & 23.1 & 0.5 \\
 \bottomrule
 \end{tabular}}
 \end{table*}
