@@ -853,7 +853,7 @@ configuration as the current default of UMM.
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 \ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, ${d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})}$. 
 
 As a consequence of this important distinction, when dealing with data in the form of permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
@@ -887,7 +887,7 @@ algorithm. Therefore, in the following, we show results of both variants, that i
 
 
 
-\subsection{Experimental Analysis of UMM and CEGO} % on LOP and PFSP instances}
+\subsection{Experimental Analysis} % on LOP and PFSP instances}
 
 To better analyze the behavior of the algorithms, we record the fitness of the
 solution evaluated at each step of each run. For each problem instance and each
@@ -947,6 +947,15 @@ The computational complexity of UMM is \ekhine{}{ $O(n \log n)$ }at each iterati
 \begin{minipage}{0.49\linewidth}
   \texttt{N-p50-01} (LOP)\\[-0.5ex]
   \includegraphics[width=\textwidth]{../img/fitness_lop_RandB_N-p50-01}
+\end{minipage}
+\\
+\begin{minipage}{0.49\linewidth}
+  \texttt{reC19} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec05_txt}
+\end{minipage}
+\begin{minipage}{0.49\linewidth}
+  \texttt{reC31} (PFSP)\\[-0.5ex]
+  \includegraphics[width=\textwidth]{../img/fitness_pfsp_rec13_txt}
 \end{minipage}
 \\
 \begin{minipage}{0.49\linewidth}
