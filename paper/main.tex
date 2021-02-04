@@ -847,15 +847,10 @@ configuration as the current default of UMM.
 %\MANUEL{Prefiero dejar el comentario sobre las mejores soluciones encontradas y el tiempo requerido para cuando hable de la tabla, así se puede ver todo junto}
 
 
-<<<<<<< HEAD
 \subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
 \ekhine{}{este primer parago es bastante importante para dejarlo aqui. }
 In Section~\ref{sec:preliminaries} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
-=======
 
-\subsection{Rankings and orderings}
-In Section~\ref{sec:permutations} we highlighted the great difference of rankings and orderings, usually ommitted in the literature. In this lines, we show the consequences of misinterpreting permutations. We remind the reader that statistical models (Borda or the \ken distance) are defined for rankings while standard literature in optimization considers orderings. This is the reason while in the optimization field we will usually find the Swap distance instead of the \ken distance. However, both are usually claimed to be the same, which is false: they are the same in particular cases, for example when  one of the permutations is the identity or an inversion. 
->>>>>>> 4b6e20e0102f1d66671a6ad986dafd5fdc24741d
 
 As a summary of Algorithm~\ref{alg:umm}, we model rankings in our UMM model, generate a ranking $\sigma$, then invert this ranking to obtain an ordering in line~\ref{line:inversion} and evaluate the ordering $\sigma^{-1}$ in the objective function. This might seem an implementation detail but for the sake of consistency with the literature, we will expect objective functions to evaluate ordering. A natural question is what happens if we did not invert the ranking and evaluated a ranking with an optimization for orderings. For the anxious reader, we advance that the result is similar to the original version of CEGO. 
 
