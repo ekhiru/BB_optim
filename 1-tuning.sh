@@ -72,19 +72,17 @@ nruns=10
 LAUNCHER=qsub_job
 #LAUNCHER=launch_local
 
-## For PFSP instances
 INSTANCES="\
-pfsp/rec05.txt \
 pfsp/rec13.txt \
 pfsp/rec19.txt \
-pfsp/rec31.txt \
+lop/RandB/N-p40-01 \
+lop/IO/N-t59b11xx \
+lop/SGB/N-sgb75.01 \
+lop/RandB/N-p50-01 \
 "
 
-
-###### For LOLIB instances
-INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 ###### Synthetic LOP instances
-INSTANCES=$(gen_lop_synthetic $INSTANCES)
+#INSTANCES=$(gen_lop_synthetic $INSTANCES)
 
 budget=400
 
@@ -93,7 +91,7 @@ eval_ranks=0
 
 r_1_values=$(seq 0.1 0.1 0.5)
 r_2_values="$(seq 0.6 0.1 0.9) 0.99"
-budgetMM=10
+beta=1
 umm_m_ini=10
 
 counter=0
@@ -103,7 +101,7 @@ for instance in $INSTANCES; do
     for r_1 in $r_1_values; do
 	for r_2 in $r_2_values; do
 	    counter=$((counter+1))
-	    $LAUNCHER $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
+	    $LAUNCHER $instance --m_ini $umm_m_ini --budgetMM $beta --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks
 	done
     done
 done
