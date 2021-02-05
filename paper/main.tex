@@ -20,7 +20,7 @@
 \usepackage{booktabs} % For formal tables
 \usepackage{enumitem}
 \usepackage{afterpage,tabularx}
-\hypersetup{draft}
+%\hypersetup{draft}
 %\usepackage[colorlinks=true, allcolors=blue]{hyperref}
  
 \newcommand{\true}{\textsc{true}}
@@ -542,11 +542,6 @@ The other two parameters of UMM are $r_1$ and $r_2$ that determine the learning 
 balance between exploration and exploitation. In the experimental section we
 will study their impact.
 
-We consider three different values $\FEmax \in\{100, 200,400\}$ for the maximum budget of  evaluations of the
-actual objective function. In a white-box context, state-of-the-art algorithms
-for the LOP and PFSP typically evaluate thousands of solutions,
-thus, the budget considered here for the black-box context is extremely
-limited.
 
 \myparagraph{CEGO}
 %
@@ -565,19 +560,15 @@ EGO, with a distance measure appropriate to combinatorial
 landscapes~\citep{ZaeStoBar2014:ppsn}.
 % , such as Kendall's-$\tau$ distance for permutations
 % (Eq.~\ref{eq:kendall_decomp}).
+
 In CEGO, the surrogate model is
 explored by a GA with crossover and mutation operators appropriate for the
-particular combinatorial problem. The original paper notes that coupling the GA
-with local search does not improve the results significantly since the model is
-anyway an inexact estimation of the original fitness
-function~\citep[p.~875]{ZaeStoFriFisNauBar2014}. A thorough comparison of CEGO
+particular combinatorial problem. A thorough comparison of CEGO
 with other optimizers for expensive black-box combinatorial optimization ranked
 it as the best-performing~\citep{ZaeStoFriFisNauBar2014}.
 
-
-
-
-We use the original implementation of GECO.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
+We use here the original implementation of
+GECO.\footnote{\url{https://cran.r-project.org/package=CEGO}} %
 Although it is never stated in the original paper, the implementation of CEGO
 generates a set of initial solutions of size $\minit=10$ by means of a
 max-min-distance sequential design: new solutions are added to the set
@@ -586,12 +577,20 @@ set. These initial solutions are then evaluated on the true fitness function
 and the result is used to build the initial surrogate
 model. % \citet{ZaeStoBar2014:ppsn} uses \minit=10
 Following the authors of
-CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, we use a GA to optimize
-the surrogate models with population size of 20, crossover rate of 0.5,
+CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, the surrogate model is optimized by a GA with  population size of 20, crossover rate of 0.5,
 mutation rate of $1/n$, tournament selection of size 2 with probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements) and
 cycle crossover for permutations. To generate each new solution, CEGO runs the
-GA with a budget of $10^4$ evaluations of the model as a surrogate of the true fitness function.  
+GA with a budget of $10^4$ evaluations of the model as a surrogate of the true
+fitness function.  The original paper~\citep[p.~875]{ZaeStoFriFisNauBar2014} notes that coupling the GA with local
+search does not improve the results significantly since the model is anyway an
+inexact estimation of the original fitness
+function.
+
+
+
+
+
 %and we use the same configuration parameters.% However, with such a setting, a single run of CEGO with a budget of
 %$\FEmax=400$ true fitness evaluations requires \emph{more than a week} of
 %computation time, which was infeasible for our study. 
@@ -608,14 +607,6 @@ GA with a budget of $10^4$ evaluations of the model as a surrogate of the true f
 %to understand CEGO parameters.
 
 
-\myparagraph{Other settings}
-%
-For simplicity, we use Kendall's-$\tau$
-distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments.
-%Nevertheless,
-%\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
-%when using Hamming distance and the same may apply to UMM.
-We plan to extend UMM to other distance measures in the future.  
 
 
 \myparagraph{Benchmark problems}
@@ -673,6 +664,22 @@ In the case of the PFSP, we consider the same instances as
 % \texttt{reC05}, \texttt{reC13} and \texttt{reC19} for the PFSP, with
 % $n \in \{20, 20, 30\}$, respectively. For reasons that will become obvious
 % later, we also consider QAP instances \texttt{kra30a} and \texttt{kra30b}.
+
+\myparagraph{Other settings}
+%
+We consider three different values $\FEmax \in\{100, 200,$ $400\}$ for the maximum
+budget of evaluations of the actual objective function in UMM. In the case of
+CEGO, we only run experiments with the largest budget $m=400$.  In a white-box
+context, state-of-the-art algorithms for the LOP and PFSP typically evaluate
+thousands of solutions, thus, the budget considered here for the black-box
+context is extremely limited.
+%
+For simplicity, we use Kendall's-$\tau$
+distance~(Eq.~\ref{eq:kendall_decomp}) in all experiments.
+%Nevertheless,
+%\citet{ZaeStoFriFisNauBar2014} points out that CEGO performs best on the QAP
+%when using Hamming distance and the same may apply to UMM.
+We plan to extend UMM to other distance measures in the future.  
 
 \myparagraph{Computing environment}
 % Due to the computational effort required, we used several computing systems to
@@ -735,7 +742,7 @@ instances) and the more homogeneous the behavior, the better performance of
 UMM. We elaborate this argument in detail in the next section.
 
 From this preliminary experiment, it is not obvious how the best settings are
-related to problem features, such as permutation length ($n$). On the other
+related to problem features, such as permutation length $n$. On the other
 hand, given the sharp transitions in the plots, it is clear that further
 fine-tuning may improve performance and uncover further patterns.
 
@@ -854,7 +861,7 @@ configuration as the current default of UMM.
 \newcommand{\CEGOorig}{CEGO$_\textsc{ori}$\xspace}
 \newcommand{\CEGOinv}{CEGO$_\textsc{inv}$\xspace}
 
-\subsection{Rankings and orderings: experiments}\label{sec:exper_ro}
+\subsection{Experiments with rankings and orderings}\label{sec:exper_ro}
 
 
 In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
@@ -864,18 +871,18 @@ combinatorial problems, we must convert rankings to orderings by inverting the
 permutation, as done in Eq.~\ref{eq:lop} and Eq.~\ref{eq:pfsp}, for the LOP and
 PFSP, respectively. This might seem an implementation detail but a failure to use the correct interpretation has grave consequences.
 
-%During our experiments, we realized that the \emph{swap} distance used by CEGO
-%assumes rankings, i.e., it actually measures the \ken distance, yet CEGO did
 % not invert the permutation before evaluating the PFSP.
-During our experiments, we realized that CEGO claimed to use the Swap distance. Instead, CEGO implements the \ken distance, yet CEGO did
+% During our experiments, we realized that CEGO claimed to use the Swap distance. Instead, CEGO implements the \ken distance, yet CEGO did
+During our experiments, we realized that distance metric called Swap in CEGO~\citep{ZaeStoBar2014:ppsn} actually assumes rankings, that is, it actually implements the \ken distance, yet CEGO does
 not invert the permutation before evaluating the PFSP.
 %\MANUEL{no me convence esta forma de expresarlo porque la crítica obvia sería que por qué invertimos la función objectivo y no la función de distancia?} \EKHINE{es lo mismo}
 We verified that this is
 indeed how the implementation works and that those results match the published
 ones~\citep{ZaeStoBar2014:ppsn}. 
-Note that using the Swap distance as claimed by CEGO is equivalent to using \ken distance and inverting the permutation before calling the objective
-function. Thus, the obvious question arises about the effect of inverting the permutation before calling the objective
-function, so that the rankings are transformed to ordering, as done by our UMM
+%Note that using the Swap distance as claimed by CEGO is equivalent to using \ken distance and inverting the permutation before calling the objective
+%function.
+Thus, the obvious question arises about the effect of inverting the permutation before calling the objective
+function, so that the rankings are transformed to orderings, as done by our UMM
 algorithm. In the following, we show results of both variants, that is, the original CEGO (\CEGOorig) and our modified version that inverts the permutation before evaluation (\CEGOinv).
 
 
@@ -896,119 +903,8 @@ algorithm. In the following, we show results of both variants, that is, the orig
 
 %Figure~\ref{fig:rankorder} answers the above two questions. In a setting as the one in previous sections, we find 4 different lines, for the evaluation of UMM and CEGO with and without inversion. We see that in case of No inversion (dashed lines) both UMM and CEGO do not seem to converge (despite we can see some decrease along iterations). When there is an inversion between modelling and evaluation both algorithms behave better. In this case, since UMM is set for a a linear decrease in the the scale parameter for the $m$ iterations, we see the linear decrease in the function evaluations. In CEGO, we see an abrupt decrease at the beggining which seems stuck at iteration 200. 
 
-
-
-
-\subsection{Experimental Analysis} % on LOP and PFSP instances}
-
-%In the following, we compare 5 algorithm configurations.
-% Three configurations
-%of UMM (UMM$_{100}$, UMM$_{200}$, and UMM$_{400}$) that differ in their budget
-%of evaluations ($m$). As mentioned in Sec.~\ref{sec:sampling}, the behavior of
-%UMM depends on the value of $m$. The other two configurations correspond 
-%to \CEGOorig and \CEGOinv, as defined above.
-
-Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
-\begin{itemize}
-\item UMM$_{100}$, UMM$_{200}$ and UMM$_{400}$ are three different versions for UMM, each considering a different total number of function evaluations, 100, 200 and 400. Obviously, the lines corresponding to UMM$_{100}$, UMM$_{200}$ wont reach the right corner of the figure. As mentioned in Sec.~\ref{sec:sampling}, the behavior of
-UMM depends on the value of $m$. 
-\item \CEGOorig and \CEGOinv are, respectively, the original version of CEGO and the modification of Section~\ref{sec:exper_ro}, i.e., the ranking generated by the CEGO algorithm at each iteration, $\sigma$, is inverted before being evaluated, so the evaluation is performed on $\sigma^{-1}$. 
-\end{itemize}
-
-
-Since there is a small number of evaluations and the algorithms evaluate just
-one solution at each step, we chose to record and plot the fitness of the
-solution evaluated at each step of each run, instead of the usual plots of the
-best-so-far solution over number of evaluations. We believe that plotting each
-evaluated solution provides better insights on the search dynamics of the
-algorithms analyzed here, despite it is not directly comparable with most literature results. Please note that the algorithms do not return the
-final solution shown in the plots, but rather the best one (minimum fitness) of
-each run. Nevertheless, the minimum values achieved in the plot up to a
-particular number of function evaluations gives an estimation of the mean
-fitness of the best-so-far solution up to that point in the run. We provide
-later an analysis of the best solution found by each run of the algorithm, which are comparable with the original paper of CEGO.
-
-Figure~\ref{fig:results} shows such plots for a few LOP instances from LOLIB
-and the PFSP.  For each problem instance and each algorithm, we plot the mean
-fitness of the solution evaluated at each step over 10 runs with different
-random seeds. The horizontal line indicates the best-known fitness for that instance.
-% 
-The shaded area shows one standard deviation around the mean. Ideally, each new
-evaluation will monotonically improve in fitness, since each solution evaluated
-helps to refine the model and leads to a better solution being evaluated in the
-next step.  However, it is possible that new solutions are worse than their
-predecessors. %Nevertheless, in this example, there is a clear
-% overall improvement as more evaluations are performed.
-
-\myparagraph{Convergence analysis of UMM} We start our analysis with the three
-configurations of UMM. We can see a common trend in all instances: After
-the 10 random initial permutations, the fitness of new solutions decreases
-with a linear trend along iterations. The (close to) linear decrease is given
-by the linear decrease in the expected distance of the model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
-does not seem to converge, not even for the longer runs of 400 evaluations. Therefore, we conjecture that longer runs are likely to produce further improved solutions. Moreover, a non-linear decrease in the expected distance should result in a faster convergence for larger evaluation budgets. 
-
-\myparagraph{Convergence analysis of CEGO}
-The red and the gold lines in the plots shown in Fig.~\ref{fig:results}
-correspond to the two variants of CEGO the original \CEGOorig and our modified
-version \CEGOinv. The different between these two variants is overwhelmingly in
-favour of \CEGOinv. With the exception of the \texttt{reC19} PFSP instance, the
-search behavior of \CEGOorig resembles a random search, after a brief
-improvement phase at the start of the run. By contrast, \CEGOinv shows a very
-fast improvement in fitness within the first 50 evaluations that tends to
-converge around the 150$^\text{th}$ evaluation, showing little improvement
-after that. Since the only difference between these two variants is the
-transformation from rankings to orderings before evaluating the objective
-function (Sec.~\ref{sec:exper_ro}), we must conclude that this difference has
-tremendous effect in performance. Therefore, we will focus our analysis on
-\CEGOinv.
-
-\myparagraph{Comparison of UMM and CEGO}
-When comparing the UMM and CEGO configurations shown in Fig.~\ref{fig:results},
-we can observe that all UMM configurations perform much better than the
-original CEGO (\CEGOorig), while they converge slower than our modified
-\CEGOinv. However, the rate of improvement of the UMM variants does not seem to
-slow down near the maximum budget given and, in several instances such as
-\texttt{rec31} and \texttt{N-sgb75-01}, matches and surpasses the solutions
-found by \CEGOinv. Interestingly, this is the case, even for the shorter budget
-configurations of UMM, i.e., UMM$_{100}$ and UMM$_{200}$. We also observe a
-pattern that UMM performs better, or \CEGOinv performs worse, on larger
-instances, as can be seen by comparing \texttt{rec19} with \texttt{rec31}.
-
-\myparagraph{Comparison of the best solutions found}
-%
-We now turn our analysis to the best (minimum) fitness found at the end of the
-run by the two best algorithms, that is, \CEGOinv and UMM$_{400}$. We show in
-Table~\ref{tab:results} the mean fitness (and standard deviation) of the best
-solution found over the 10 runs of each algorithm, together with a 95\%
-confidence interval (CI) around their mean fitness difference. 
-Except for PFSP
-instances \texttt{rec05} and \texttt{rec31}, the differences are statistically
-significant in favour of \CEGOinv (the intervals do not contain the value
-zero). Nevertheless, the CIs indicate that the differences, although
-consistent, are relatively small.
-The detailed results of UMM$_{100}$  and UMM$_{200}$  and the original \CEGOorig are given in Table~\ref{tab:results_fitness}. In this table, it can be seen that the quality of \CEGOorig  solutions is similar to the UMM$_{100}$ version of UMM. 
-
-
-\myparagraph{Runtime comparison}
-%
-The average
-running time is approximately 22 hours for the 400 function evaluations, which
-is 300 times slower than UMM for the same number of function evaluations.
-
-Table~\ref{tab:results} shows a brief comparison of time and the full ones are given in Table~\ref{tab:results_time}. The difference is time in impressive. 
-The average runtime for all the instances is around 0.3 minutes, 1.15 minutes and 4.5 minutes respectively for the  versions with 100, 200 and 400 fitness evaluations. 
-For CEGO in both versions the average time for 400 evaluations is more than 22 hour. This is 300 times slower than UMM for the same number of function evaluations. 
-Moreover, UMM scales good for larger instances in quality performance. 
-The computational complexity of UMM is $O(n \log n)$ at each iteration which causes the abrupt difference in the time performance of the algorithms. The details can be seen in Table~\ref{tab:results_time}. 
-
-
-
-
-  
-
-
-
-\begin{figure*}[tb]
+\afterpage{
+\begin{figure*}
 \small
 \centering%
 \begin{minipage}{0.49\linewidth}
@@ -1057,7 +953,124 @@ The computational complexity of UMM is $O(n \log n)$ at each iteration which cau
 \end{minipage}
 \label{fig:results}
 \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on various instances.\label{fig:results}}
+\vspace{10em}
 \end{figure*}
+}
+
+\subsection{Experimental Analysis} % on LOP and PFSP instances}
+
+%In the following, we compare 5 algorithm configurations.
+% Three configurations
+%of UMM (UMM$_{100}$, UMM$_{200}$, and UMM$_{400}$) that differ in their budget
+%of evaluations ($m$). As mentioned in Sec.~\ref{sec:sampling}, the behavior of
+%UMM depends on the value of $m$. The other two configurations correspond 
+%to \CEGOorig and \CEGOinv, as defined above.
+
+
+Since the number of evaluations is  small and the algorithms evaluate just
+one solution at each step, we chose to record and plot the fitness of the
+solution evaluated at each step of each run, instead of the usual plots of the
+best-so-far solution over number of evaluations. We believe that plotting each
+evaluated solution provides better insights on the search dynamics of the
+algorithms analyzed here. %, despite it is not directly comparable with most literature results.
+Please note that the algorithms do not return the
+final solution shown in the plots, but rather the best one (minimum fitness) of
+each run. Nevertheless, the minimum values achieved in the plot up to a
+particular number of function evaluations gives an estimation of the mean
+fitness of the best-so-far solution up to that point in the run. We provide
+later an analysis of the best solution found by each run of the algorithms.
+%, which are comparable with the original paper of CEGO.
+
+
+Figure~\ref{fig:results} shows the results on the real-world instances from
+LOLIB and PFSP.  There is one plot per instance.  The horizontal line indicates
+the best-known fitness for that instance.  Besides, there are 5 different lines
+representing each of the different algorithm variants tested, in particular:
+\begin{itemize}
+\item UMM$_{100}$, UMM$_{200}$ and UMM$_{400}$ are three different versions of UMM, each considering a different total budget of function evaluations. As can be expected, the lines corresponding to UMM$_{100}$ and UMM$_{200}$ do not reach the right corner of the figure. As mentioned in Sec.~\ref{sec:sampling}, the behavior of
+UMM depends on the value of $m$. 
+\item \CEGOorig and \CEGOinv are, respectively, the original version of CEGO and the modification discussed in Section~\ref{sec:exper_ro}, i.e., the ranking generated by the CEGO algorithm at each iteration, $\sigma$, is inverted before being evaluated, so the evaluation is performed on $\sigma^{-1}$. 
+\end{itemize}
+For each algorithm, we plot the mean
+fitness of the solution evaluated at each step over 10 runs with different
+random seeds.
+%Figure~\ref{fig:results} shows such plots for a few LOP instances from LOLIB
+%and the PFSP.
+% 
+The shaded area shows one standard deviation around the mean. Ideally, each new
+evaluation will monotonically improve in fitness, since each solution evaluated
+helps to refine the model and leads to a better solution being evaluated in the
+next step.  However, it is possible that new solutions are worse than their
+predecessors. %Nevertheless, in this example, there is a clear
+% overall improvement as more evaluations are performed.
+
+\myparagraph{Convergence analysis of UMM} We start our analysis with the three
+variants of UMM. We can see a common trend in all instances: After
+the 10 random initial permutations, the fitness of new solutions decreases
+with a linear trend along iterations. The (close to) linear decrease is given
+by the linear decrease in the expected distance of the model, as described in Section~\ref{sec:sampling}. Overall, the rate of improvement
+does not seem to converge, not even for the longer runs of 400 evaluations. Therefore, we conjecture that longer runs are likely to produce further improved solutions. Moreover, a non-linear decrease in the expected distance should result in a faster convergence for larger evaluation budgets. 
+
+\myparagraph{Convergence analysis of CEGO}
+The red and the gold lines in the plots shown in Fig.~\ref{fig:results}
+correspond to the two variants of CEGO the original \CEGOorig and our modified
+version \CEGOinv. The difference between these two variants is overwhelmingly in
+favour of \CEGOinv. With the exception of the \texttt{reC19} PFSP instance, the
+search behavior of \CEGOorig resembles a random search, after a brief
+improvement phase at the start of the run. By contrast, \CEGOinv shows a very
+fast improvement in fitness within the first 50 evaluations and tends to
+converge around the 150$^\text{th}$ evaluation, showing little improvement
+after that. Since the only difference between these two variants is the
+transformation from rankings to orderings before evaluating the objective
+function (Sec.~\ref{sec:exper_ro}), we must conclude that this difference has
+tremendous effect in performance.
+%Therefore, we will focus our analysis on
+%\CEGOinv.
+
+\myparagraph{Comparison of UMM and CEGO}
+When comparing the UMM and CEGO variants shown in Fig.~\ref{fig:results},
+we can observe that all UMM variants perform much better than the
+original CEGO (\CEGOorig), while they converge slower than our modified
+\CEGOinv. However, the rate of improvement of the UMM variants does not seem to
+slow down near the maximum budget given and, in several instances such as
+\texttt{rec31} and \texttt{N-sgb75-01}, matches and surpasses the solutions
+found by \CEGOinv. Interestingly, this is the case, even for the shorter budget
+variants of UMM, i.e., UMM$_{100}$ and UMM$_{200}$. We also observe a
+pattern that UMM performs better, or \CEGOinv performs worse, on larger
+instances, as can be seen by comparing \texttt{rec19} with \texttt{rec31}.
+
+\myparagraph{Comparison of the best solutions found}
+%
+We now turn our analysis to the best (minimum) fitness found at the end of the
+run by the two best algorithms, that is, \CEGOinv and UMM$_{400}$. We show, in
+Table~\ref{tab:results}, the mean fitness (and standard deviation), over the 10
+runs of each algorithm, of the best solution found at the end of the run,
+together with a 95\% confidence interval (CI) around their mean fitness
+difference.  Except for PFSP instances \texttt{rec05} and \texttt{rec31}, the
+differences are statistically significant in favour of \CEGOinv (the intervals
+do not contain the value zero). Nevertheless, the CIs indicate that the
+differences, although consistent, are relatively small.  Detailed results
+of UMM$_{100}$ and UMM$_{200}$ and the original \CEGOorig are given in
+Table~\ref{tab:results_fitness} for completeness. In this table, it can be seen that the quality
+of \CEGOorig solutions is similar to the UMM$_{100}$ version of UMM.
+
+
+\myparagraph{Runtime comparison}
+%
+Table~\ref{tab:results} also shows the runtime (in hours) of \CEGOinv and UMM when both
+are run for 400 evaluations. For the same number of function evaluations, CEGO requires almost a day, whereas UMM
+never requires more than one hour, often much less than that.
+%
+Details for other algorithm variants are given in Table~\ref{tab:results_time}.
+The average runtime for all the instances is around 0.3 minutes, 1.15 minutes
+and 4.5 minutes respectively for the UMM variants with 100, 200 and 400 fitness
+evaluations.  For CEGO, in both versions, the average runtime for 400
+evaluations is more than 22 hours. This is 300 times slower than UMM for the
+same number of function evaluations.  Moreover, the runtime of UMM scales well
+for larger instances since its computational complexity  is $O(n \log n)$ at
+each iteration.
+
+
 
 %
 %\paragraph{Figure description} Figure~\ref{fig:results} shows the results on the real-world instances from LOLIB and PFSP. There is one figure per instance. In each figure there is one horizontal line displaying the best known solutions for the problem. Besides, there are 5 different lines representing each of the different algorithm/versions considered, in particular:
@@ -1080,7 +1093,8 @@ The computational complexity of UMM is $O(n \log n)$ at each iteration which cau
 
 
 \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
-\begin{table*}[tb]
+\afterpage{%
+\begin{table*}
   \caption{Mean fitness (and standard deviation) of the best solution found at the end of each run, over 10 independent runs for each problem instance. The 95\% confidence interval corresponds to the two independent samples t-test on the mean difference between the fitness of \CEGOinv minus the one of UMM$_{400}$. 
   Mean runtime is shown in hours. 
   %CEGO runs were stopped after 144 hours. This was the case for all LOP instances.
@@ -1106,83 +1120,52 @@ PFSP        & rec05        & 1276.2                       & (15.1)              
 %}
 \end{table*}
 
-
-% The situation is very similar for the QAP, where both algorithms show the same
-% behaviour as in the PFSP for all instances tested, except for
-% \texttt{kra} instances. As shown in Fig~\ref{fig:kra32}, for \texttt{kra32} both
-% algorithms are able to improve over the number of evaluations, although not
-% with ease. As in the synthetic LOP instances, we again observe that CEGO does
-% improve faster than UMM initially, yet CEGO appears to get stuck around
-% evaluation 250, and UMM overtakes it around evaluation 300. We believe the
-% reason is the same as before, that is, the CEGO model is not able to adequately
-% reflect the ruggedness of the actual landscape and, hence, the best solutions
-% found by the GA searching the model are not improved solutions for the actual
-% problem. Interestingly, there are well-known differences between
-% \texttt{kra30a}, \texttt{kra30b}, \texttt{kra32}, on one hand, and \texttt{nug12}, \texttt{nug30} and
-% \texttt{tho32}, on the other~\citep{AnsBriGou2002qap}. However, we cannot at
-% this moment point out the root cause of this different behavior.
-
-% \begin{figure}[tp]
-%   \centering%
-%   \includegraphics[width=\textwidth]{../img/fitness_real_qap_kra32_dat}
-%   \caption{Mean fitness  (and standard deviation)  of each solution evaluated by each algorithm on the QAP instance \texttt{kra32}.\label{fig:kra32}}
-%   \vspace*{-1em}
-% \end{figure}
-
-%Table~\ref{tab:results} shows results over all instances evaluated (excluding
-%the synthetic LOP instances). In particular, we show the mean fitness (and
-%standard deviation) of the best solution found at the end of each run. We also report the mean runtime in hours and, since CEGO sometimes reached the limit of 144 hours, also the number of fitness evaluations reached by CEGO.
-
-%In the LOP, differences are mostly in favour of UMM, due to the time limit of
-%144 hours, which resulted in CEGO typically achieving less than 200
-%evaluations. In contrast, UMM was always able to reach 400 evaluations in less
-%than 12.5 hours. If UMM was allowed to reach the 144 hours limit, the differences
-%would be even stronger.
-%%
-%In the PFSP, the differences are minor and/or not statistically
-%significant, with the qualification that both algorithms appear to be
-%performing a random search.
-
-
-\begin{table*}[tb]%time
-  \caption{Mean runtime  in minutes, over 10 independent runs for each problem instance, of the original CEGO (\CEGOorig) and its improved version (\CEGOinv) and three configurations of UMM that differ in the budget of evaluations $m \in \{100, 200, 400\}$. The runs of CEGO used a budget of $m=400$.\label{tab:results_time}}
+\begin{table*}
+    \caption{Mean fitness, over 10 independent runs for each problem instance, of the best solution found at the end of each run of the original CEGO (\CEGOorig) and its improved version (\CEGOinv) and three variants of UMM that differ in the budget of evaluations $m \in \{100, 200, 400\}$. The runs of CEGO used a budget of $m=400$.\label{tab:results_fitness}}
 \begin{tabular}{llrrrrr}
 \toprule
 \bf Problem & \bf   Instance &  \CEGOinv &  \CEGOorig &  UMM$_{400}$ &   UMM$_{200}$ &  UMM$_{100}$ \\
 \midrule
-    LOP &    N-p40-01 &   1195.90 &    1170.81 &     3.12 &  0.850000 &     0.21 \\
-    LOP &    N-p40-02 &   1207.24 &    1183.09 &     3.11 &  0.830000 &     0.20 \\
-    LOP &  N-t59b11xx &   1265.98 &    1240.36 &     3.78 &  0.950000 &     0.23 \\
-    LOP &  N-t59d11xx &   1269.93 &    1252.89 &     3.93 &  0.966667 &     0.25 \\
-    LOP &  N-sgb75.01 &   1994.22 &    2004.70 &    10.88 &  2.730000 &     0.72 \\
-    LOP &  N-sgb75.02 &   1995.09 &    1975.41 &    10.88 &  2.760000 &     0.69 \\
-   PFSP &       rec05 &   1099.63 &     917.81 &     0.80 &  0.200000 &     0.10 \\
-   PFSP &       rec13 &   1109.51 &    1043.08 &     0.85 &  0.200000 &     0.10 \\
-   PFSP &       rec19 &   1090.06 &    1087.38 &     1.76 &  0.470000 &     0.10 \\
-   PFSP &       rec31 &   1387.09 &    1367.26 &     4.77 &  1.280000 &     0.32 \\
+    LOP &    N-p40-01 &    10496.6 &    15027.7 &    12453.7 &  1.336170e+04 &    14649.9 \\
+    &    N-p40-02 &    11714.7 &    15150.2 &    13191.9 &  1.420900e+04 &    15206.2 \\
+    &  N-t59b11xx &   102408.0 &   126204.0 &   114726.5 &  1.202020e+05 &   132039.5 \\
+    &  N-t59d11xx &    12692.2 &    30199.8 &    16775.4 &  2.352089e+04 &    29884.1 \\
+    &  N-sgb75.01 &  1893533.2 &  2095899.6 &  1983521.2 &  2.004006e+06 &  2046895.1 \\
+    &  N-sgb75.02 &  1895801.8 &  2069286.9 &  1973083.9 &  2.001244e+06 &  2039356.1 \\
+    \midrule
+    PFSP &       rec05 &     1276.2 &     1318.7 &     1282.1 &  1.287000e+03 &     1320.2 \\
+    &       rec13 &     1992.9 &     2096.0 &     2077.7 &  2.108500e+03 &     2131.6 \\
+    &       rec19 &     2264.5 &     2328.4 &     2318.5 &  2.352100e+03 &     2386.5 \\
+    &       rec31 &     3415.5 &     3512.3 &     3420.5 &  3.490900e+03 &     3474.3 \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
 
-\begin{table*}[tb]%fitness
-    \caption{Mean fitness, over 10 independent runs for each problem instance, of the best solution found at the end of each run of the original CEGO (\CEGOorig) and its improved version (\CEGOinv) and three configurations of UMM that differ in the budget of evaluations $m \in \{100, 200, 400\}$. The runs of CEGO used a budget of $m=400$.\label{tab:results_fitness}}
+\begin{table*}
+  \caption{Mean runtime  in minutes, over 10 independent runs for each problem instance, of the original CEGO (\CEGOorig) and its improved version (\CEGOinv) and three variants of UMM that differ in the budget of evaluations $m \in \{100, 200, 400\}$. The runs of CEGO used a budget of $m=400$.\label{tab:results_time}}
 \begin{tabular}{llrrrrr}
 \toprule
-Problem &    Instance &   \CEGOinv &  \CEGOorig &    UMM$_{400}$ &       UMM$_{200}$ &    UMM$_{100}$ \\
+\bf Problem & \bf   Instance & \CEGOinv & \CEGOorig & UMM$_{400}$ & UMM$_{200}$ & UMM$_{100}$ \\
 \midrule
-    LOP &    N-p40-01 &    10496.6 &    15027.7 &    12453.7 &  1.336170e+04 &    14649.9 \\
-    LOP &    N-p40-02 &    11714.7 &    15150.2 &    13191.9 &  1.420900e+04 &    15206.2 \\
-    LOP &  N-t59b11xx &   102408.0 &   126204.0 &   114726.5 &  1.202020e+05 &   132039.5 \\
-    LOP &  N-t59d11xx &    12692.2 &    30199.8 &    16775.4 &  2.352089e+04 &    29884.1 \\
-    LOP &  N-sgb75.01 &  1893533.2 &  2095899.6 &  1983521.2 &  2.004006e+06 &  2046895.1 \\
-    LOP &  N-sgb75.02 &  1895801.8 &  2069286.9 &  1973083.9 &  2.001244e+06 &  2039356.1 \\
-   PFSP &       rec05 &     1276.2 &     1318.7 &     1282.1 &  1.287000e+03 &     1320.2 \\
-   PFSP &       rec13 &     1992.9 &     2096.0 &     2077.7 &  2.108500e+03 &     2131.6 \\
-   PFSP &       rec19 &     2264.5 &     2328.4 &     2318.5 &  2.352100e+03 &     2386.5 \\
-   PFSP &       rec31 &     3415.5 &     3512.3 &     3420.5 &  3.490900e+03 &     3474.3 \\
+    LOP     & N-p40-01       & 1195.90  & 1170.81   & 3.12        & 0.85    & 0.21        \\
+            & N-p40-02       & 1207.24  & 1183.09   & 3.11        & 0.83    & 0.20        \\
+            & N-t59b11xx     & 1265.98  & 1240.36   & 3.78        & 0.95    & 0.23        \\
+            & N-t59d11xx     & 1269.93  & 1252.89   & 3.93        & 0.97    & 0.25        \\
+            & N-sgb75.01     & 1994.22  & 2004.70   & 10.88       & 2.73    & 0.72        \\
+            & N-sgb75.02     & 1995.09  & 1975.41   & 10.88       & 2.76    & 0.69        \\
+\midrule
+    PFSP    & rec05          & 1099.63  & 917.81    & 0.80        & 0.20    & 0.10        \\
+            & rec13          & 1109.51  & 1043.08   & 0.85        & 0.20    & 0.10        \\
+            & rec19          & 1090.06  & 1087.38   & 1.76        & 0.47    & 0.10        \\
+            & rec31          & 1387.09  & 1367.26   & 4.77        & 1.28    & 0.32        \\
 \bottomrule
-\end{tabular}\end{table*}
+\end{tabular}
+\end{table*}
+
+}
+
+
 
 % \newcommand{\mcolc}[2]{\multicolumn{#1}{c}{\bf #2}}
 % \begin{table}[tb]
