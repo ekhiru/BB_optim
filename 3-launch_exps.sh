@@ -61,7 +61,7 @@ gen_lop_synthetic() {
         for m in $LOP_m; do
             for seed in $LOP_seed; do
                 for phi in $LOP_phi; do
-                    instances="$instances LOP-synthetic,seed=${seed},n=${n},m=${m},phi=${phi}"
+                    instances="$instances LOP-synthetic_seed=${seed}_n=${n}_m=${m}_phi=${phi}"
                 done
             done
         done
@@ -98,7 +98,7 @@ pfsp/rec31.txt \
 
 ###### For LOLIB instances
 INSTANCES="$INSTANCES $(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
-INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
+#INSTANCES="$(grep -v '#' lolib-instances.txt | tr '\n' ' ')"
 
 ###### Synthetic LOP instances
 #INSTANCES="$INSTANCES $(gen_lop_synthetic)"
