@@ -4,27 +4,33 @@ import mallows_kendall as mk
 from scipy.spatial import distance
 import pandas as pd
 
-
 def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
                       # 0 <= w_i <= 1, w is sorted increasingly,
                       rho_ini=1, rho_end=0, tol=0.001):
   w = np.asarray(w)
   assert np.all(w >= 0.0)
   assert np.all(w <= 1.0)
-
+       
   # If pos is None we take the largest 4th.
   # Find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
   # codes as a recursive binary search in (0,1)
   pos = int(len(w) * ratio_samples_learn)
-  rho_med = rho_ini + (rho_end - rho_ini) / 2
+  rho_med = (rho_ini + rho_end) / 2
+  # If the interval is very narrow, just return the value.
+  if abs(rho_ini - rho_end) < 1E-20:
+    return rho_med
+  
   try:
       acum = np.cumsum(rho_med ** w)
       a = acum[pos]
       b = acum[-1]
-      if b < tol: # If b is very small, all values are equal, the value of rho does not matter. Let's return 1.0
+      # If b is very small, all values are equal, the value of rho does not matter. Let's return 1.0
+      if b < tol:
         return 1.0
+      # If the differenc eot the target weight_mass is very small, just return.
       if abs(a / b - weight_mass_learn) < tol:
-          return rho_med
+          return rho_med 
+      
       if a / b > weight_mass_learn:
           mid, last = rho_ini, rho_med
       else:
@@ -38,8 +44,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
        acum = np.cumsum(rho_med ** w)
        a = acum[pos]
        b = acum[-1]
-       print("Error in binary_search_rho:",
-             a,b,a/b,weight_mass_learn,pos,w, rho_med,ratio_samples_learn, weight_mass_learn,rho_ini,rho_end)
+       print(f"binary_search_rho: a={a} b={b} a/b={a/b} wml={weight_mass_learn} rho_med={rho_med} rho_ini={rho_ini} rho_end={rho_end} w={w}")
        raise
 
 def get_expected_distance(iterat, n, budget):
@@ -80,6 +85,7 @@ def UMM(instance, seed, budget,
         ws = ws / ws.max()
         co = ws.copy()
         co.sort()
+        
         rho = binary_search_rho(co, ratio_samples_learn, weight_mass_learn)
         # print(fitnesses)
         # print(ws)
