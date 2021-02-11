@@ -32,7 +32,7 @@ module load apps/anaconda3
 run=\$SGE_TASK_ID
 OUTFILE="${RESULTS}/$JOBNAME-r\$run"
 echo "running: $BINDIR/target-runner-umm.py umm $counter-$$-r\$run \$run $@ > \$OUTFILE"
-echo -n "\"$instance\",\$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks," > \$OUTFILE
+echo -n "\"$instance\",\$run,$umm_m_ini,$beta,$r_1,$r_2,$budget,$eval_ranks," > \$OUTFILE
 $BINDIR/target-runner-umm.py umm $counter-$$-r\$run \$run $@ >> \$OUTFILE
 EOF
 
@@ -41,9 +41,9 @@ launch_local() {
     for run in $(seq 1 $nruns); do
 	JOBNAME=umm-$counter-$$
 	OUTFILE=$RESULTS/${JOBNAME}-r$run
-	echo "running: $BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks"
-	echo -n "\"$instance\",$run,$umm_m_ini,$budgetMM,$r_1,$r_2,$budget,$eval_ranks," > $OUTFILE
-	$BINDIR/target-runner-umm.py umm $counter-r$run-$$ $run $instance --m_ini $umm_m_ini --budgetMM $budgetMM --rsl $r_1 --wml $r_2 --budget $budget --eval_ranks $eval_ranks >> $OUTFILE
+	echo "running: $BINDIR/target-runner-umm.py umm $counter-$$-r$run $run $@ > $OUTFILE"
+	echo -n "\"$instance\",$run,$umm_m_ini,$beta,$r_1,$r_2,$budget,$eval_ranks," > $OUTFILE
+	$BINDIR/target-runner-umm.py umm $counter-$$-r$run $run $@ >> $OUTFILE
     done
 }
 
