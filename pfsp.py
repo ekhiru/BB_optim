@@ -1,5 +1,4 @@
 import numpy as np
-
 from problem import Problem
 
 class PFSP(Problem):
@@ -55,8 +54,29 @@ class PFSP(Problem):
         C = self.completion_times(x)
         return C[self.n - 1, self.m - 1]
 
+    def sum_completion(self, x):
+        """Also known as sum of completion times"""
+        return self.completion_times(x).sum()
+        
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
         assert self.check_permutation(x), f"{x}"
-        return self.makespan(x)
+        return self.objective(x)
+
+class PFSP_Cmax(PFSP):
+    # Class attributes
+    problem_name = "PFSP-Cmax"
+
+    def __init__(self, P, best_sol = None, worst_sol = None, instance_name = "(generated)"):
+        super().__init__(P, best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name)
+        self.objective = self.makespan
+
+class PFSP_Csum(PFSP):
+    # Class attributes
+    problem_name = "PFSP-Csum"
+
+    def __init__(self, P, best_sol = None, worst_sol = None, instance_name = "(generated)"):
+        super().__init__(P, best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name)
+        self.objective = self.sum_completion
+
