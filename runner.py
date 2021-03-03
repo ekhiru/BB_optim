@@ -25,9 +25,12 @@ def get_problem(instance_name):
         reload(lop)
         from lop import LOP
         return LOP
-    elif "pfsp" in instance_name:
-        from pfsp import PFSP
-        return PFSP
+    elif "pfsp_cmax" in instance_name:
+        from pfsp import PFSP_Cmax
+        return PFSP_Cmax
+    elif "pfsp_csum" in instance_name:
+        from pfsp import PFSP_Csum
+        return PFSP_Csum
     raise ValueError("Unknown problem: " + instance_name)
 
 

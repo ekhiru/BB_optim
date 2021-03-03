@@ -31,7 +31,7 @@ class PFSP(Problem):
                         print(f"Reading best solution {best_sol} from {opt_filename}")
                         break
 
-        return PFSP(P, instance_name = filename, best_sol = best_sol)
+        return cls(P, instance_name = filename, best_sol = best_sol)
 
     def __init__(self, P, best_sol = None, worst_sol = None, instance_name = "(generated)"):
         # Processing times matrix
