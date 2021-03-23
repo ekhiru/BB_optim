@@ -8,17 +8,47 @@ class PFSP(Problem):
     @classmethod
     def read_instance(cls, filename, opt_filename = None):
         print(f"Reading instance from {filename}")
-        with open(filename) as f:
-            header = f.readline()
-            print(f"header: {header}")
-            # jobs, machines
-            n, m = f.readline().strip().split()
-            n, m = int(n), int(m)
-            P = np.loadtxt(f, max_rows=n)
-            # Processing times: each even column is useless.
-            P = P[:,1::2]
-            assert P.shape[0] == n
-            assert P.shape[1] == m
+
+        if "tai" in filename:
+            with open(filename) as f:
+                header = f.readline()
+                print(f"header: {header}")
+                # number of jobs, number of machines, initial seed, upper bound and lower bound :
+                aux  = f.readline().strip().split()
+                n,m = int(aux[0]),int(aux[1])
+                f.readline()
+                P = np.loadtxt(f, max_rows=n)
+                # Processing times: each even column is useless.
+                P = P.T
+                assert P.shape[0] == n
+                assert P.shape[1] == m
+
+        else:
+            with open(filename) as f:
+                header = f.readline()
+                print(f"header: {header}")
+                # jobs, machines
+                n, m = f.readline().strip().split()
+                n, m = int(n), int(m)
+                P = np.loadtxt(f, max_rows=n)
+                # Processing times: each even column is useless.
+                P = P[:,1::2]
+                assert P.shape[0] == n
+                assert P.shape[1] == m
+
+
+        #
+        # with open(filename) as f:
+        #     header = f.readline()
+        #     print(f"header: {header}")
+        #     # jobs, machines
+        #     n, m = f.readline().strip().split()
+        #     n, m = int(n), int(m)
+        #     P = np.loadtxt(f, max_rows=n)
+        #     # Processing times: each even column is useless.
+        #     P = P[:,1::2]
+        #     assert P.shape[0] == n
+        #     assert P.shape[1] == m
 
         best_sol = None
         if opt_filename is not None:
@@ -56,8 +86,9 @@ class PFSP(Problem):
 
     def sum_completion(self, x):
         """Also known as sum of completion times"""
-        return self.completion_times(x).sum()
-        
+        return self.completion_times(x)[:, self.m - 1].sum()
+        # return self.completion_times(x).sum() MANUEL CHECK THIS
+
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
@@ -79,4 +110,3 @@ class PFSP_Csum(PFSP):
     def __init__(self, P, best_sol = None, worst_sol = None, instance_name = "(generated)"):
         super().__init__(P, best_sol = best_sol, worst_sol = worst_sol, instance_name = instance_name)
         self.objective = self.sum_completion
-

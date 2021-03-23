@@ -10,7 +10,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
   w = np.asarray(w)
   assert np.all(w >= 0.0)
   assert np.all(w <= 1.0)
-       
+
   # If pos is None we take the largest 4th.
   # Find the rho s.t. the largest 25%(ratio_samples) of the weights  (rho**ws) take the 0.9(weight_mass) of the total ws.  rho^w[:pos] = 0.9*rho^w
   # codes as a recursive binary search in (0,1)
@@ -19,7 +19,7 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
   # If the interval is very narrow, just return the value.
   if abs(rho_ini - rho_end) < 1E-20:
     return rho_med
-  
+
   try:
       acum = np.cumsum(rho_med ** w)
       a = acum[pos]
@@ -29,8 +29,8 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn,
         return 1.0
       # If the differenc eot the target weight_mass is very small, just return.
       if abs(a / b - weight_mass_learn) < tol:
-          return rho_med 
-      
+          return rho_med
+
       if a / b > weight_mass_learn:
           mid, last = rho_ini, rho_med
       else:
@@ -85,7 +85,7 @@ def UMM(instance, seed, budget,
         ws = ws / ws.max()
         co = ws.copy()
         co.sort()
-        
+
         rho = binary_search_rho(co, ratio_samples_learn, weight_mass_learn)
         # print(fitnesses)
         # print(ws)
@@ -102,11 +102,11 @@ def UMM(instance, seed, budget,
         #perm = perm[borda]
         # Transforms from sampling space to Borda space.
         perms = [perm[borda] for perm in perms]
-        dists = distance.cdist(perms, sample, metric=mk.kendallTau)
+        # dists = distance.cdist(perms, sample, metric=mk.kendallTau)
         # MANUEL: We probably do not need to sort, just find the min per axis=1.
-        dists = np.sort(dists, axis=1)
-        indi = np.argmax(dists[:, 0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
-        perm = perms[indi]
+        # dists = np.sort(dists, axis=1)
+        # indi = np.argmax(dists[:, 0]) #index of the perm with the farthest closest permutation. Maximizes the min dist to the sample
+        perm = perms[0]
         # FIXME: This should already be an array of int type.
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
