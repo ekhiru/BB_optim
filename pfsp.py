@@ -9,47 +9,28 @@ class PFSP(Problem):
     def read_instance(cls, filename, opt_filename = None):
         print(f"Reading instance from {filename}")
 
-        if "tai" in filename:
-            with open(filename) as f:
-                header = f.readline()
-                print(f"header: {header}")
+        with open(filename) as f:
+            header = f.readline()
+            print(f"header: {header}")
+            if "tai" in filename:
                 # number of jobs, number of machines, initial seed, upper bound and lower bound :
-                aux  = f.readline().strip().split()
-                n,m = int(aux[0]),int(aux[1])
+                n,m = f.readline().strip().split()
+                n,m = int(n),int(m)
                 f.readline()
                 P = np.loadtxt(f, max_rows=n)
                 # Processing times: each even column is useless.
                 P = P.T
-                assert P.shape[0] == n
-                assert P.shape[1] == m
-
-        else:
-            with open(filename) as f:
-                header = f.readline()
-                print(f"header: {header}")
+            else:
                 # jobs, machines
                 n, m = f.readline().strip().split()
                 n, m = int(n), int(m)
                 P = np.loadtxt(f, max_rows=n)
                 # Processing times: each even column is useless.
                 P = P[:,1::2]
-                assert P.shape[0] == n
-                assert P.shape[1] == m
-
-
-        #
-        # with open(filename) as f:
-        #     header = f.readline()
-        #     print(f"header: {header}")
-        #     # jobs, machines
-        #     n, m = f.readline().strip().split()
-        #     n, m = int(n), int(m)
-        #     P = np.loadtxt(f, max_rows=n)
-        #     # Processing times: each even column is useless.
-        #     P = P[:,1::2]
-        #     assert P.shape[0] == n
-        #     assert P.shape[1] == m
-
+        
+        assert P.shape[0] == n
+        assert P.shape[1] == m
+ 
         best_sol = None
         if opt_filename is not None:
             with open(opt_filename) as f:
@@ -85,10 +66,9 @@ class PFSP(Problem):
         return C[self.n - 1, self.m - 1]
 
     def sum_completion(self, x):
-        """Also known as sum of completion times"""
+        """Also known as sum of completion times or sum of flowtimes"""
         return self.completion_times(x)[:, self.m - 1].sum()
-        # return self.completion_times(x).sum() MANUEL CHECK THIS
-
+        
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
