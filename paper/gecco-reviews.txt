@@ -1,0 +1,141 @@
+Decision: Accept
+Submission: Unbalanced Mallows Models for Optimizing Expensive Black-Box Permutation Problems
+Contributors: Irurozki, López-Ibáñez
+
+Key for the below column headings show
+Summary of Reviews of pap384s2	
+Reviewer	rel 	sig 	orig 	ach 	writ 	rep 	tech 	rec 	conf
+Reviewer 1	5	5	5	5	4	5	5	5-definitely accept as full paper (5)	5
+Reviewer 2	5	4	3	4	4	4	5	4-probably accept as full paper (4)	4
+Reviewer 3	5	3	4	4	3	3	4	2-probably accept as poster (2)	3
+Reviewer 4	5	4	3	3	4	4	4	3-definitely accept as poster (3)	4
+Averages:	5.0	4.0	3.8	4.0	3.8	4.0	4.5	3.5	4.0
+
+Sections Below
+
+    Full Reviews · jump down
+    Committee Comments & Notes · jump down
+
+
+ Full Reviews
+ Review of pap384s2 by Reviewer 1 	top
+
+Comments for Authors:
+
+    monospace
+    markdown
+    I have reviewed a work with the same or similar title for EvoCOP, I guess from the same authors. However, this work is an improvement with respect to the previous one. I am also happy to see that the authors have taken my previous comments into account to improve their proposal.
+
+    I find this work interesting, the paper is well organized and the experimental methodology is sound. Therefore, my suggestion is to accept this work. I provide anyway few comments as follows.
+
+    1) First of all, a personal consideration. If I well understood, there is an R package (in the R repository) which implements CEGO in a wrong way. This is a clear proof of how subtle details can make a huge confusion in the field. At the end, permutations as rankings or orderings are only syntactic aspects. What it is really important is the underlying list of objects/items. I believe that it is often better to elaborate ideas by considering list of non-numerical objects.
+    For the sake of illustration, let consider preferences over the four ninja turtles.
+    A list of ninja turtles (the semantic) is e.g.: leonardo, michelangelo, raffaello, donatello.
+    You can represent it as the following ranking sigma:
+    sigma(leonardo)=1, sigma(michelangelo)=2, sigma(raffaello)=3, sigma(donatello)=4
+    or as the ordering sigmaInv as follows:
+    sigmaInv(1)=leonardo, sigmaInv(2)=michelangelo, sigmaInv(3)=raffaello, sigmaInv(4)=donatello
+    but in both cases, the semantic list of objects is what is essential in any field (statistic or optimization).
+    The source of confusion, at the end, is only due to the fact that instead of having ninja turtles names, we have numbers but, semantically, they are not really numbers but IDs (isomorphic to numbers).
+    Anyway, the work of the authors is ok under this point-of-view.
+
+    2) I cannot understand why both UMM and CEGO requires minutes/hours of computational time if they do not perform more than 400 evaluations. What is the slow part of UMM? Perhaps, the authors can clarify this point.
+
+    3) The weight of a permutation is rho^fitness and rho is in (0,1). However, the authors should specify that fitnesses have to be greater than 1 (as it is for the investigated problems), otherwise their aim is not met. Regarding this point is also important to highlight that their algorithm is not invariant for monotonic transformations of the objective function (usually, a desirable property). They can realize this invariance by only considering ranking of fitnesses (perhaps, in a "non-linear" way) and not directly fitnesses.
+
+    4) Related to previous point. In section 5.1 the authors state that the setting of r1,r2 depends on the problem. It may be that it depends on the scale of the objective values and not really on the problem?
+
+    5) It is interesting the consideration provided in the very last sentence of section of the convergence analysis of UMM. I believe that the "cooling scheme" for the theta parameters can bring to improvement.
+
+    6) In algorithm 1, it looks that the set S grows without any limit. This is ok, because no more than 400 solutions are visited, but I am not sure if there is a limit or not. Perhaps the authors may clarify this point.
+
+    7) In section 3.2 the authors state that initial theta is set in such a way that expected distance is half of the expected distance under uniform distribution, so I do not think that it is \binom{n}{4} but, instead, \binom{n}{2} / 2 or, equivalently, n*(n-1)/4.
+
+    8) Regarding CEGO description in section 4. It is not clear to me if CEGO performs one true evaluation every 10000 surrogate evaluations. If it is as a said, please rephrase the paragraph in order to make it clearer.
+
+    9) At a given point the authors state that initialization can be performed with hyper-cube sampling. I am not aware of a method for hyper-cube sampling for permutations, so maybe they can provide a reference.
+
+    Other minor points:
+
+        Page 1, second column, lines 3-6, i.e. the paragraph:
+        "However, the ruggedness of combinatorial landscapes, which makes local search particularly effective for combinatorial problems, lessens the effectiveness of global surrogate models"
+        It is not clear to me what is the meaning the authors want to transmit.
+
+        Last line of section 2.1 and other parts in the paper. The authors use the term "swap distance", but actually it should be "adjacent swap distance".
+
+        Last paragraph of section 2.2. Perhaps, it is better to use the term "rank" in place of "label".
+
+        Equation 3. The subscript of the sum should be \sigma_t \in S (not only t)
+
+        In the paragraph "comparison of the best solutions found". Please rephrase the following text "… differences, although consistent, are relatively small."
+
+
+Scored Review Questions
+
+	rel 	sig 	orig 	ach 	writ 	rep 	tech 	rec 	conf
+pap384s2	5	5	5	5	4	5	5	5-definitely accept as full paper (5)	5
+
+ Review of pap384s2 by Reviewer 2 	top
+
+Comments for Authors:
+
+    monospace
+    The paper presents population-based probabilistic algorithm based on an unbalanced Mallows model for expensive black-box combinatorial problems on permutation landscapes. The algorithm is assessed on two blackbox optimization problems (Linear Ordering and Permutation Flowshop Scheduling) and compared with a reference method (Combinatorial Efficient Global Optimization). The results show that the proposed algorithm is specially well-suited for budget-limited scenarios (no more than a few second per fitness evaluation).
+
+    The work is well motivated and clearly presented. The experimental studies are globally performed even if the test on more problems (more types of problems) would be welcome and will make the conclusions more convincing.
+
+    Reference 18: year information is missing.
+
+
+Scored Review Questions
+
+	rel 	sig 	orig 	ach 	writ 	rep 	tech 	rec 	conf
+pap384s2	5	4	3	4	4	4	5	4-probably accept as full paper (4)	4
+
+ Review of pap384s2 by Reviewer 3 	top
+
+Comments for Authors:
+
+    monospace
+    The authors present a random model for permutations generation and its use
+    on an algorithm for limited budget optimization problems.
+    They compare their proposal UMM with a CEGO, a bayesian optimization based algorithm, with two different versions (normal and inverted permutations), showing that CEGO_inv has better
+    performances with respect to UMM. However, the result of runtime show that UMM is much faster than CEGO. This fact probably depends on the GA used to find the next permutation. Perhaps CEGO can be improved by using different optimizer.
+
+    The paper is simple to read and the idea seems promising, although the results are not
+    completely in favor of UMM.
+    In my opinion, it would be possible that a new version of UMM can be competitive with CEGO. For instance, using another functional form of the weight w(sigma) for the uBorda method.
+
+    Another point to improve the paper is to choose other problems, for instance problems where
+    the objective function is really difficult to compute.
+
+
+Scored Review Questions
+
+	rel 	sig 	orig 	ach 	writ 	rep 	tech 	rec 	conf
+pap384s2	5	3	4	4	3	3	4	2-probably accept as poster (2)	3
+
+ Review of pap384s2 by Reviewer 4 	top
+
+Comments for Authors:
+
+    monospace
+    The paper investigates the development of a surrogate-assisted optimization technique for permutation-based (expensiive) problems under a very restricted budget (in terms of number of true function evaluation calls). Acting like an EDA, the proposed approach is based on using the Mallows model to sample a new permutation solution at each step. The Mallows model has two parameters that are estimated continuously based on the so-far evaluated solutions. The first parameter is the reference permutation, which is computed based on the unbalanced Borda ranking methodology, which consists in weighting permutation using an exponential function of their fitness value. The second parameter controls the intensification/diversification degree of sampling around the reference permutation and it is adjusted with respect to the maximum affordable budget.
+
+
+    An experimental study is conducted using the Linear ordering problem and the Flowshop problems (PFSP). The proposed approach is compared to two variant of the combinatorial efficient global optimization algorithm CEGO (based on gaussian process). The first variant is the original variant as describe in [17], whereas the second variant is a slight modification where the representation of the distance used in the gaussian process is inverted to distinguish ordering vs. ranking as done in the proposed UMM technique.
+
+    The experimental results shows that the modification of the CEGO implementation provides the best results. However, its CPU computing time is shown to be prohibitive, which can be interesting when the cost of the true function evaluation is still in a reasonable range.
+
+
+    The writing and the presentation are good. One must however notice that the proposed approach, besides being based on a relatively known technique from EDA design (although I am not an expert), is outperformed by the 'simple' modification of the original CEGO. Of course, the CPU computing complexity is an interesting feature of the proposed technique, but quality is also an important aspect for expensive optimisation.
+
+    Another technical comments concern the interpretation of the convergence of the proposed UMM technique. I wonder why the authors considered such a very restricted computing budget. And more importantly, one cannot conclude from the figures that the algorithm can converging better than CEGO for larger budgets.
+
+    Overall, I am relatively mitigated about this paper. On one hand, it can be interesting to discuss in GECCO mainly because the modification of CEGO and the obtained CPU runtimes. On the other hand, a poster format could be accurate at this stage of the contribution.
+
+
+Scored Review Questions
+
+	rel 	sig 	orig 	ach 	writ 	rep 	tech 	rec 	conf
+pap384s2	5	4	3	3	4	4	4	3-definitely accept as poster (3)	4
