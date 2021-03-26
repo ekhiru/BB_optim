@@ -79,6 +79,7 @@ def UMM(instance, seed, budget,
 
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
+        # FIXME: We could use rankings for invariance
         # FIXME: For maximization, this need to be changed.
         ws = ws - ws.min()
         # FIXME: Handle if ws.max() == 0.

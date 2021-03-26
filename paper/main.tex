@@ -3,7 +3,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{relsize}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
 \usepackage{xspace}
 %% Useful packages
 \usepackage{graphicx}
@@ -185,8 +185,7 @@ success, there have been attempts at adapting such surrogate-based optimization
 algorithms to the combinatorial case~\cite{MorKat2011:evo}, a notable example being Combinatorial
 Efficient Global Optimization
 (CEGO)~\citep{ZaeStoBar2014:ppsn,ZaeStoFriFisNauBar2014}. However, the
-ruggedness of combinatorial landscapes, which makes local search particularly
-effective for combinatorial problems, lessens the effectiveness of global
+ruggedness of combinatorial landscapes lessens the effectiveness of global
 surrogate models~\citep{EriPeaGar2019scalable}. Moreover, surrogate models are
 expensive to train and optimize. The additional time required by the Bayesian
 optimizer may impose a significant overhead in computation time, specially if
@@ -318,15 +317,14 @@ Throughout this paper and for consistency, permutation $\sigma$ represents a \em
 
 \ken distance is the metric for rankings that counts the pairs of items ranked in different order in two permutations:
 %
-\begin{equation}
+\begin{equation}\label{eq:kendall_decomp}
 \begin{split}
-d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
- &\bigl(\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\
- \end{split}
- \label{eq:kendall_decomp}
-\end{equation}
+\hspace*{-0.5em}d(\sigma _{1},\sigma_{2})=\left\lvert\Bigl\{(i,j):i<j \land \phantom{}\Bigl(\right.&\bigl(\sigma_{1}(i) < \sigma_{1}(j)\land \sigma_{2}(i)>\sigma_{2}(j)\bigr)\lor \phantom{} \\
+ \bigl(&\sigma_{1}(i)>\sigma_{1}(j)\land \sigma_{2}(i)<\sigma_{2}(j)\bigr)\Bigr)\Bigr\}\Bigr\rvert\\
+ \end{split}\hspace*{-0.6em}
+ \end{equation}
 
-An equivalent definition for the \ken distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn}. %\EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
+An equivalent definition for the \ken distance counts the number of adjacent swaps that have to be made to convert $\sigma_1^{-1}$ into $\sigma_2^{-1}$ and, therefore, it is sometimes called \emph{swap distance}~\citep{ZaeStoBar2014:ppsn} or adjacent swap distance. %\EKHINE{Mirandolo bien, lo que pasa es que dicen que es lo mismo la swap distance que la kendall!}
 
 
 \subsection{Distributions over permutations}
@@ -345,13 +343,13 @@ The MLE process is divided in two stages: first, we estimate the central permuta
 The exact MLE for $\sigma_0$ is given by the well-known Kemeny ranking~\cite{DwoKumNao2001rank}. Unfortunately,  obtaining such ranking is NP-hard~\cite{DwoKumNao2001rank}. An alternative to the Kemeny ranking is the Borda ranking~\cite{AliMei2011kemeny}, which has several advantages: (i) it requires polynomial computational time; (ii) it  guaranties  high quality parameters for a sample distributed according to the MM~\cite{CarProSha2013votes}; and (iii) when no distribution is assumed, Borda is an approximation to Kemeny~\cite{CopFleRur2010ordering}.
 
 The Borda ranking of a sample of permutations $S \subset S_n$ is computed as follows. 
-First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{t\in S}  \sigma_t(i)$. Then, assign label 1 to the item with the smallest Borda score, label 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
+First, for each item $i \in [n]$, compute its Borda score $B(i) =  \sum_{\sigma\in S}  \sigma(i)$. Then, assign rank 1 to the item with the smallest Borda score, rank 2 to the item with the second smallest score and so on, i.e., order the positions by Borda score increasingly.
 
 \subsection{Unbalanced Borda}\label{sec:uborda}
 We introduce now the core of our probabilistic algorithm, the uBorda algorithm. Following the convention of the community, the ranking returned by the uBorda algorithm will be denoted uBorda ranking. The uBorda algorithm is a recent generalization of Borda~\cite{IruLobPer2020arxiv}. In uBorda, we consider that each permutation in the sample $\sigma\in S$ has an associated weight $w(\sigma)$ where $w\colon S_n \to \mathbb{R^{+}}$. Then, the score of item $i \in [n]$ is defined as follows:
 %
 \begin{equation}\label{eq:uborda_score}
-B(i) =  \sum_{t\in S}  w(\sigma_t) \sigma_t(i) \enspace,
+B(i) =  \sum_{\sigma\in S}  w(\sigma) \sigma(i) \enspace,
 \end{equation}
 %
 and, the same as Borda, orders the items $i \in [n]$ increasingly by their score.
@@ -442,7 +440,7 @@ Mallows model and uBorda learning.%\MANUEL{Perhaps we should call it UMM Algorit
 \end{algorithm}
 
 
-As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are generated uniformly at random  (although it would be possible to employ Latin Hyper-Cube sampling or other methods) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
+As shown in Algorithm~\ref{alg:umm}, UMM  starts with a \emph{small} sample of $\minit$ permutations that are generated uniformly at random  (although it would be possible to employ other sampling methods such as max-min-distance sequential design) and evaluated. Then, using the current sample $S$, the uBorda algorithm is applied to learn a reference permutation $\hat{\sigma}_0$ (line~\ref{line:uborda}). 
 Together with the parameter $\theta$, the algorithm defines the Mallows model $MM(\hat\sigma_0, \theta)$. 
 A decreasing $\theta$ parameter along iterations (line~\ref{line:theta}) implies a decreasing variance of the Mallows model (Eq.~\ref{eq:MM}), as explained in  Section~\ref{sec:sampling} below. 
 Then, we sample a new candidate permutation from  $MM(\hat\sigma_0, \theta)$ (line~\ref{line:sample}, also  in  Section~\ref{sec:sampling}). This candidate permutation (solution) is evaluated and added to the sample $S$. The process is repeated up to a given maximum budget of evaluations $\FEmax$.
@@ -484,19 +482,19 @@ $w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
 controlled by parameter $0 < \rho < 1$. 
 % \MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
 % \EKHINE{es decreciente igual}
-In UMM, the value of $\rho$ depends on the set of true fitness evaluations $F$
+In UMM, the value of $\rho$ depends on the set of true fitness evaluations saved in $S$
 and it is set at each iteration such that the largest $100r_1$\% of the mass of
 the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
 %
 % 
 \begin{equation}
 %  \begin{split}
-    r_1 \cdot \sum_{\tuple{\sigma,f(\sigma)}\in S}\rho^{f(\sigma)} =  \sum_{\tuple{\sigma', f(\sigma')}\in S'}\rho^{f(\sigma')}  %\\
+    r_1 \cdot \sum_{\tuple{\sigma,f(\sigma)}\in S}\rho^{\text{scale}(f(\sigma))} =  \sum_{\tuple{\sigma', f(\sigma')}\in S'}\rho^{\text{scale}(f(\sigma'))}  %\\
   %    & \text{where}\;|S'| = r_2|S| \land \forall \sigma'\in S', \sigma\in S\setminus S' : f(\sigma')\leq f(\sigma).
 %  \end{split}
 \end{equation}
 %
-where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, that is, $S'$ contains the $r_2|S|$ elements of $S$ with the best  fitness values. 
+where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, that is, $S'$ contains the $r_2|S|$ elements of $S$ with the best fitness values. The function $\text{scale}\colon \mathbb{R} \to [0,1]$ is defined as $\text{scale}(f) = (f - f_\text{min})/(f_\text{max} - f_\text{min})$, where $f_\text{min}$ and $f_\text{max}$ are, respectively, the minimum and maximum fitness values in $S$. A possible alternative to scaling would be ranking the elements in $S$ with respect to their fitness values, which would make UMM invariant to non-linear monotonic transformations of the fitness function. However, in most applications, the fitness values have a real-world meaning (e.g., monetary value) and the relative scale of fitness differences is relevant.
 
 %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
@@ -510,7 +508,7 @@ At each iteration of UMM, $\sigma_0=\hat\sigma_0$ is the permutation obtained in
 \Edist = \frac{n \cdot \exp(-\theta)}{1-\exp(-\theta)} - \sum_{j=1}^{n}  \frac{j\cdot\exp(-j  \theta)}{1-\exp(-j\theta)}
 \end{equation}
 
-Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{4}$, i.e., half of the expected distance for the uniform distribution. 
+Parameter $\theta$ is set automatically by the algorithm to control the diversification and intensification trade off. At the first iteration, $\theta$ is set so that  $\Edist = \binom{n}{2} / 2$, i.e., half of the expected distance for the uniform distribution. 
 Then the expected distance linearly decreases until the last iteration $m$ where $\theta$ is set such that $\Edist = 1$. Despite it is not possible to isolate $\theta$ in Eq.~\eqref{eq:expectation}, its monotonicity allows the use of bisection methods for efficiently finding an approximation. 
 
 Setting $\Edist = \binom{n}{2}$ will generate random permutations at early stages, slowing the algorithm convergence. 
@@ -573,15 +571,16 @@ set. These initial solutions are then evaluated on the true fitness function
 and the result is used to build the initial surrogate
 model. % \citet{ZaeStoBar2014:ppsn} uses \minit=10
 Following the authors of
-CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, the surrogate model is optimized by a GA with  population size of 20, crossover rate of 0.5,
-mutation rate of $1/n$, tournament selection of size 2 with probability of 0.9,
+CEGO~\citep{ZaeStoFriFisNauBar2014,ZaeStoBar2014:ppsn}, the surrogate model is
+optimized by a GA with population size of 20, crossover rate of 0.5, mutation
+rate of $1/n$, tournament selection of size 2 with probability of 0.9,
 interchange mutation (i.e., exchanging two randomly selected elements) and
-cycle crossover for permutations. To generate each new solution, CEGO runs the
-GA with a budget of $10^4$ evaluations of the model as a surrogate of the true
-fitness function.  The original paper~\citep[p.~875]{ZaeStoFriFisNauBar2014} notes that coupling the GA with local
-search does not improve the results significantly since the model is anyway an
-inexact estimation of the original fitness
-function.
+cycle crossover for permutations. CEGO runs the GA with a budget of $10^4$
+evaluations of the surrogate model to generate a new solution, which is then
+evaluated on the true fitness function.  The original
+paper~\citep[p.~875]{ZaeStoFriFisNauBar2014} notes that coupling the GA with
+local search does not improve the results significantly since the model is
+anyway an inexact estimation of the original fitness function.
 
 
 
@@ -860,7 +859,7 @@ configuration as the current default of UMM.
 \subsection{Experiments with rankings and orderings}\label{sec:exper_ro}
 
 
-In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the Swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
+In Section~\ref{sec:permutations}, we highlighted the important difference between rankings and orderings, usually neglected in the optimization literature. Statistical models (Borda or the \ken distance) are usually defined for rankings while the optimization literature usually builds upon orderings. For example, the (adjacent) swap distance $d_s(\sigma,\pi)$ is the \ken distance counterpart in optimization, $d_s(\sigma,\pi) = d(\sigma^{-1}, \pi^{-1})$. %The concepts of rankings and orderings are usually confused of ignored. An example of such confusion is the claim that Swap distance is the same metric as  the \ken distance, which is false except for particular permutations. In reality, the \emph{swap} distance is the \ken distance of the inverted permutations.
 
 As a consequence of this important distinction, when dealing with  permutations, in particular in 
 combinatorial problems, we must convert rankings to orderings by inverting the
@@ -1053,7 +1052,7 @@ of \CEGOorig solutions is similar to the UMM$_{100}$ version of UMM.
 
 \myparagraph{Runtime comparison}
 %
-Table~\ref{tab:results} also shows the runtime \ekhine{(in hours)}{(in minutes)} of \CEGOinv and UMM when both
+Table~\ref{tab:results} also shows the runtime (in minutes) of \CEGOinv and UMM when both
 are run for 400 evaluations. For the same number of function evaluations, CEGO requires almost a day, whereas UMM
 never requires more than one hour, often much less than that.
 %

@@ -41,19 +41,40 @@ Comments for Authors:
 
     2) I cannot understand why both UMM and CEGO requires minutes/hours of computational time if they do not perform more than 400 evaluations. What is the slow part of UMM? Perhaps, the authors can clarify this point.
 
+Not clear what is slow.
+
+
     3) The weight of a permutation is rho^fitness and rho is in (0,1). However, the authors should specify that fitnesses have to be greater than 1 (as it is for the investigated problems), otherwise their aim is not met. Regarding this point is also important to highlight that their algorithm is not invariant for monotonic transformations of the objective function (usually, a desirable property). They can realize this invariance by only considering ranking of fitnesses (perhaps, in a "non-linear" way) and not directly fitnesses.
+
+Explicar que se normaliza por:
+
+f'' = (f - min(f)) / (max(f) - min(f))
+
+explain that we could use ranking if invariance is desired.
 
     4) Related to previous point. In section 5.1 the authors state that the setting of r1,r2 depends on the problem. It may be that it depends on the scale of the objective values and not really on the problem?
 
+Ignore it for now.
+
     5) It is interesting the consideration provided in the very last sentence of section of the convergence analysis of UMM. I believe that the "cooling scheme" for the theta parameters can bring to improvement.
+
+Thank you.
 
     6) In algorithm 1, it looks that the set S grows without any limit. This is ok, because no more than 400 solutions are visited, but I am not sure if there is a limit or not. Perhaps the authors may clarify this point.
 
+We don't care, we will always run less than 5000.
+
     7) In section 3.2 the authors state that initial theta is set in such a way that expected distance is half of the expected distance under uniform distribution, so I do not think that it is \binom{n}{4} but, instead, \binom{n}{2} / 2 or, equivalently, n*(n-1)/4.
+
+Done
 
     8) Regarding CEGO description in section 4. It is not clear to me if CEGO performs one true evaluation every 10000 surrogate evaluations. If it is as a said, please rephrase the paragraph in order to make it clearer.
 
+True.
+
     9) At a given point the authors state that initialization can be performed with hyper-cube sampling. I am not aware of a method for hyper-cube sampling for permutations, so maybe they can provide a reference.
+
+Fixed.
 
     Other minor points:
 
@@ -61,14 +82,23 @@ Comments for Authors:
         "However, the ruggedness of combinatorial landscapes, which makes local search particularly effective for combinatorial problems, lessens the effectiveness of global surrogate models"
         It is not clear to me what is the meaning the authors want to transmit.
 
+Fixed.
+
         Last line of section 2.1 and other parts in the paper. The authors use the term "swap distance", but actually it should be "adjacent swap distance".
+
+Fixed.
 
         Last paragraph of section 2.2. Perhaps, it is better to use the term "rank" in place of "label".
 
+Fixed
+
         Equation 3. The subscript of the sum should be \sigma_t \in S (not only t)
+
+Fixed.
 
         In the paragraph "comparison of the best solutions found". Please rephrase the following text "… differences, although consistent, are relatively small."
 
+Leave it.
 
 Scored Review Questions
 
