@@ -1,4 +1,4 @@
-from imp import reload
+# from imp import reload
 import numpy as np
 import mallows_kendall as mk
 from scipy.spatial import distance
@@ -56,7 +56,34 @@ def get_expected_distance(iterat, n, budget):
   a = f_ini - jump * iterat
   return max(a, f_end)
 
+def remove_duplicates(s):
+  d = {a.tostring(): a for a in s}
+  return list(d.values())
 
+def design_random(m, n):
+  """
+  m: number of permutations to generate
+  n: permutation size"""
+  return remove_duplicates([ np.random.permutation(n) for _ in range(m)])
+
+def min_distance(x, s, dist):
+  return np.apply_along_axis(dist, -1, np.asarray(s), B=x).min()
+  
+def design_maxmindist(m, n, dist = mk.kendallTau, budget = 100):
+  sample = [ np.random.permutation(n) ]
+  while len(sample) < m:
+    best = np.random.permutation(n)
+    best_d = min_distance(best, sample, dist)
+    for i in range(budget):
+      xnew = np.random.permutation(n)
+      xnew_d = min_distance(xnew, sample, dist)
+      if xnew_d > best_d:
+        best, best_d = xnew, xnew_d
+    sample.append(best)
+  return remove_duplicates(sample)
+
+
+  
 def UMM(instance, seed, budget,
         m_ini, budgetMM,
         ratio_samples_learn,
@@ -71,7 +98,7 @@ def UMM(instance, seed, budget,
       f_eval = lambda p: instance.fitness(np.argsort(p))
 
     n = instance.n
-    sample = [ np.random.permutation(np.arange(n)) for _ in range(m_ini)]
+    sample = design_random(m_ini, n)
     fitnesses = [f_eval(perm) for perm in sample]
     # ['rho','phi_estim','phi_sample','Distance']
     res = [ [np.nan, np.nan, np.nan,
