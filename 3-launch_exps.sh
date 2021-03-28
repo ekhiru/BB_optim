@@ -89,10 +89,10 @@ pfsp/rec31.txt \
 "
 
 INSTANCES="\
-pfsp/rec05.txt \
-pfsp/rec13.txt \
-pfsp/rec19.txt \
-pfsp/rec31.txt \
+pfsp_cmax/rec05.txt \
+pfsp_cmax/rec13.txt \
+pfsp_cmax/rec19.txt \
+pfsp_cmax/rec31.txt \
 "
 
 
@@ -118,6 +118,8 @@ r_2=0.9
 beta=10
 beta=1
 umm_m_ini=10
+init="random"
+init="maxmindist"
 
 counter=0
 for m in $budget; do
@@ -126,10 +128,8 @@ for m in $budget; do
 	    counter=$((counter+1))
 	    RESULTS="$OUTDIR/results/m${m}-er${er}/$instance"
 	    mkdir -p "$RESULTS"
-	    $LAUNCHER umm "${RESULTS}/umm-b${beta}" $instance --m_ini $umm_m_ini --budgetMM $beta --rsl $r_1 --wml $r_2 --budget $m --eval_ranks $er
+	    $LAUNCHER umm "${RESULTS}/umm-{init}-b${beta}" $instance --m_ini $umm_m_ini --budgetMM $beta --rsl $r_1 --wml $r_2 --budget $m --init $init --eval_ranks $er
 	    #$LAUNCHER cego "${RESULTS}/cego" $instance --m_ini $cego_m_ini --budgetGA $budgetGA --budget $m --eval_ranks $er
 	done
     done
 done
-
-

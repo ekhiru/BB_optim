@@ -61,5 +61,5 @@ def run_once(algo_name, instance_name, seed, out_filename = None,
     df['Solver'] = algo_name
     if out_filename is not None:
         df.to_csv(out_filename + '.csv.xz', index=False, compression = "xz")
-        df.to_pickle(out_filename + '.pkl.xz', compression = "xz")
+        # df.to_pickle(out_filename + '.pkl.xz', compression = "xz")
     return df

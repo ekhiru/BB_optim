@@ -69,7 +69,7 @@ def design_random(m, n):
 def min_distance(x, s, dist):
   return np.apply_along_axis(dist, -1, np.asarray(s), B=x).min()
   
-def design_maxmindist(m, n, dist = mk.kendallTau, budget = 100):
+def design_maxmindist(m, n, dist = mk.kendallTau, budget = 1000):
   sample = [ np.random.permutation(n) ]
   while len(sample) < m:
     best = np.random.permutation(n)
@@ -87,7 +87,7 @@ def design_maxmindist(m, n, dist = mk.kendallTau, budget = 100):
 def UMM(instance, seed, budget,
         m_ini, budgetMM,
         ratio_samples_learn,
-        weight_mass_learn, eval_ranks):
+        weight_mass_learn, eval_ranks, init):
 
     np.random.seed(seed)
 
@@ -98,7 +98,13 @@ def UMM(instance, seed, budget,
       f_eval = lambda p: instance.fitness(np.argsort(p))
 
     n = instance.n
-    sample = design_random(m_ini, n)
+    if init == "random":
+      sample = design_random(m_ini, n)
+    elif init == "maxmindist":
+      sample = design_maxmindist(m_ini, n)
+    else:
+      raise f"Invalid init: {init}"
+
     fitnesses = [f_eval(perm) for perm in sample]
     # ['rho','phi_estim','phi_sample','Distance']
     res = [ [np.nan, np.nan, np.nan,
@@ -154,4 +160,5 @@ def UMM(instance, seed, budget,
     df['ratio_samples_learn'] = ratio_samples_learn
     df['weight_mass_learn'] = weight_mass_learn
     df['eval_ranks'] = eval_ranks
+    df['init'] = init
     return df
