@@ -485,7 +485,9 @@ At each iteration, we start by fitting a MM to the sample $S$, which implies
 estimating $\hat\sigma_0$ and $\theta$. Parameter $\theta$ is updated
 deterministically at the sampling step.  The parameter $\sigma_0$, however, is
 learned from the current sample $S$ by using the uBorda algorithm with a weight
-$w(\sigma)=\rho^{f(\sigma)}$ (Section~\ref{sec:uborda}). The learning rate is
+$w(\sigma)=\rho^{\text{scale}(f(\sigma))}$ (Section~\ref{sec:uborda}). The function $\text{scale}\colon \mathbb{R} \to [0,1]$ is defined as $\text{scale}(f) = (f - f_\text{min})/(f_\text{max} - f_\text{min})$, where $f_\text{min}$ and $f_\text{max}$ are, respectively, the minimum and maximum fitness values in $S$. A possible alternative to scaling would be ranking the elements in $S$ with respect to their fitness values, which would make UMM invariant to non-linear monotonic transformations of the fitness function. However, in most applications, the fitness values have a real-world meaning (e.g., monetary value) and the relative scale of fitness differences is relevant.
+
+The learning rate is
 controlled by parameter $0 < \rho < 1$. 
 % \MANUEL{Don't we have to say something about $f(\sigma) > 1$?}
 % \EKHINE{es decreciente igual}
@@ -501,8 +503,7 @@ the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
 %  \end{split}
 \end{equation}
 %
-where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, that is, $S'$ contains the $r_2|S|$ elements of $S$ with the best fitness values. The function $\text{scale}\colon \mathbb{R} \to [0,1]$ is defined as $\text{scale}(f) = (f - f_\text{min})/(f_\text{max} - f_\text{min})$, where $f_\text{min}$ and $f_\text{max}$ are, respectively, the minimum and maximum fitness values in $S$. A possible alternative to scaling would be ranking the elements in $S$ with respect to their fitness values, which would make UMM invariant to non-linear monotonic transformations of the fitness function. However, in most applications, the fitness values have a real-world meaning (e.g., monetary value) and the relative scale of fitness differences is relevant.
-
+where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, that is, $S'$ contains the $r_2|S|$ elements of $S$ with the best fitness values. 
 %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
 \subsection{Sampling step}\label{sec:sampling}
