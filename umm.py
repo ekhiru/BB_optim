@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 # from imp import reload
 import numpy as np
 import mallows_kendall as mk
@@ -49,10 +51,14 @@ def binary_search_rho(w, ratio_samples_learn, weight_mass_learn, rho_ini=1, rho_
        print(f"binary_search_rho: a={a} b={b} a/b={a/b} wml={weight_mass_learn} rho_med={rho_med} rho_ini={rho_ini} rho_end={rho_end} w={w}")
        raise
 
-def get_expected_distance(iterat, n, budget):
+def get_expected_distance(iterat, n, budget, dist_name='kendall'):
   # MANUEL: Should this be Kendall max dist?
   N = (n - 1) * n / 2
   f_ini, f_end = N / 4, 1
+
+  if dist_name == 'hamming':
+      N = n
+      f_ini, f_end = N/2, 1
   iter_decrease = budget - 10 # MANUEL: Why 10?
   jump = (f_ini - f_end) / iter_decrease
   a = f_ini - jump * iterat
@@ -102,6 +108,8 @@ def UMM(instance, seed, budget,
     n = instance.n
     if init == "random":
       sample = design_random(m_ini, n)
+      # sample = [np.arange(n) for _ in range(2)] +[np.arange(n)[::-1] for _ in range(1)] +[np.random.permutation(n) for _ in range(7)]
+      # print("OJO,  in UMM.py - ini to best", sample)
     elif init == "maxmindist":
       sample = design_maxmindist(m_ini, n)
     else:
@@ -109,8 +117,21 @@ def UMM(instance, seed, budget,
 
     fitnesses = [f_eval(perm) for perm in sample]
     # ['rho','phi_estim','phi_sample','Distance']
-    res = [ [np.nan, np.nan, np.nan,
-             instance.distance_to_best(perm)] for perm in sample]
+    res = [ [np.nan, np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
+
+    for d in range(2,n):
+        lst = []
+        for repe in range(20):
+            perm = mh.sample_at_dist(n,d)
+            lst.append(f_eval(perm))
+        print("TEST DISTANCE ",d,np.mean(lst),np.std(lst))
+        # print(mh.distance(np.arange(n),perm), f_eval(perm) ,perm)
+
+    perms = [ np.arange(n), np.arange(n)[::-1] ,np.random.permutation(range(n))]
+    ws = [.9,.1,.2]
+    print('Hungar')
+    print(mh.uHungarian(np.array(perms), ws))
+    lst = []
 
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
@@ -120,23 +141,45 @@ def UMM(instance, seed, budget,
         co.sort()
         rho = binary_search_rho(co, ratio_samples_learn, weight_mass_learn)
         ws = rho ** ws #MINIMIZE
+        # if len(ws)%30==0:
+        #     print("fitness and ws")
+        #     print(np.around(np.asarray(fitnesses),3))
+        #     print(np.around(np.asarray(ws),3))
 
-
+        # GET WEIGHTED MEDIAN
         # sigma0 = mk.uborda(np.array(sample), ws) # TODO incremental computing
         sigma0 = mh.uHungarian(np.array(sample), ws) # TODO incremental computing
 
+        # UPDATE SAMPLING variance decreasing SCHEME
         phi_estim = mk.u_phi(sample, sigma0, ws)
-        expected_dist = get_expected_distance(m, n, budget)
-        phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
+        expected_dist = get_expected_distance(m, n, budget, dist_name='hamming')
+        # phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
+        phi_sample = mh.find_phi(n, expected_dist, expected_dist + 1)
 
-        perms = mk.samplingMM(budgetMM, n, phi=phi_sample, k=None, sigma0=sigma0)
-        perm = perms[0]
+        # SAMPLE 1 PERM
+        # perms = mk.samplingMM(budgetMM, n, phi=phi_sample, k=None, sigma0=sigma0)[0]
+        perm = mh.sample(1,n,phi=phi_sample,sigma0=sigma0)[0]
+
         # FIXME: This should already be an array of int type.
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
         fitnesses.append(f_eval(perm))
+
+        print(round(mh.expected_dist(n,phi_sample),2),
+            mh.distance(sigma0,np.arange(n)),
+            mk.kendallTau(sigma0,np.arange(n)),
+            rho,
+            # np.around(ws,3),
+             fitnesses[-1], phi_sample,sep='\t')
+        # lst.append(mh.distance(sigma0,perm))
+
+
         # This is only used for reporting stats.
         res.append([rho, phi_estim, phi_sample, instance.distance_to_best(sigma0)])
+
+    # plt.plot(lst)
+    # plt.show()
+
     df = pd.DataFrame(res, columns=['rho','phi_estim','phi_sample','Distance'])
     df['Fitness'] = fitnesses
     df['x'] = sample

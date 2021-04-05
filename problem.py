@@ -42,10 +42,11 @@ class Problem:
       return f
 
     # FIXME: Is this distance correct for all problems?
-    def distance_to_best(self, perm):
+    def distance_to_best(self, perm, kendall=True):
         if self.best_sol is None:
             return np.nan
-        return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) * 0.5)
+        if kendall: return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) * 0.5)
+        return self.n - (perm==np.arange(self.n)).sum()
 
     # Returns a closure function that can be called from R.
     # WARNING: this function minimizes for CEGO

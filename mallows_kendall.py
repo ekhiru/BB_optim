@@ -33,6 +33,7 @@ def kendallTau(A, B=None):
 # FIXME: The comment says it searches for theta, but the function is called find_phi
 # These two functions search for theta for different E[D].
 # from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
+# copy paste in hamming
 def find_phi(n, dmin, dmax): #NO
     imin, imax = 0.0, 1.0
     iterat = 0
