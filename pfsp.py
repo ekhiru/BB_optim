@@ -14,7 +14,8 @@ class PFSP(Problem):
             print(f"header: {header}")
             if "tai" in filename:
                 # number of jobs, number of machines, initial seed, upper bound and lower bound :
-                n,m = f.readline().strip().split()
+                # print(f.readline().strip().split())
+                n,m = f.readline().strip().split()[:2]
                 n,m = int(n),int(m)
                 f.readline()
                 P = np.loadtxt(f, max_rows=n)
@@ -27,10 +28,10 @@ class PFSP(Problem):
                 P = np.loadtxt(f, max_rows=n)
                 # Processing times: each even column is useless.
                 P = P[:,1::2]
-        
+
         assert P.shape[0] == n
         assert P.shape[1] == m
- 
+
         best_sol = None
         if opt_filename is not None:
             with open(opt_filename) as f:
@@ -68,7 +69,7 @@ class PFSP(Problem):
     def sum_completion(self, x):
         """Also known as sum of completion times or sum of flowtimes"""
         return self.completion_times(x)[:, self.m - 1].sum()
-        
+
     def fitness_nosave(self, x):
         # In case it is not numpy array.
         x = np.asarray(x, dtype=int)
