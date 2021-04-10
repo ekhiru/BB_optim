@@ -105,10 +105,11 @@ def fit_MM_phi(n, dist_avg): #returns sigma, phi
     try:
         theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
+        # FIXME: This returns before giving an error???
         if dist_avg == 0.0:
             # FIXME: Why 5?
             return s0, np.exp(-5)#=phi
-        print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
+        print(f"error: fit_MM_phi. dist_avg={dist_avg}", dist_avg == 0.0)
         print(rankings)
         print(s0)
         raise
@@ -276,7 +277,7 @@ def random_perm_at_dist(n, dist, sk):
 
 
 def u_phi(sample, s0, ws):
-    m, n = np.asarray(sample).shape
+    #m, n = np.asarray(sample).shape
     #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
     dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
     try:
@@ -284,8 +285,7 @@ def u_phi(sample, s0, ws):
         theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
         #if dist_avg == 0.0: return s0, np.exp(-5)#=phi
-        print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
-        print(s0)
+        print(f"error: u_phi: s0={s0}, dist_avg={dist_avg}", dist_avg == 0.0)
         raise
     if theta < 0:
         theta = 0.001
