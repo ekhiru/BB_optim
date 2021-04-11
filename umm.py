@@ -77,18 +77,18 @@ def design_random(m, n):
 def min_distance(x, s, dist):
   return np.apply_along_axis(dist, -1, np.asarray(s), B=x).min()
 
-def design_maxmindist(m, n, dist = mk.kendallTau, budget = 1000):
-  sample = [ np.random.permutation(n) ]
-  while len(sample) < m:
-    best = np.random.permutation(n)
-    best_d = min_distance(best, sample, dist)
-    for i in range(budget):
-      xnew = np.random.permutation(n)
-      xnew_d = min_distance(xnew, sample, dist)
-      if xnew_d > best_d:
-        best, best_d = xnew, xnew_d
-    sample.append(best)
-  return remove_duplicates(sample)
+# def design_maxmindist(m, n, dist = mk.kendallTau, budget = 1000):
+#   sample = [ np.random.permutation(n) ]
+#   while len(sample) < m:
+#     best = np.random.permutation(n)
+#     best_d = min_distance(best, sample, dist)
+#     for i in range(budget):
+#       xnew = np.random.permutation(n)
+#       xnew_d = min_distance(xnew, sample, dist)
+#       if xnew_d > best_d:
+#         best, best_d = xnew, xnew_d
+#     sample.append(best)
+#   return remove_duplicates(sample)
 
 
 
@@ -117,21 +117,21 @@ def UMM(instance, seed, budget,
 
     fitnesses = [f_eval(perm) for perm in sample]
     # ['rho','phi_estim','phi_sample','Distance']
-    res = [ [np.nan, np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
+    res = [ [np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
 
-    for d in range(2,n):
-        lst = []
-        for repe in range(20):
-            perm = mh.sample_at_dist(n,d)
-            lst.append(f_eval(perm))
-        print("TEST DISTANCE ",d,np.mean(lst),np.std(lst))
-        # print(mh.distance(np.arange(n),perm), f_eval(perm) ,perm)
 
-    perms = [ np.arange(n), np.arange(n)[::-1] ,np.random.permutation(range(n))]
-    ws = [.9,.1,.2]
-    print('Hungar')
-    print(mh.uHungarian(np.array(perms), ws))
-    lst = []
+    # for d in range(2,n):
+    #     lst = []
+    #     for repe in range(20):
+    #         perm = mh.sample_at_dist(n,d)
+    #         lst.append(f_eval(perm))
+    #     print("TEST DISTANCE ",d,np.mean(lst),np.std(lst))
+    #     # print(mh.distance(np.arange(n),perm), f_eval(perm) ,perm)
+    # perms = [ np.arange(n), np.arange(n)[::-1] ,np.random.permutation(range(n))]
+    # ws = [.9,.1,.2]
+    # print('Hungar')
+    # print(mh.uHungarian(np.array(perms), ws))
+    # lst = []
 
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
@@ -146,41 +146,47 @@ def UMM(instance, seed, budget,
         #     print(np.around(np.asarray(fitnesses),3))
         #     print(np.around(np.asarray(ws),3))
 
+        KEN = True
         # GET WEIGHTED MEDIAN
-        # sigma0 = mk.uborda(np.array(sample), ws) # TODO incremental computing
-        sigma0 = mh.uHungarian(np.array(sample), ws) # TODO incremental computing
+        if KEN: sigma0 = mk.uborda(np.array(sample), ws) # TODO incremental computing
+        else: sigma0 = mh.uHungarian(np.array(sample), ws) # TODO incremental computing
 
         # UPDATE SAMPLING variance decreasing SCHEME
-        phi_estim = mk.u_phi(sample, sigma0, ws)
-        expected_dist = get_expected_distance(m, n, budget, dist_name='hamming')
-        # phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
-        phi_sample = mh.find_phi(n, expected_dist, expected_dist + 1)
+
+
+        if KEN:
+            # phi_estim = mk.u_phi(sample, sigma0, ws) # just checking
+            expected_dist = get_expected_distance(m, n, budget, dist_name='kendall')
+            phi_sample = mk.find_phi(n, expected_dist, expected_dist + 1)
+        else:
+            expected_dist = get_expected_distance(m, n, budget, dist_name='hamming')
+            phi_sample = mh.find_phi(n, expected_dist, expected_dist + 1)
 
         # SAMPLE 1 PERM
-        # perms = mk.samplingMM(budgetMM, n, phi=phi_sample, k=None, sigma0=sigma0)[0]
-        perm = mh.sample(1,n,phi=phi_sample,sigma0=sigma0)[0]
+        if KEN: perm = mk.samplingMM(1, n, phi=phi_sample, k=None, sigma0=sigma0)[0]
+        else :perm = mh.sample(1,n,phi=phi_sample,sigma0=sigma0)[0]
 
         # FIXME: This should already be an array of int type.
         perm = np.asarray(perm, dtype='int')
         sample.append(perm)
         fitnesses.append(f_eval(perm))
 
-        print(round(mh.expected_dist(n,phi_sample),2),
-            mh.distance(sigma0,np.arange(n)),
-            mk.kendallTau(sigma0,np.arange(n)),
-            rho,
-            # np.around(ws,3),
-             fitnesses[-1], phi_sample,sep='\t')
-        # lst.append(mh.distance(sigma0,perm))
+        # print(#round(mk.expected_dist(n,phi_sample),2),
+        #     mh.distance(sigma0,np.arange(n)),
+        #     mk.kendallTau(sigma0,np.arange(n)),
+        #     rho,
+        #     # np.around(ws,3),
+        #      fitnesses[-1], phi_sample,sep='\t')
+        # # lst.append(mh.distance(sigma0,perm))
 
 
         # This is only used for reporting stats.
-        res.append([rho, phi_estim, phi_sample, instance.distance_to_best(sigma0)])
+        res.append([rho, phi_sample, instance.distance_to_best(sigma0)])
 
     # plt.plot(lst)
     # plt.show()
-
-    df = pd.DataFrame(res, columns=['rho','phi_estim','phi_sample','Distance'])
+    # print([rho, phi_sample, instance.distance_to_best(sigma0)])
+    df = pd.DataFrame(res, columns=['rho','phi_sample','Distance'])
     df['Fitness'] = fitnesses
     df['x'] = sample
     df['m_ini'] = m_ini

@@ -280,6 +280,7 @@ def u_phi(sample, s0, ws):
     #m, n = np.asarray(sample).shape
     #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
     dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
+    n = len(sample[0])
     try:
         # FIXME: This is the same as fit_MM, no?
         theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
