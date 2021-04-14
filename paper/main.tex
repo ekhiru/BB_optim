@@ -127,6 +127,7 @@
   \city{Málaga}
   \country{Spain}
 }
+\additionalaffiliation{University of Manchester, UK}
 \email{manuel.lopez-ibanez@uma.es}
 
 %    \renewcommand{\shortauthors}{B. Trovato et al.}
@@ -263,7 +264,9 @@ adapted by controlling the variance of the probabilistic Mallows model.
 %   \end{itemize}
 % }
 
-This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems. Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
+This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fundamental concepts.
+% about permutation spaces, uBorda, black-box combinatorial optimization under a limited budget and CEGO, a Bayesian optimizer for such problems.
+Section~\ref{sec:umm} presents the UMM algorithm, which is the main contribution of this paper. UMM is analyzed using the experimental setup presented in Section~\ref{sec:setup} and results are presented in Section~\ref{sec:analysis}. We end the paper with overall conclusions and a call for further research on this type of optimization scenario (Section~\ref{sec:conclusions}).
 
 %\MANUEL{9. Please use some newer references instead of [11] and, especially, [14]}
 
@@ -319,11 +322,12 @@ This paper is structured as follows. Section~\ref{sec:backgroud} summarizes fund
 
 \subsection{Permutations: rankings vs orderings}\label{sec:permutations}
 
-Permutations are defined as bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted as $S_n$ and has cardinality $n!$. We will use the one-line notation
+Permutations are %defined as
+bijections of the set $[n]$ of integers onto itself. The set of all permutations of $n$ values is denoted by $S_n$ and has cardinality $n!$. We will use the one-line notation
 % \MANUEL{what is one-line?}
-and denote permutations with Greek letters, $\sigma  = (\sigma(1), \ldots , \sigma(n))$. We denote the composition of $\sigma$ and $\pi$ as $\sigma\pi = (\sigma(\pi(1)), \ldots, \sigma(\pi(n)))$
+and denote permutations with Greek letters, $\sigma  = (\sigma(1), \ldots , \sigma(n))$. The composition of $\sigma$ and $\pi$ is $\sigma\pi = (\sigma(\pi(1)), \ldots, \sigma(\pi(n)))$
 % \MANUEL{Is this correct?}
-and the inverse of $\sigma$ as $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
+and the inverse of $\sigma$ is $\sigma^{-1}$, for which the relation $\sigma\sigma^{-1}=(1, 2, 3, \dotsc,n)$ always holds.
 
 Throughout this paper and for consistency, permutation $\sigma$ represents a \emph{ranking}:  $\sigma(i)=j$ denotes that item $i$ has rank $j$. The \emph{ordering} associated with $\sigma$ is given by its inverse $\sigma^{-1}$, therefore,  $\sigma(i)=j \Leftrightarrow  \sigma^{-1}(j)=i$. This distinction is importante since statistical methodologies typically assume rankings whereas the optimization literature often assumes orderings. Mixing both concepts is a very common confusion with grave consequences, as we will illustrate in the experimental section.
 
@@ -508,7 +512,7 @@ the weights is concentrated in the best $100r_2$\% of the solutions in $S$:
 %  \end{split}
 \end{equation}
 %
-where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, that is, $S'$ contains the $r_2|S|$ elements of $S$ with the best fitness values. 
+where $|S'| = r_2|S| \land \forall \tuple{\sigma',f(\sigma')}\in S', \tuple{\sigma,f(\sigma)}\in S\setminus S' : f(\sigma')\leq f(\sigma)$, i.e., $S'$ contains the $r_2|S|$ elements of $S$ with the best fitness. 
 %The values of $r_1, r_2 \in (0, 1)$ are user-defined and control the balance between exploration and intensification. %: extreme different values bias the sampling towards the best solutions found so far, which may lead to quick stagnation, whereas values (0.5,0.5) make the sampling more uniform, thus slowing down the learning.
 
 \subsection{Sampling step}\label{sec:sampling}
@@ -706,7 +710,7 @@ Experiments were run on Intel Xeon \emph{Ivybridge} E5-2650v2 CPUs at
 
 The first part of the experimental analysis concerns the analysis of the learning rate, which corresponds to parameter $\rho$ of uBorda. As stated in Section~\ref{sec:sampling}, $\rho$ is automatically set at each iteration in such a way that the $100r_1\%$ of the samples have the $100r_2\%$ of the weight. In this regard, we tried a few different values of parameters $r_1$ and $r_2$ in all the instances. Only values of $r_1 < r_2$ make sense and $r_1 = r_2 = 0.5$ would produce equal weights in the learning step. Thus, we tried values $r_1 = \{0.1, 0.2, \dotsc, 0.5\}$ and $r_2 = \{0.6,\dotsc, 0.9, 0.99\}$. Figure~\ref{fig:heatmaps} shows the best solution found by each independent run (averaged over 10 runs) for instances: \texttt{N-t59d11xx} and \texttt{N-sgb75.02} for the LOP, and \texttt{reC13} and \texttt{reC19} for the PFSP. Results for all the datasets can be found in the supplemental material~(\supplement).
 
-\begin{figure}[tb]
+\begin{figure}[!tb]
   \centering%
   \smaller
 \begin{minipage}{0.49\linewidth}
