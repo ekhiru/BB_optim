@@ -639,7 +639,7 @@ The \emph{Permutation Flowshop Scheduling Problem (PFSP)} is defined by a matrix
 \myparagraph{Datasets}
 %
 %For the LOP, we generated synthetic instances as follows. First, we create a sample $S$ of 200 permutations of size $n=20$ from a MM with $\sigma_0$ equal to the identity permutation and $\theta=-\log(\textit{Uniformity})$, where  $\textit{Uniformity}\in\{0.5,$ $0.7,$ $0.9\}$, i.e., from peaked distributions to almost uniform distributions. Then, we generate matrix $a$ as $a_{i,j} = \sum_{\sigma\in S}\sum_{i<j}\mathbb{I}\{\sigma(i)<\sigma(j)\}$, where ${\mathbb{I}\colon S \times S \to \{0,1\}}$ is the indicator function. In principle, these should be best-case instances for UMM since their fitness landscape closely matches the Mallows model.%\MANUEL{Ekhine: Could you revise this text? I wanted to explain why we use synthetic datasets.}
-We consider real LOP datasets from the LOLIB
+We consider LOP datasets from the LOLIB
 repository.\footnote{\url{http://grafo.etsii.urjc.es/optsicom/lolib/}} In
 particular, we have taken two instances of various types focusing on relatively
 small instances, since he computation time of CEGO grows rapidly with instance
