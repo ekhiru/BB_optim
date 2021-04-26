@@ -6,6 +6,9 @@ from scipy.optimize import linear_sum_assignment
 import matplotlib.pyplot as plt
 
 
+def weighted_median(sample, ws):
+    return uHungarian(sample, ws)
+
 def uHungarian(sample, ws):
     m,n   = sample.shape
     wmarg = np.zeros((n,n))
@@ -14,18 +17,19 @@ def uHungarian(sample, ws):
         freqs = (sample[:,i]==j)
         wmarg[i,j] = (freqs * ws).sum()
     row_ind, col_ind  = linear_sum_assignment( -wmarg )
-    if len(ws)%40==0 or len(ws)==10:
-        sns.heatmap(-wmarg)
-        plt.show()
-        print(col_ind)
-        print(np.around(ws,2))
+    # if len(ws)%40==0 or len(ws)==10:
+    #     print(np.around(wmarg,2))
+    #     sns.heatmap(-wmarg)
+    #     plt.show()
+    #     print(col_ind)
+    #     print(np.around(ws,2))
     return col_ind
 
 def distance(a,b):
     return len(a) - np.sum(a==b)
 
 
-def sample(m,n, phi,sigma0):
+def sample(m,n, phi,sigma0): # INTERFACE
     sample = np.zeros((m,n))
     theta = mk.phi2theta(phi)
 

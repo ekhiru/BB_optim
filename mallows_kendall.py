@@ -147,6 +147,9 @@ def likelihood_mm(perms, s0, theta):
     # print(probs,m,n)
     return probs.sum()
 
+def sample(m,n, phi,sigma0): # INTERFACE
+    return samplingMM(m,n,theta=None, phi=phi, k=None,sigma0=sigma0)
+
 def samplingMM(m,n,theta=None, phi=None, k=None,sigma0=None):
     # k return partial orderings
     theta, phi = check_theta_phi(theta, phi)
@@ -154,7 +157,7 @@ def samplingMM(m,n,theta=None, phi=None, k=None,sigma0=None):
         k = None
     sample =  samplingGMM(m, [theta] * (n-1), topk = k)
     sample = [perm[sigma0] for perm in sample]
-    return sample
+    return np.array(sample)
 
 def samplingGMM(m,theta, topk=None):
     #  returns RANKINGS!!!!!!!*****
@@ -179,7 +182,7 @@ def samplingGMM(m,theta, topk=None):
         # if topk is not None :
         #     ranking = np.concatenate([ranking, np.array([np.nan]*(n-topk))])
         sample.append(ranking)
-    return sample
+    return np.array(sample)
 
 def ranking2v(perm):
     n = len(perm)
@@ -291,6 +294,9 @@ def u_phi(sample, s0, ws):
     if theta < 0:
         theta = 0.001
     return theta2phi(theta)
+
+def weighted_median(sample, ws):
+    return uborda(sample, ws)
 
 def uborda(sample, ws):
     return borda(sample * ws[:, None])

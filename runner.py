@@ -34,8 +34,7 @@ def get_problem(instance_name):
     raise ValueError("Unknown problem: " + instance_name)
 
 
-def run_once(algo_name, instance_name, seed, out_filename = None,
-             **algo_params):
+def run_once(algo_name, instance_name, seed, out_filename = None, **algo_params):
     if algo_name == "UMM":
         import umm as umm
         reload(umm)
