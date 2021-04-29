@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 
-# from imp import reload
 import numpy as np
 import mallows_kendall as mk
 import mallows_hamming as mh
@@ -45,6 +44,7 @@ def get_expected_distance_at_iteration_t(iterat, n, budget, dist_name='kendall',
       dist_at_uniform = (n - 1) * n / 4
   else: raise
 
+  # Uniform distance.
   dist_at_uniform -= 2 # to avoid numerical errors
 
   if scalfun == 'log':
@@ -56,13 +56,13 @@ def get_expected_distance_at_iteration_t(iterat, n, budget, dist_name='kendall',
 
 
 def get_rho_at_iteration_t (iterat, budget, scalfun='exp'):
-    return np.logspace(-1,-20,budget)[iterat]
+  # -1 is uniform, -20 may need some justification.
+  return np.logspace(-1,-20,budget)[iterat]
 
 
 def UMM(instance, seed, budget,
         m_ini,
-        # ratio_samples_learn,weight_mass_learn,
-        eval_ranks,init, dist_name,scalfun_learning, scalfun_sampling):
+        eval_ranks,init, dist_name, scalfun_learning, scalfun_sampling):
 
     np.random.seed(seed)
 
@@ -85,7 +85,6 @@ def UMM(instance, seed, budget,
     fitnesses = [f_eval(perm) for perm in sample]
     res = [ [np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
 
-
     if dist_name == 'hamming':
         mmdist = mh
     else: mmdist = mk
@@ -94,13 +93,11 @@ def UMM(instance, seed, budget,
         ws = np.asarray(fitnesses).copy()
         ws = ws - ws.min()
         ws = ws / ws.max()
-        co = ws.copy()
-        co.sort()
         rho = get_rho_at_iteration_t (m, budget, scalfun_learning)
-        ws = rho ** ws #MINIMIZE
-        # GET WEIGHTED MEDIAN
+        ws = rho ** ws # Minimize
+        # Get weighted median
         sigma0 = mmdist.weighted_median(np.array(sample), ws) # TODO incremental computing
-        # UPDATE SAMPLING variance decreasing SCHEME
+        # Update sampling variance decreasing SCHEME
         expected_dist = get_expected_distance_at_iteration_t(m, n, budget, dist_name=dist_name, scalfun=scalfun_sampling)
         phi_sample = mmdist.find_phi(n, expected_dist, expected_dist + 1)
         # SAMPLE 1 PERM
