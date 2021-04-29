@@ -3,8 +3,11 @@ import mallows_kendall as mk
 import numpy as np
 import itertools as it
 from scipy.optimize import linear_sum_assignment
-import matplotlib.pyplot as plt
 
+def dist_at_uniform(n): return n
+
+def distance(a, b):
+    return len(a) - np.sum(a==b)
 
 def weighted_median(sample, ws):
     return uHungarian(sample, ws)
@@ -17,6 +20,7 @@ def uHungarian(sample, ws):
         freqs = (sample[:,i]==j)
         wmarg[i,j] = (freqs * ws).sum()
     row_ind, col_ind  = linear_sum_assignment( -wmarg )
+    # import matplotlib.pyplot as plt
     # if len(ws)%40==0 or len(ws)==10:
     #     print(np.around(wmarg,2))
     #     sns.heatmap(-wmarg)
@@ -25,8 +29,6 @@ def uHungarian(sample, ws):
     #     print(np.around(ws,2))
     return col_ind
 
-def distance(a,b):
-    return len(a) - np.sum(a==b)
 
 
 def sample(m,n, phi,sigma0): # INTERFACE

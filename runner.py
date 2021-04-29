@@ -1,4 +1,3 @@
-from imp import reload
 import time
 class Timer:
     def __init__(self):
@@ -21,8 +20,6 @@ def get_problem(instance_name):
         from qap import QAP
         return QAP
     elif "lop" in instance_name:
-        import lop as lop
-        reload(lop)
         from lop import LOP
         return LOP
     elif "pfsp_cmax" in instance_name:
@@ -36,8 +33,6 @@ def get_problem(instance_name):
 
 def run_once(algo_name, instance_name, seed, out_filename = None, **algo_params):
     if algo_name == "UMM":
-        import umm as umm
-        reload(umm)
         from umm import UMM
         algo = UMM
     elif algo_name == "CEGO":

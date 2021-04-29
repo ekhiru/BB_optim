@@ -6,6 +6,9 @@ from scipy import optimize
 def kendall_max_dist(n):
     return int(n * (n - 1) / 2)
 
+def dist_at_uniform(n):
+    return (n - 1) * n / 4
+
 # FIXME: Optimize this function
 def kendallTau(A, B=None):
     # if any partial is B
@@ -28,6 +31,9 @@ def kendallTau(A, B=None):
         if (a * b < 0):
             distance += 1
     return distance
+
+def distance(a, b):
+    return kendallTau(a, b)
 
 
 # FIXME: The comment says it searches for theta, but the function is called find_phi

@@ -32,11 +32,11 @@ parser.add_argument("--output", type=str, default=None, help="output file")
 # Parameters for the target algorithm
 parser.add_argument('--m_ini', type=int, default=0, help='m_ini')
 parser.add_argument('--budget', type=int, default=400, help='budget')
-parser.add_argument('--budgetMM', type=int, default=0, help='budgetMM')
-parser.add_argument('--rsl', type=float, default=0, help='rsl')
-parser.add_argument('--wml', type=float, default=0, help='wml')
 parser.add_argument('--eval_ranks', type=int, default=0, help='eval_ranks')
 parser.add_argument('--init', choices = ['random', 'maxmindist'], help='init')
+parser.add_argument('--distance', choices = ['kendall', 'hamming'], help='distance')
+parser.add_argument('--learning', choices = ['exp'], help='learning')
+parser.add_argument('--sampling', choices = ['log', 'linear'], help='sampling')
 
 args = parser.parse_args()
 
@@ -47,7 +47,9 @@ stdout = sys.stdout
 outfilename = f'c{args.configuration_id}-{args.instance_id}-{args.seed}.stdout'
 with open(outfilename, 'w') as sys.stdout:
     df = runner.run_once("UMM", args.instance_name, args.seed, budget = budget, m_ini = args.m_ini, 
-                         budgetMM = args.budgetMM, ratio_samples_learn = args.rsl, weight_mass_learn = args.wml, eval_ranks = args.eval_ranks, init = args.init, out_filename = args.output)
+                         eval_ranks = args.eval_ranks, init = args.init,
+                         dist_name = args.distance, scalfun_learning = args.learning, scalfun_sampling = args.sampling,
+                         out_filename = args.output)
 
 sys.stdout = stdout
 print(df["Fitness"].min())
