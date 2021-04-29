@@ -103,9 +103,9 @@ def find_phi(n, dmin, dmax): #NO
         # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
         d = expected_dist(n, med)
         #print(imin, imax, med, d,imin==imax)
-        if d < dmax and d > dmin: return med
-        elif d < dmin : imin = med
-        elif d > dmax : imax = med
+        if d < dmin : imin = med
+        elif d > dmax: imax = med
+        else: return med
         iterat  += 1
     # FIXME: Is there a default?
     assert False
