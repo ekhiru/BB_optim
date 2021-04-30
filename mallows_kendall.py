@@ -1,5 +1,6 @@
 import numpy as np
 import itertools as it
+from mallows_model import phi2theta, theta2phi
 from scipy import optimize
 
 # NOTE: Everything related to alpha to beta may be removed because it is related to partial permutations.
@@ -35,23 +36,25 @@ def kendallTau(A, B=None):
 def distance(a, b):
     return kendallTau(a, b)
 
-
+# MANUEL: Can we update this comment?
 # FIXME: The comment says it searches for theta, but the function is called find_phi
 # These two functions search for theta for different E[D].
 # from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
 # copy paste in hamming
-def find_phi(n, dmin, dmax): #NO
+def find_phi(n, dmin, dmax): #NO # MANUEL: Why NO?
+    assert dmax > dmin
+    # MANUEL: Is imax the maximum variance possible?
     imin, imax = 0.0, 1.0
     iterat = 0
     while iterat < 500:
-        med = imin + (imax - imin) / 2
+        med = (imax + imin) / 2
         # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
         d = expected_dist_MM(n, theta = phi2theta(med))
         #print(imin, imax, med, d,imin==imax)
         if d < dmin : imin = med
         elif d > dmax: imax = med
         else: return med
-        iterat  += 1
+        iterat += 1
     # FIXME: Is there a default?
     assert False
 
@@ -123,11 +126,6 @@ def fit_MM_phi(n, dist_avg): #returns sigma, phi
     # FIXME: return theta2phi(theta)
     return np.exp(-theta)
 
-def theta2phi(theta):
-    return np.exp(-theta)
-
-def phi2theta(phi):
-    return -np.log(phi)
 
 def mle_theta_mm_f(theta, n, dist_avg):
     aux = 0

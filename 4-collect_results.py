@@ -6,7 +6,7 @@ import re
 import pandas as pd
 
 # traverse root directory, and list directories as dirs and files as files
-for root, dirs, files in os.walk("./results/m100-er0/lop/IO/N-t59b11xx/"):
+for root, dirs, files in os.walk("./results/m100-er0-dist_hamming/"):
     print(root)
     unique_files = []
     for file in files:

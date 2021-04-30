@@ -1,7 +1,6 @@
-import seaborn as sns
-import mallows_kendall as mk
 import numpy as np
 import itertools as it
+from mallows_model import phi2theta, theta2phi
 from scipy.optimize import linear_sum_assignment
 
 def dist_at_uniform(n): return n
@@ -21,6 +20,7 @@ def uHungarian(sample, ws):
         wmarg[i,j] = (freqs * ws).sum()
     row_ind, col_ind  = linear_sum_assignment( -wmarg )
     # import matplotlib.pyplot as plt
+    # import seaborn as sns
     # if len(ws)%40==0 or len(ws)==10:
     #     print(np.around(wmarg,2))
     #     sns.heatmap(-wmarg)
@@ -30,10 +30,9 @@ def uHungarian(sample, ws):
     return col_ind
 
 
-
 def sample(m,n, phi,sigma0): # INTERFACE
     sample = np.zeros((m,n))
-    theta = mk.phi2theta(phi)
+    theta = phi2theta(phi)
 
     facts_ = np.array([1,1]+[0]*(n-1),dtype=np.float) # TODO precompute
     deran_num_ = np.array([1,0]+[0]*(n-1),dtype=np.float)
@@ -71,7 +70,7 @@ def expected_dist(n,phi):
     for i in range(2,n+1):
         facts_[i] = facts_[i-1] * i
     x_n_1 , x_n= 0,0
-    theta = mk.phi2theta(phi)
+    theta = phi2theta(phi)
     for k in range(n+1):
         aux = (np.exp(theta)-1)**k / facts_[k]
         x_n += aux
@@ -99,7 +98,7 @@ def find_phi(n, dmin, dmax): #NO
     imin, imax = 0.0, 1.0
     iterat = 0
     while iterat < 500:
-        med = imin + (imax - imin) / 2
+        med = (imax + imin) / 2
         # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
         d = expected_dist(n, med)
         #print(imin, imax, med, d,imin==imax)

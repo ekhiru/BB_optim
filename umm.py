@@ -1,13 +1,7 @@
-import matplotlib.pyplot as plt
-
 import numpy as np
-import mallows_kendall as mk
-import mallows_hamming as mh
-from imp import reload
-reload(mh)
+from mallows_model import select_mm
 from scipy.spatial import distance
 import pandas as pd
-
 
 def is_duplicated(perm, sample):
   for p in sample:
@@ -47,8 +41,11 @@ def get_expected_distance_at_iteration_t(iterat, dist_at_uniform, budget,scalfun
   dist_at_uniform -= 2 # to avoid numerical errors
 
   if scalfun == 'log':
-      dists = np.logspace(1, np.log(dist_at_uniform),num=budget,base=np.exp(1))[::-1]
+      # MANUEL: Shouldn't this start at zero? so we get e**0 = 1
+      # MANUEL: Why not use logspace(np.log(dist_at_uniform), 0) to get the list already reversed?
+      dists = np.logspace(1, np.log(dist_at_uniform),num=budget,base=np.e)[::-1]
   elif scalfun == 'linear':
+      # MANUEL: Same here, why not linspace(dist,1) to get the list reversed?
       dists = np.linspace(1,dist_at_uniform,num=budget)[::-1]
   # print("get_expected_distance_at_iteration_t (n)", dists[iterat],n)
   return dists[iterat]
@@ -56,6 +53,7 @@ def get_expected_distance_at_iteration_t(iterat, dist_at_uniform, budget,scalfun
 
 def get_rho_at_iteration_t (iterat, budget, scalfun='exp'):
   # -1 is uniform, -20 may need some justification.
+  # MANUEL: This one is not base e, but the one above is. It seems a bit of inconsistency.
   return np.logspace(-1,-20,budget)[iterat]
 
 
@@ -71,26 +69,20 @@ def UMM(instance, seed, budget,
     else: # Otherwise, it works with orders
       f_eval = lambda p: instance.fitness(np.argsort(p))
 
-    if dist_name == 'hamming':
-      mmdist = mh
-    elif dist_name == 'kendall':
-      mmdist = mk
-    else:
-      raise
-
+    mm = select_mm(dist_name)
     n = instance.n
+
     if init == "random":
       sample = design_random(m_ini, n)
       #   # sample = [np.arange(n) for _ in range(2)] +[np.arange(n)[::-1] for _ in range(1)] +[np.random.permutation(n) for _ in range(7)]
       #   # print("OJO,  in UMM.py - ini to best", sample)
     elif init == "maxmindist":
-      sample = design_maxmindist(m_ini, n, distance = mmdist.distance)
+      sample = design_maxmindist(m_ini, n, distance = mm.distance)
     else:
       raise f"Invalid init: {init}"
 
     fitnesses = [f_eval(perm) for perm in sample]
     res = [ [np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
-
     
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
@@ -99,13 +91,13 @@ def UMM(instance, seed, budget,
         rho = get_rho_at_iteration_t (m, budget, scalfun_learning)
         ws = rho ** ws # Minimize
         # Get weighted median
-        sigma0 = mmdist.weighted_median(np.array(sample), ws) # TODO incremental computing
+        sigma0 = mm.weighted_median(np.array(sample), ws) # TODO incremental computing
         # Update sampling variance decreasing SCHEME
-        expected_dist = get_expected_distance_at_iteration_t(m, mmdist.dist_at_uniform(n), budget, scalfun=scalfun_sampling)
-        phi_sample = mmdist.find_phi(n, expected_dist, expected_dist + 1)
+        expected_dist = get_expected_distance_at_iteration_t(m, mm.dist_at_uniform(n), budget, scalfun=scalfun_sampling)
+        phi_sample = mm.find_phi(n, expected_dist, expected_dist + 1)
         while True:
           # SAMPLE 1 PERM
-          perm = mmdist.sample(1, n, phi=phi_sample, sigma0=sigma0)[0]
+          perm = mm.sample(1, n, phi=phi_sample, sigma0=sigma0)[0]
           # FIXME: This should already be an array of int type.
           perm = np.asarray(perm, dtype='int')
           # Sample again if the permutation has already been evaluated.
