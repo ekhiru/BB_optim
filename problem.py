@@ -2,8 +2,6 @@ import numpy as np
 from rpy2.robjects import FloatVector
 import rpy2.rinterface as ri
 
-from mallows_kendall import kendallTau
-
 class Problem:
     def __init__(self, best_sol = None, worst_sol = None, instance_name = None,
                  best_fitness = None, worst_fitness=None):
@@ -41,13 +39,15 @@ class Problem:
       self.evaluations.append(f)
       return f
 
-    # FIXME: Is this distance correct for all problems?
-    def distance_to_best(self, perm, kendall=True):
+    def distance_to_best(self, perm, distance):
         if self.best_sol is None:
             return np.nan
-        if kendall: return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) * 0.5)
-        return self.n - (perm==np.arange(self.n)).sum()
-
+        # MANUEL: Why divide by n * (n -1) / 2 ?
+        # if kendall: return kendallTau(perm, self.best_sol) / (self.n * (self.n - 1) * 0.5)
+        # MANUEL: Why distance to identity?
+        # return self.n - (perm==np.arange(self.n)).sum()
+        return distance(perm, self.best_sol)
+    
     # Returns a closure function that can be called from R.
     # WARNING: this function minimizes for CEGO
     def make_r_fitness(self):

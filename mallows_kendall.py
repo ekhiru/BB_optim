@@ -1,6 +1,7 @@
 import numpy as np
 import itertools as it
 import scipy as sp
+from mallows_model import phi_to_theta, theta_to_phi
 
 def weighted_median(sample, ws):
     """
@@ -59,6 +60,7 @@ def compose_partial(partial, full):
         ndarray
             The composition of the permutations
     """
+    # MANUEL: If full contains np.nan, then it cannot be filled with integers, because np.nan is float.
     return [partial[i] if not np.isnan(i) else np.nan for i in full]
 
 def inverse_partial(sigma):
@@ -103,8 +105,9 @@ def borda(rankings):
         ndarray
             The 'average' permutation of permutations given
     """
-    consensus =  np.argsort( # give the inverse of result --> sigma_0
-                            np.argsort( # give the indexes to sort the sum vector --> sigma_0^-1
+    # MANUEL: Using inverse instead of np.argsort clarifies the intention
+    consensus = inverse( # give the inverse of result --> sigma_0
+                            inverse( # give the indexes to sort the sum vector --> sigma_0^-1
                                         rankings.sum(axis=0) # sum the indexes of all permutations
                                         )
                             ) #borda
@@ -140,17 +143,25 @@ def check_theta_phi(theta, phi):
         tuple
             tuple containing both theta and phi (of list or float type depending on the input type)
     """
-    if not ((phi is None) ^ (theta is None)):
-        print("Set valid values for phi or theta")
-    if phi is None and type(theta)!=list:
+    # MANUEL: If we do not give an error, the code continues and who knows what may happen.
+    # if not ((phi is None) ^ (theta is None)):
+    #     print("Set valid values for phi or theta")
+    assert (phi is None) ^ (theta is None), "check_theta_phi: you need to provide either theta or phi but not both"
+    # MANUEL: theta_to_phi and phi_to_theta work on numpy arrays, so they will do the right thing independently if the input is a scalar, a list or a numpy array.
+    # if phi is None and type(theta)!=list:
+    #     phi = theta_to_phi(theta)
+    # if theta is None and type(phi)!=list:
+    #     theta = phi_to_theta(phi)
+    # if phi is None and type(theta)==list:
+    #     phi = [theta_to_phi(t) for t in theta]
+    # if theta is None and type(phi)==list:
+    #     theta = [phi_to_theta(p) for p in phi]
+    # return np.array(theta), np.array(phi)
+    if phi is None:
         phi = theta_to_phi(theta)
-    if theta is None and type(phi)!=list:
+    else:
         theta = phi_to_theta(phi)
-    if phi is None and type(theta)==list:
-        phi = [theta_to_phi(t) for t in theta]
-    if theta is None and type(phi)==list:
-        theta = [phi_to_theta(p) for p in phi]
-    return np.array(theta), np.array(phi)
+    return theta, phi
 
 def expected_dist_mm(n, theta=None, phi=None):
     """Compute the expected distance, MM under the Kendall's-tau distance
@@ -168,7 +179,11 @@ def expected_dist_mm(n, theta=None, phi=None):
             The expected disance under the MMs
     """
     theta, phi = check_theta_phi(theta, phi)
-    rnge = np.array(range(1,n+1))
+    # MANUEL:
+    # rnge = np.array(range(1,n+1))
+    rnge = np.arange(1, n + 1)
+    # exp_j_theta = np.exp(-j * theta)
+    # exp_dist = (n * n.exp(-theta) / (1 - n.exp(-theta))) - np.sum(j * exp_j_theta / (1 - exp_j_theta)
     expected_dist = n * np.exp(-theta) / (1-np.exp(-theta)) - np.sum(rnge * np.exp(-rnge*theta) / (1 - np.exp(-rnge*theta)))
 
     return expected_dist
@@ -434,31 +449,6 @@ def fit_gmm(rankings, s0=None):
 
 
 
-def theta_to_phi(theta):
-    """This functions converts theta dispersion parameter into phi
-        Parameters
-        ----------
-        theta: float
-            Real dispersion parameter
-        Returns
-        -------
-        float
-            phi real dispersion parameter
-    """
-    return np.exp(-theta)
-
-def phi_to_theta(phi):
-    """This functions converts phi dispersion parameter into theta
-        Parameters
-        ----------
-        phi: float
-            Real dispersion parameter
-        Returns
-        -------
-        float
-            theta real dispersion parameter
-    """
-    return - np.log(phi)
 
 def mle_theta_mm_f(theta, n, dist_avg):
     """Computes the derivative of the likelihood
@@ -578,7 +568,7 @@ def likelihood_mm(perms, s0, theta):
     # print(probs,m,n)
     return probs.sum()
 
-def sample(m,n, k=None, theta=None, phi=None, s0=None):
+def sample(m, n, k=None, theta=None, phi=None, s0=None):
     """This function generates m permutations (rankings) according
     to Mallows Models (if the given parameters are m, n, k/None,
     theta/phi: float, s0/None) or Generalized Mallows Models
@@ -602,20 +592,20 @@ def sample(m,n, k=None, theta=None, phi=None, s0=None):
             The rankings generated
     """
     if k is not None and n is None:
-        print("Error, n is not given!")
-        return
-
+        # MANUEL: If we don't raise an error the program continues which makes debugging difficult.
+        raise ValueError("Error, n is not given!")
+        
     theta, phi = check_theta_phi(theta, phi)
 
     if n is not None: #TODO, n should be always given
         theta = np.full(n-1, theta)
 
-    n = len(theta)+1#TODO, n should be always given
+    n = len(theta) + 1 #TODO, n should be always given
 
     if s0 is None:
         s0 = np.array(range(n))
 
-    rnge = np.array(range(n-1))
+    rnge = np.arange(n - 1)
 
     psi = (1 - np.exp(( - n + rnge )*(theta[ rnge ])))/(1 - np.exp( -theta[rnge]))
     vprobs = np.zeros((n,n))
@@ -759,8 +749,12 @@ def mergeSort_rec(lst):
     return result, (a + b + c)
 
 
+def dist_at_uniform(n): return (n - 1) * n / 4
 
-def distance(A, B=None):
+# MANUEL: I'm not going to change it but I think this interface is error-prone
+# because if b is None because of some bug, it seems to work correctly. A
+# better interface would have another function, distance_to_identity(a).
+def distance(a, b=None):
     """
     This function computes the kendall's-tau distance between two permutations
     using merge sort algorithm.
@@ -777,35 +771,35 @@ def distance(A, B=None):
    int
         The kendall's-tau distance between both permutations
     """
-    if B is None : B = list(range(len(A)))
-
-    A = np.asarray(A)
-    B = np.asarray(B)
-    n = len(A)
-
+    n = len(a)
+    if b is None:
+        b = np.arange(n)
+    a = np.asarray(a)
+    b = np.asarray(b)
+    
     # check if A contains NaNs
-    msk = np.isnan(A)
-    indexes = np.array(range(n))[msk]
-
-    if indexes.size: # A contains NaNs
+    msk = np.isnan(a)
+    if msk.any(): # A contains NaNs
+        indexes = np.arange(n)[msk]
         # reverse the indexes
         indexes = sorted(indexes, reverse=True)
         for i in indexes: # delete all NaNs and their associated values in B
-            A = np.delete(A, i)
-            B = np.delete(B, i)
-    # check if B contains NaNs
-    msk = np.isnan(B)
-    indexes = np.array(range(n - len(indexes)))[msk]
+            a = np.delete(a, i)
+            b = np.delete(b, i)
 
-    if indexes.size: # B contains NaNs
+    # check if B contains NaNs
+    msk = np.isnan(b)
+    if msk.any(): # B contains NaNs
+        indexes = np.arange(n - len(indexes))[msk]
         # reverse the indexes
         indexes = sorted(indexes, reverse=True)
         for i in indexes: # delete all NaNs and their associated values in A
-            A = np.delete(A, i)
-            B = np.delete(B, i)
+            # MANUEL: You can pass all indexes at once and avoid the for-loop
+            a = np.delete(a, i)
+            b = np.delete(b, i)
 
-    inverse = np.argsort(B)
-    compose = A[inverse]
+    inverse = np.argsort(b)
+    compose = a[inverse]
     _, distance = mergeSort_rec(compose)
     return distance
 
@@ -972,14 +966,21 @@ def find_phi_n(n, bins):
         phi_ed.append(find_phi(n, dmin, dmin+1))
     return ed, phi_ed
 
+# MANUEL: You had a comment before explaining what this function does.
 def find_phi(n, dmin, dmax):
-    imin, imax = np.float64(0),np.float64(1)
+    assert dmin < dmax
+    imin, imax = np.float64(0), np.float64(1)
     iterat = 0
     while iterat < 500:
-        med = imin + (imax-imin)/2
-        d = expected_dist_mm(n,phi_to_theta(med))
-        if d < dmax and d > dmin: return med
-        elif d < dmin : imin = med
-        elif d > dmax : imax = med
-        iterat  += 1
+        med = (imax + imin) / 2
+        # MANUEL: If expected_dist_mm accepts both phi and theta, why convert?  
+        d = expected_dist_mm(n, theta = phi_to_theta(med))
+        if d < dmin: imin = med
+        elif d > dmax: imax = med
+        else: return med
+        iterat += 1
+    # MANUEL: This function can stop without returning anything, which will
+    # lead to a bug. Let's make sure we give an error.
+    assert False, "Max iterations reached"
+    
 # end

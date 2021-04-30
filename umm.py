@@ -82,7 +82,7 @@ def UMM(instance, seed, budget,
       raise f"Invalid init: {init}"
 
     fitnesses = [f_eval(perm) for perm in sample]
-    res = [ [np.nan, np.nan, instance.distance_to_best(perm)] for perm in sample]
+    res = [ [np.nan, np.nan, instance.distance_to_best(perm, mm.distance)] for perm in sample]
     
     for m in range(budget - m_ini):
         ws = np.asarray(fitnesses).copy()
@@ -97,7 +97,7 @@ def UMM(instance, seed, budget,
         phi_sample = mm.find_phi(n, expected_dist, expected_dist + 1)
         while True:
           # SAMPLE 1 PERM
-          perm = mm.sample(1, n, phi=phi_sample, sigma0=sigma0)[0]
+          perm = mm.sample(1, n, phi=phi_sample, s0=sigma0)[0]
           # FIXME: This should already be an array of int type.
           perm = np.asarray(perm, dtype='int')
           # Sample again if the permutation has already been evaluated.
@@ -110,7 +110,8 @@ def UMM(instance, seed, budget,
         sample.append(perm)
         fitnesses.append(f_eval(perm))
         # This is only used for reporting stats.
-        res.append([rho, phi_sample, instance.distance_to_best(sigma0)])
+        # MANUEL: Why sigma0, shouldn't this be perm???
+        res.append([rho, phi_sample, instance.distance_to_best(sigma0, mm.distance)])
 
     df = pd.DataFrame(res, columns=['rho','phi_sample','Distance'])
     df['Fitness'] = fitnesses
@@ -120,4 +121,7 @@ def UMM(instance, seed, budget,
     df['budget'] = budget
     df['eval_ranks'] = eval_ranks
     df['init'] = init
+    df['dist_name'] = dist_name
+    df['scalfun_learning'] = scalfun_learning
+    df['scalfun_sampling'] = scalfun_sampling
     return df

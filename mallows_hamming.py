@@ -1,22 +1,22 @@
-import seaborn as sns
-import mallows_kendall as mk
 import numpy as np
 import itertools as it
 from scipy.optimize import linear_sum_assignment
-import matplotlib.pyplot as plt
+from mallows_model import phi_to_theta, theta_to_phi
 
 
 def weighted_median(sample, ws):
     return uHungarian(sample, ws)
 
 def uHungarian(sample, ws):
-    m,n   = sample.shape
+    m, n = sample.shape
     wmarg = np.zeros((n,n))
     for i in range(n): # TODO incremental
       for j in range(n):
         freqs = (sample[:,i]==j)
         wmarg[i,j] = (freqs * ws).sum()
     row_ind, col_ind  = linear_sum_assignment( -wmarg )
+    # import matplotlib.pyplot as plt
+    # import seaborn as sns
     # if len(ws)%40==0 or len(ws)==10:
     #     print(np.around(wmarg,2))
     #     sns.heatmap(-wmarg)
@@ -25,19 +25,20 @@ def uHungarian(sample, ws):
     #     print(np.around(ws,2))
     return col_ind
 
-def distance(a,b):
-    return len(a) - np.sum(a==b)
+def dist_at_uniform(n): return n
 
+def distance(a,b):
+    return len(a) - (a == b).sum()
 
 
 def sample(m,n, k=None, theta=None, phi=None, s0=None):#(m,n, phi,s0): # INTERFACE
     """
 
     """
-    assert(k is None)
-    assert(theta is None)
+    assert k is None
+    assert theta is None
     sample = np.zeros((m,n))
-    theta = mk.phi_to_theta(phi)
+    theta = phi_to_theta(phi)
 
     facts_ = np.array([1,1]+[0]*(n-1),dtype=np.float) # TODO precompute
     deran_num_ = np.array([1,0]+[0]*(n-1),dtype=np.float)
@@ -69,13 +70,13 @@ def sample_at_dist(n,unfixed_points_num, sigma0=None):
 
 
 
-def expected_dist(n,phi):
+def expected_dist(n, phi):
     facts_ = np.array([1,1]+[0]*(n-1),dtype=np.float) # TODO precompute
     # deran_num_ = np.array([1,0]+[0]*(n-1),dtype=np.float)
     for i in range(2,n+1):
         facts_[i] = facts_[i-1] * i
     x_n_1 , x_n= 0,0
-    theta = mk.phi_to_theta(phi)
+    theta = phi_to_theta(phi)
     for k in range(n+1):
         aux = (np.exp(theta)-1)**k / facts_[k]
         x_n += aux
@@ -100,16 +101,17 @@ def expected_dist(n,phi):
 # from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
 # copy paste in hamming
 def find_phi(n, dmin, dmax): #NO
+    assert dmin < dmax
     imin, imax = 0.0, 1.0
     iterat = 0
     while iterat < 500:
-        med = imin + (imax - imin) / 2
-        # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
-        d = expected_dist(n, med)
+        med = (imax + imin) / 2
+        d = expected_dist(n, phi = med)
         # print(imin, imax, med, d,imin==imax)
-        if d < dmax and d > dmin: return med
-        elif d <= dmin : imin = med
-        elif d >= dmax : imax = med
+        if d < dmin: imin = med
+        elif d > dmax: imax = med
+        else: return med
         iterat  += 1
-    # FIXME: Is there a default?
-    assert False
+    # MANUEL: This function can stop without returning anything, which will
+    # lead to a bug. Let's make sure we give an error.
+    assert False, "Max iterations reached"

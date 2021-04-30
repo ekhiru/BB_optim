@@ -2,8 +2,8 @@ import os
 #os.environ['RPY2_CFFI_MODE'] = "API" # bug in cffi 1.13.0 https://bitbucket.org/rpy2/rpy2/issues/591/runtimeerror-found-a-situation-in-which-we
 
 import numpy as np
-from mallows_kendall import kendallTau
 import pandas as pd
+from mallows_model import select_mm
 
 from rpy2.robjects.packages import importr
 from rpy2.robjects import r as R
@@ -13,10 +13,11 @@ from rpy2.robjects.packages import STAP
 numpy2ri.activate()
 import rpy2.rinterface as ri
 
-# funcion de distancia entre permutaciones
-@ri.rternalize
-def r_kendallTau(A,B):
-    return kendallTau(A,B)
+#from mallows_kendall import kendallTau
+# # funcion de distancia entre permutaciones
+# @ri.rternalize
+# def r_kendallTau(A,B):
+#     return kendallTau(A,B)
 
 def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
     # Reset the list of recorded evaluations.
@@ -203,6 +204,7 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
 
     # We use what instance recorded because CEGO may not get us what was
     # actually evaluated.
+    mm = select_mm(dist_name)
     return pd.DataFrame(dict(
         Fitness = instance.evaluations,
         x = instance.solutions,
@@ -210,4 +212,4 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks):
         seed = seed,
         budget = budget, budgetGA = budgetGA,
         eval_ranks = eval_ranks,
-        Distance = [ instance.distance_to_best(perm) for perm in instance.solutions]))
+        Distance = [ instance.distance_to_best(perm, mm.distance) for perm in instance.solutions]))

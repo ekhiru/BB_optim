@@ -10,9 +10,29 @@ def select_mm(dist_name):
 
 import numpy as np
 
-def theta2phi(theta):
+def theta_to_phi(theta):
+    """This functions converts theta dispersion parameter into phi
+        Parameters
+        ----------
+        theta: float
+            Real dispersion parameter
+        Returns
+        -------
+        float
+            phi real dispersion parameter
+    """
     return np.exp(-theta)
 
-def phi2theta(phi):
+def phi_to_theta(phi):
+    """This functions converts phi dispersion parameter into theta
+        Parameters
+        ----------
+        phi: float
+            Real dispersion parameter
+        Returns
+        -------
+        float
+            theta real dispersion parameter
+    """
     return -np.log(phi)
 
