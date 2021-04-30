@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import os
 import os.path
 from glob import glob
@@ -6,7 +6,7 @@ import re
 import pandas as pd
 
 # traverse root directory, and list directories as dirs and files as files
-for root, dirs, files in os.walk("./results/m100-er0-dist_hamming/"):
+for root, dirs, files in os.walk("./results/m1000-er0-dist_hamming/"):
     print(root)
     unique_files = []
     for file in files:
@@ -20,7 +20,11 @@ for root, dirs, files in os.walk("./results/m100-er0-dist_hamming/"):
         for run_file in sorted(glob(root + os.sep + file + "-r*.csv.xz")):
             result = re.match(r".+-r([0-9]+)\.csv\.xz", run_file)
             runs.append(result.group(1))
-            run_data.append(pd.read_csv(run_file))
+            try:
+                run_data.append(pd.read_csv(run_file))
+            except:
+                print(f"Error: reading {run_file}")
+                raise
 
         res_file = root + os.sep + file + ".csv.xz"
         if os.path.isfile(res_file):
