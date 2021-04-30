@@ -1,255 +1,930 @@
 import numpy as np
 import itertools as it
-from mallows_model import phi2theta, theta2phi
-from scipy import optimize
+import scipy as sp
 
-# NOTE: Everything related to alpha to beta may be removed because it is related to partial permutations.
-def kendall_max_dist(n):
-    return int(n * (n - 1) / 2)
+def weighted_median(sample, ws):
+    """
+        Parameters
+        ----------
+        sample: numpy array
+            RANKINGS
+        ws: float
+            weight of each permutation
+        Returns
+        -------
+        ranking
+            weigthed median ranking
+    """
+    return borda(sample * ws[:, None])
 
-def dist_at_uniform(n):
-    return (n - 1) * n / 4
 
-# FIXME: Optimize this function
-def kendallTau(A, B=None):
-    # if any partial is B
-    if B is None : B = list(range(len(A)))
-    n = len(A)
-    # FIXME: Since n is typically fixed, this could be done once outside this function.
-    pairs = it.combinations(range(n), 2)
-    distance = 0
-    # print("IIIIMNNMNNN",list(pairs),len(A))
-    # FIXME: Avoid this loop: https://stackoverflow.com/questions/16003217/n-d-version-of-itertools-combinations-in-numpy
-    for x, y in pairs:
-        #if not A[x]!=A[x] and not A[y]!=A[y]:#OJO no se check B
-        a = A[x] - A[y]
-        # MANUEL: How can this fail?
-        try:
-            b = B[x] - B[y]# if discordant (different signs)
-        except:
-            print("ERROR kendallTau, check b",A, B, x, y)
-        # print(b,a,b,A, B, x, y,a * b < 0)
-        if (a * b < 0):
-            distance += 1
-    return distance
-
-def distance(a, b):
-    return kendallTau(a, b)
-
-# MANUEL: Can we update this comment?
-# FIXME: The comment says it searches for theta, but the function is called find_phi
-# These two functions search for theta for different E[D].
-# from 0 < E[D] < 1 (large theta) to E_0[D] (theta=0)
-# copy paste in hamming
-def find_phi(n, dmin, dmax): #NO # MANUEL: Why NO?
-    assert dmax > dmin
-    # MANUEL: Is imax the maximum variance possible?
-    imin, imax = 0.0, 1.0
-    iterat = 0
-    while iterat < 500:
-        med = (imax + imin) / 2
-        # FIXME: Here we convert phi2theta, but expected_dist_MM then convert theta to phi???
-        d = expected_dist_MM(n, theta = phi2theta(med))
-        #print(imin, imax, med, d,imin==imax)
-        if d < dmin : imin = med
-        elif d > dmax: imax = med
-        else: return med
-        iterat += 1
-    # FIXME: Is there a default?
-    assert False
-
+def max_dist(n):
+    """
+        Parameters
+        ----------
+        n: int
+            length of permutations
+        Returns
+        -------
+        int
+            Maximum distance between permutations of given n length
+    """
+    return int(n*(n-1)/2)
 
 def compose(s, p):
-    return np.asarray(s[p])
+    """This function composes two given permutations
+    Parameters
+    ----------
+    s: ndarray
+        The first permutation array
+    p: ndarray
+        The second permutation array
+    Returns
+    -------
+    ndarray
+        The composition of the permutations
+    """
+    return np.array(s[p])
+
+def compose_partial(partial, full):
+    """This function composes a partial permutation with an other (full)
+        Parameters
+        ----------
+        partial: ndarray
+            The partial permutation (should be filled with float)
+        full:
+            The full permutation (should be filled with integers)
+        Returns
+        -------
+        ndarray
+            The composition of the permutations
+    """
+    return [partial[i] if not np.isnan(i) else np.nan for i in full]
+
+def inverse_partial(sigma):
+    """This function computes the inverse of a given partial permutation
+        Parameters
+        ----------
+        sigma: ndarray
+            A partial permutation array (filled with float)
+        Returns
+        -------
+        ndarray
+            The inverse of given partial permutation
+    """
+    inv = np.full(len(sigma), np.nan)
+    for i,j in enumerate(sigma):
+        if not np.isnan(j):
+            inv[int(j)] = i
+    return inv
 
 def inverse(s):
+    """This function computes the inverse of a given permutation
+        Parameters
+        ----------
+        s: ndarray
+            A permutation array
+        Returns
+        -------
+        ndarray
+            The inverse of given permutation
+    """
     return np.argsort(s)
 
+
 def borda(rankings):
-    # Ranks breaking ties randomly.
-    consensus = inverse(inverse(rankings.sum(axis=0)))
+    """This function computes an average permutation given several permutations
+        Parameters
+        ----------
+        rankings: ndarray
+            Matrix of several permutations
+        Returns
+        -------
+        ndarray
+            The 'average' permutation of permutations given
+    """
+    consensus =  np.argsort( # give the inverse of result --> sigma_0
+                            np.argsort( # give the indexes to sort the sum vector --> sigma_0^-1
+                                        rankings.sum(axis=0) # sum the indexes of all permutations
+                                        )
+                            ) #borda
     return consensus
 
-def check_theta_phi(theta, phi):
-    assert phi is not None or theta is not None, "check_theta_phi: you need to provide either theta or phi"
-    if phi is None:
-        # In our case: theta and phi is always a number.
-        if type(theta)!=list:
-            phi = theta2phi(theta)
-        else:
-            # FIXME: we do not need this because it is already a numpy operation so it will vectorize.
-            phi = [theta2phi(t) for t in theta]
-    if theta is None:
-        if type(phi)!=list:
-            theta = phi2theta(phi)
-        else:
-            # FIXME: we do not need this because it is already a numpy operation so it will vectorize.
-            theta = [phi2theta(p) for p in phi]
-    return theta, phi
+def borda_partial(rankings, w, k):
+    """
+        Parameters
+        ----------
+        Returns
+        -------
+    """
+    a, b = rankings, w
+    a, b = np.nan_to_num(rankings,nan=k), w
+    aux = a * b
+    borda = np.argsort(np.argsort(np.nanmean(aux, axis=0))).astype(float)
+    mask = np.isnan(rankings).all(axis=0)
+    borda[mask]=np.nan
+    return borda
 
-def expected_dist_MM(n, theta=None, phi=None):
+
+def check_theta_phi(theta, phi):
+    """This function automatically converts theta to phi or phi to theta as
+    list or float depending on the values and value types given as input
+        Parameters
+        ----------
+        theta: float or list
+            Dispersion parameter theta to convert to phi (can be None)
+        phi: float or list
+            Dispersion parameter phi to convert to theta (can be None)
+        Returns
+        -------
+        tuple
+            tuple containing both theta and phi (of list or float type depending on the input type)
+    """
+    if not ((phi is None) ^ (theta is None)):
+        print("Set valid values for phi or theta")
+    if phi is None and type(theta)!=list:
+        phi = theta_to_phi(theta)
+    if theta is None and type(phi)!=list:
+        theta = phi_to_theta(phi)
+    if phi is None and type(theta)==list:
+        phi = [theta_to_phi(t) for t in theta]
+    if theta is None and type(phi)==list:
+        theta = [phi_to_theta(p) for p in phi]
+    return np.array(theta), np.array(phi)
+
+def expected_dist_mm(n, theta=None, phi=None):
+    """Compute the expected distance, MM under the Kendall's-tau distance
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Real dispersion parameter (optionnal if phi is given)
+        phi: float
+            Real dispersion parameter (optionnal if theta is given)
+        Returns
+        -------
+        float
+            The expected disance under the MMs
+    """
     theta, phi = check_theta_phi(theta, phi)
-    # FIXME: It is faster:
-    # j = np.arange(1, n + 1)
-    # exp_j_theta = np.exp(-j * theta)
-    # exp_dist = (n * n.exp(-theta) / (1 - n.exp(-theta))) - np.sum(j * exp_j_theta / (1 - exp_j_theta)
-    expected_dist = n * np.exp(-theta) / (1 - np.exp(-theta)) - np.sum([j * np.exp(-j*theta) / (1 - np.exp(-j*theta))  for j in range(1,n+1)])
+    rnge = np.array(range(1,n+1))
+    expected_dist = n * np.exp(-theta) / (1-np.exp(-theta)) - np.sum(rnge * np.exp(-rnge*theta) / (1 - np.exp(-rnge*theta)))
+
     return expected_dist
 
+def variance_dist_mm(n, theta=None, phi=None):
+    """
+        Parameters
+        ----------
+        Returns
+        -------
+    """
+    theta, phi = check_theta_phi(theta, phi)
+    rnge = np.array(range(1,n+1))
+    variance = (phi*n)/(1-phi)**2 - np.sum((pow(phi,rnge) * rnge**2)/(1-pow(phi,rnge))**2)
+
+    return variance
+
+def expected_v(n, theta=None, phi=None, k=None):#txapu integrar
+    """This function computes the expected decomposition vector
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Real dispersion parameter (optionnal if phi is given)
+        phi: float
+            Real dispersion parameter (optionnal if theta is given)
+        k: int
+            Index to which the decomposition vector is needed ???
+        Returns
+        -------
+        ndarray
+            The expected decomposition vector
+    """
+    theta, phi = check_theta_phi(theta, phi)
+    if k is None: k = n-1
+    if type(theta)!=list: theta = np.full(k, theta)
+    rnge = np.array(range(k))
+    expected_v = np.exp(-theta[rnge]) / (1-np.exp(-theta[rnge])) - (n-rnge) * np.exp(-(n-rnge)*theta[rnge]) / (1 - np.exp(-(n-rnge)*theta[rnge]))
+    return expected_v
+
+def variance_v(n, theta=None, phi=None, k=None):
+    """
+        Parameters
+        ----------
+        Returns
+        -------
+    """
+    theta, phi = check_theta_phi(theta, phi)
+    if k is None:
+        k = n-1
+    if type(phi)!=list:
+        phi = np.full(k, phi)
+    rnge = np.array(range(k))
+    var_v = phi[rnge]/(1-phi[rnge])**2 - (n-rnge)**2 * phi[rnge]**(n-rnge) / (1-phi[rnge]**(n-rnge))**2
+    return var_v
+
+def expected_dist_top_k(n, k, theta=None, phi=None):
+    """Compute the expected distance for top-k rankings, following
+    a MM under the Kendall's-tau distance
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Real dispersion parameter (optionnal if phi is given)
+        phi: float
+            Real dispersion parameter (optionnal if theta is given)
+        Returns
+        -------
+        float
+            The expected disance under the MMs
+    """
+    theta, phi = check_theta_phi(theta, phi)
+    rnge = np.array(range(n-k+1,n+1))
+    expected_dist = k * np.exp(-theta) / (1-np.exp(-theta)) - np.sum(rnge * np.exp(-rnge*theta) / (1 - np.exp(-rnge*theta)))
+    return expected_dist
+
+def variance_dist_top_k(n, k, theta=None, phi=None):
+    """
+        Compute the variance of the distance for top-k rankings, following
+        a MM under the Kendall's-tau distance
+        Parameters
+        ----------
+        Returns
+        -------
+    """
+    theta, phi = check_theta_phi(theta, phi)
+    rnge = np.array(range(n-k+1,n+1))
+    variance = (phi*k)/(1-phi)**2 - np.sum((pow(phi,rnge) * rnge**2)/(1-pow(phi,rnge))**2)
+    return variance
+
+
+def psi_mm(n, theta=None, phi=None):
+    """This function computes the normalization constant psi
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Real dispersion parameter (optionnal if phi is given)
+        phi: float
+            Real dispersion parameter (optionnal if theta is given)
+        Returns
+        -------
+        float
+            The normalization constant psi
+    """
+    rnge = np.array(range(2,n+1))
+    if theta is not None:
+        return np.prod((1-np.exp(-theta*rnge))/(1-np.exp(-theta)))
+    if phi is not None:
+        return np.prod((1-np.power(phi,rnge))/(1-phi))
+    theta, phi = check_theta_phi(theta, phi)
+
+def prob_mode(n, theta):
+    """This function computes the probability mode
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Real dispersion parameter
+        Returns
+        -------
+        float
+            The probability mode
+    """
+    rnge = np.array(range(n-1))
+    psi = (1 - np.exp(( - n + rnge )*(theta[rnge])))/(1 - np.exp( -theta[rnge]))
+    return np.prod(1.0/psi)
+
 def prob(n, theta, dist):
-    # FIXME: You do not need the for-loop
-    psi = np.array([(1 - np.exp(( - n + i )*(theta)))/(1 - np.exp( -theta)) for i in range(n-1)])
+    """This function computes the probability of a permutation given a distance to the consensus
+        Parameters
+        ----------
+        n: int
+            Length of the permutation in the considered model
+        theta: float
+            Dispersion vector
+        dist: int
+            Distance of the permutation to the consensus permutation
+        Returns
+        -------
+        float
+            Probability of the permutation
+    """
+    rnge = np.array(range(n-1))
+    psi = (1 - np.exp(( - n + rnge )*(theta)))/(1 - np.exp( -theta))
     psi = np.prod(psi)
     return np.exp(-theta*dist) / psi
 
-def fit_MM(rankings, s0=None): #returns sigma, phi
-    m, n = rankings.shape
-    if s0 is None:
-        s0 = borda(rankings)
-    dist_avg = np.mean([kendallTau(s0, perm) for perm in rankings])
-    s0, phi = fit_MM_phi(n, dist_avg)
-    return s0, phi
+def prob_sample(perms, sigma, theta=None, phi=None):
+    """This function computes the probabilities for each permutation of a sample
+    of several permutations
+        Parameters
+        ----------
+        perms: ndarray
+            The matrix of permutations
+        sigma: ndarray
+            Permutation mode
+        theta: float
+            Real dispersion parameter (optionnal if phi is given)
+        phi: float
+            Real dispersion parameter (optionnal if theta is given)
+        Returns
+        -------
+        ndarray
+            Array of probabilities for each permutation given as input
+    """
+    m, n = perms.shape
+    theta, phi = check_theta_phi(theta, phi)
+    rnge = np.array(range(n-1))
+    psi = (1 - np.exp(( - n + rnge )*(theta)))/(1 - np.exp( -theta))
+    psi = np.prod(psi)
+    return np.array([np.exp(-theta*distance(perm, sigma)) / psi for perm in perms])
 
-def fit_MM_phi(n, dist_avg): #returns sigma, phi
+def fit_mm(rankings, s0=None):
+    """This function computes the consensus permutation and the MLE for the
+    dispersion parameter phi for MM models
+        Parameters
+        ----------
+        rankings: ndarray
+            The matrix of permutations
+        s0: ndarray, optional
+            The consensus permutation (default value is None)
+        Returns
+        -------
+        tuple
+            The ndarray corresponding to s0 the consensus permutation and the
+            MLE for the dispersion parameter phi
+    """
+    m, n = rankings.shape
+    if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+    dist_avg = np.mean(np.array([distance(s0, perm) for perm in rankings]))
     try:
-        theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
+        theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
     except:
-        # FIXME: This returns before giving an error???
         if dist_avg == 0.0:
-            # FIXME: Why 5?
             return s0, np.exp(-5)#=phi
-        print(f"error: fit_MM_phi. dist_avg={dist_avg}", dist_avg == 0.0)
+        print("Error in function: fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
         print(rankings)
         print(s0)
         raise
-    # theta = - np.log(phi)
-    # FIXME: return theta2phi(theta)
+    return s0, np.exp(-theta)#=phi
+# def fit_mm_phi(n, dist_avg):
+#     """Same as fit_mm but just returns phi ??? Also does not compute dist_avg
+#     but take it as a parameter
+#
+#         Parameters
+#         ----------
+#         n: int
+#             Dimension of the permutations
+#         dist_avg: float
+#             Average distance of the sample (between the consensus and the
+#             permutations of the consensus)
+#
+#         Returns
+#         -------
+#         float
+#             The MLE for the dispersion parameter phi
+#     """
+#     try:
+#         theta = sp.optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
+#     except:
+#         if dist_avg == 0.0:
+#             return s0, np.exp(-5)#=phi
+#         print("error. fit_mm. dist_avg=",dist_avg, dist_avg == 0.0)
+#         print(rankings)
+#         print(s0)
+#         raise
+#     # theta = - np.log(phi)
+#     return np.exp(-theta)
+
+def fit_gmm(rankings, s0=None):
+    """This function computes the consensus permutation and the MLE for the
+    dispersion parameters theta_j for GMM models
+        Parameters
+        ----------
+        rankings: ndarray
+            The matrix of permutations
+        s0: ndarray, optional
+            The consensus permutation (default value is None)
+        Returns
+        -------
+        tuple
+            The ndarray corresponding to s0 the consensus permutation and the
+            MLE for the dispersion parameters theta
+    """
+    m, n = rankings.shape
+    if s0 is None:
+        s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
+    V_avg = np.mean(np.array([ranking_to_v(sigma)[:-1] for sigma in rankings]), axis = 0)
+    try:
+        theta = []
+        for j in range(1, n):
+            theta_j = sp.optimize.newton(mle_theta_j_gmm_f, 0.01, fprime=mle_theta_j_gmm_fdev, args=(n, j, V_avg[j-1]), tol=1.48e-08, maxiter=500, fprime2=None)
+            theta.append(theta_j)
+    except:
+        print("Error in function fit_gmm")
+        raise
+    return s0, theta
+
+
+
+def theta_to_phi(theta):
+    """This functions converts theta dispersion parameter into phi
+        Parameters
+        ----------
+        theta: float
+            Real dispersion parameter
+        Returns
+        -------
+        float
+            phi real dispersion parameter
+    """
     return np.exp(-theta)
 
+def phi_to_theta(phi):
+    """This functions converts phi dispersion parameter into theta
+        Parameters
+        ----------
+        phi: float
+            Real dispersion parameter
+        Returns
+        -------
+        float
+            theta real dispersion parameter
+    """
+    return - np.log(phi)
 
 def mle_theta_mm_f(theta, n, dist_avg):
+    """Computes the derivative of the likelihood
+    parameter
+        Parameters
+        ----------
+        theta: float
+            The dispersion parameter
+        n: int
+            Dimension of the permutations
+        dist_avg: float
+            Average distance of the sample (between the consensus and the
+            permutations of the consensus)
+        Returns
+        -------
+        float
+            Value of the function for given parameters
+    """
     aux = 0
-    for j in range(1,n):
-        k = n - j + 1
-        aux += (k * np.exp(-theta * k))/(1 - np.exp(-theta * k))
+    rnge = np.array(range(1,n))
+    aux = np.sum((n-rnge+1)*np.exp(-theta*(n-rnge+1))/(1-np.exp(-theta*(n-rnge+1))))
     aux2 = (n-1) / (np.exp( theta ) - 1) - dist_avg
+
     return aux2 - aux
 
 def mle_theta_mm_fdev(theta, n, dist_avg):
+    """This function computes the derivative of the function mle_theta_mm_f
+    given the dispersion parameter and the average distance
+        Parameters
+        ----------
+        theta: float
+            The dispersion parameter
+        n: int
+            The dimension of the permutations
+        dist_avg: float
+            Average distance of the sample (between the consensus and the
+            permutations of the consensus)
+        Returns
+        -------
+        float
+            The value of the derivative of function mle_theta_mm_f for given
+            parameters
+    """
     aux = 0
-    for j in range(1,n):
-        k = n - j + 1
-        aux += (k * k * np.exp( -theta * k ))/pow((1 - np.exp(-theta * k)) , 2 )
-    aux2 = (-n + 1) * np.exp( theta ) / pow((np.exp( theta ) - 1) , 2 )
-    # print(theta)
+    rnge = np.array(range(1, n))
+    aux = np.sum((n-rnge+1)*(n-rnge+1)*np.exp(-theta*(n-rnge+1))/pow((1 - np.exp(-theta * (n-rnge+1))), 2))
+    aux2 = (- n + 1) * np.exp( theta ) / pow ((np.exp( theta ) - 1), 2)
+
     return aux2 + aux
 
+def mle_theta_j_gmm_f(theta_j, n, j, v_j_avg):
+    """Computes the derivative of the likelihood
+    parameter theta_j in the GMM
+        Parameters
+        ----------
+        theta: float
+            The jth dispersion parameter theta_j
+        n: int
+            Dimension of the permutations
+        j: int
+            The position of the theta_j in vector theta of dispersion parameters
+        v_j_avg: float
+            jth element of the average decomposition vector over the sample
+        Returns
+        -------
+        float
+            Value of the function for given parameters
+    """
+    f_1 = np.exp( -theta_j ) / ( 1 - np.exp( -theta_j ) )
+    f_2 = - ( n - j + 1 ) * np.exp( - theta_j * ( n - j + 1 ) ) / ( 1 - np.exp( - theta_j * ( n - j + 1 ) ) )
+    return f_1 + f_2 - v_j_avg
+
+def mle_theta_j_gmm_fdev(theta_j, n, j, v_j_avg):
+    """This function computes the derivative of the function mle_theta_j_gmm_f
+    given the jth element of the dispersion parameter and the jth element of the
+    average decomposition vector
+        Parameters
+        ----------
+        theta: float
+            The jth dispersion parameter theta_j
+        n: int
+            Dimension of the permutations
+        j: int
+            The position of the theta_j in vector theta of dispersion parameters
+        v_j_avg: float
+            jth element of the average decomposition vector over the sample
+        Returns
+        -------
+        float
+            The value of the derivative of function mle_theta_j_gmm_f for given
+            parameters
+    """
+    fdev_1 = - np.exp( - theta_j ) / pow( ( 1 - np.exp( -theta_j ) ), 2 )
+    fdev_2 = pow( n - j + 1, 2 ) * np.exp( - theta_j * ( n - j + 1 ) ) / pow( 1 - np.exp( - theta_j * ( n - j + 1 ) ), 2 )
+    return fdev_1 + fdev_2
+
 def likelihood_mm(perms, s0, theta):
-    m, n = perms.shape
-    psi = 1.0 / np.prod([(1-np.exp(-theta*j))/(1-np.exp(-theta)) for j in range(2,n+1)])
-    probs = np.array([np.log(np.exp(-kendallTau(s0, perm)*theta)/psi) for perm in perms])
+    """This function computes the log-likelihood for MM model given a matrix of
+    permutation, the consensus permutation, and the dispersion parameter
+        Parameters
+        ----------
+        perms: ndarray
+            A matrix of permutations
+        s0: ndarray
+            The consensus permutation
+        theta: float
+            The dispersion parameter
+        Returns
+        -------
+        float
+            Value of log-likelihood for given parameters
+    """
+    m,n = perms.shape
+    rnge = np.array(range(2,n+1))
+    psi = 1.0 / np.prod((1-np.exp(-theta*rnge))/(1-np.exp(-theta)))
+    probs = np.array([np.log(np.exp(-distance(s0, perm)*theta)/psi) for perm in perms])
     # print(probs,m,n)
     return probs.sum()
 
-def sample(m,n, phi,sigma0): # INTERFACE
-    return samplingMM(m,n,theta=None, phi=phi, k=None,sigma0=sigma0)
+def sample(m,n, k=None, theta=None, phi=None, s0=None):
+    """This function generates m permutations (rankings) according
+    to Mallows Models (if the given parameters are m, n, k/None,
+    theta/phi: float, s0/None) or Generalized Mallows Models
+    (if the given parameters are m, theta/phi: ndarray, s0/None).
+    Moreover, the parameter k allows the function to generate top-k rankings only.
+        Parameters
+        ----------
+        m: int
+            The number of rankings to generate
+        theta: float or ndarray, optional (if phi given)
+            The dispersion parameter theta
+        phi: float or ndarray, optional (if theta given)
+            The dispersion parameter phi
+        k: int
+            number of known positions of items for the rankings
+        s0: ndarray
+            The consensus ranking
+        Returns
+        -------
+        list
+            The rankings generated
+    """
+    if k is not None and n is None:
+        print("Error, n is not given!")
+        return
 
-def samplingMM(m,n,theta=None, phi=None, k=None,sigma0=None):
-    # k return partial orderings
     theta, phi = check_theta_phi(theta, phi)
-    if k == n:
-        k = None
-    sample =  samplingGMM(m, [theta] * (n-1), topk = k)
-    sample = [perm[sigma0] for perm in sample]
-    return np.array(sample)
 
-def samplingGMM(m,theta, topk=None):
-    #  returns RANKINGS!!!!!!!*****
-    n = len(theta)+1
-    if topk is None or topk == n: k = n-1
-    else: k = topk
-    psi = [(1 - np.exp(( - n + i )*(theta[ i ])))/(1 - np.exp( -theta[i])) for i in range(k)]
+    if n is not None: #TODO, n should be always given
+        theta = np.full(n-1, theta)
+
+    n = len(theta)+1#TODO, n should be always given
+
+    if s0 is None:
+        s0 = np.array(range(n))
+
+    rnge = np.array(range(n-1))
+
+    psi = (1 - np.exp(( - n + rnge )*(theta[ rnge ])))/(1 - np.exp( -theta[rnge]))
     vprobs = np.zeros((n,n))
-    for j in range(k): #range(n-1):
+    for j in range(n-1):
         vprobs[j][0] = 1.0/psi[j]
         for r in range(1,n-j):
-            vprobs[j][r] = np.exp( -theta[j] * r ) / psi[j]#vprobs[j][ r - 1 ] + np.exp( -theta[j] * r ) / psi[j]
+            vprobs[j][r] = np.exp( -theta[j] * r ) / psi[j]
     sample = []
     vs = []
     for samp in range(m):
-        v = [np.random.choice(n,p=vprobs[i,:]) for i in range(k)] # v = [np.random.choice(n,p=vprobs[i,:]/np.sum(vprobs[i,:])) for i in range(k)]
-        #vs.append(v)
-        #print(v, np.sum(v))
-        # print(v, topk)
-        if topk is None: v += [0] # la fun discordancesToPermut necesita, len(v)==n
-        ranking = v2ranking(v, n)#discordancesToPermut(v,list(range(n)))
-        # if topk is not None :
-        #     ranking = np.concatenate([ranking, np.array([np.nan]*(n-topk))])
+        v = [np.random.choice(n,p=vprobs[i,:]) for i in range(n-1)]
+        v += [0]
+        ranking = v_to_ranking(v, n)
         sample.append(ranking)
-    return np.array(sample)
 
-def ranking2v(perm):
-    n = len(perm)
-    return np.array([np.sum([perm[i]<perm[j] for i in range(j+1,n)], dtype=int) for j in range(n)])
+    sample = np.array([s[s0] for s in sample])
 
-def ranking2vinv(perm):
-    inv = inverse(perm)
-    n = len(perm)
-    return np.array([np.sum([inv[i]<inv[j] for i in range(j+1,n)], dtype=int) for j in range(n)])
+    if k is not None:
+        sample_rankings = np.array([inverse(ordering) for ordering in sample])
+        sample_rankings = np.array([ran[s0] for ran in sample_rankings])
+        sample = np.array([[i if i in range(k) else np.nan for i in ranking] for
+                        ranking in sample_rankings])
+    return sample
 
-def v2ranking(v, n): ##len(v)==n, last item must be 0
-    # n = len(v)
+def v_to_ranking(v, n):
+    """This function computes the corresponding permutation given
+    a decomposition vector
+        Parameters
+        ----------
+        v: ndarray
+            Decomposition vector, same length as the permutation, last item must be 0
+        n: int
+            Length of the permutation
+        Returns
+        -------
+        ndarray
+            The permutation corresponding to the decomposition vectors
+    """
     rem = list(range(n))
-    rank = np.array([np.nan]*n)# np.zeros(n,dtype=np.int)
-    # print(v,rem,rank)
+    rank = np.full(n, np.nan)
     for i in range(len(v)):
-        # print(i,v[i], rem)
         rank[i] = rem[v[i]]
         rem.pop(v[i])
-    return rank#[i+1 for i in permut];
+    return rank
+
+def ranking_to_v(sigma, k=None):
+    """This function computes the corresponding decomposition vector given
+    a permutation
+        Parameters
+        ----------
+        sigma: ndarray
+            A permutation
+        k: int, optionnal
+            The index to perform the conversion for a partial
+            top-k list
+        Returns
+        -------
+        ndarray
+            The decomposition vector corresponding to the permutation. Will be
+            of length n and finish with 0
+    """
+    n = len(sigma)
+    if k is not None:
+        sigma = sigma[:k]
+        sigma = np.concatenate((sigma,np.array([np.float(i) for i in range(n) if i not in sigma])))
+    V = []
+    for j, sigma_j in enumerate(sigma):
+        V_j = 0
+        for i in range(j+1,n):
+            if sigma_j > sigma[i]:
+                V_j += 1
+        V.append(V_j)
+    return np.array(V)
+# def discordances_to_permut(indCode, refer):
+#     """
+#         Parameters
+#         ----------
+#         Returns
+#         -------
+#     """
+#     print("warning. discordances_to_permut is deprecated. Use function v_to_ranking")
+#     return v_to_ranking(indCode)
 
 
-def discordancesToPermut(indCode, refer):
-    print("warning. discordancesToPermut is deprecated. Use function v2ranking")
-    return v2ranking(indCode)
-    # returns rNKING
-    # n = len(indCode)
-    # rem = refer[:] #[i for i in refer]
-    # ordering = np.zeros(n,dtype=np.int)
-    # for i in range(n):
-    #     ordering[i] = rem[indCode[i]]
-    #     rem.pop(indCode[i])
-    # return ordering#[i+1 for i in permut];
+def count_inversion(left, right):
+    """
+    This function use merge sort algorithm to count the number of
+    inversions in a permutation of two parts (left, right).
+    Parameters
+    ----------
+    left: ndarray
+        The first part of the permutation
+    right: ndarray
+        The second part of the permutation
+    Returns
+    -------
+    result: ndarray
+        The sorted permutation of the two parts
+    count: int
+        The number of inversions in these two parts
+    """
+    result = []
+    count = 0
+    i, j = 0, 0
+    left_len = len(left)
+    while i < left_len and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            count += left_len - i
+            j += 1
+    result += left[i:]
+    result += right[j:]
 
-def partial_ord2partial_rank(pord, n, k, type="beta"):#NO
-    if type == "gamma": val = -1
-    elif type == "beta": val = k
+    return result, count
 
-    # pord is a collection of partial orderings, each of which (1) has len n (2) np.nans for the unspecified places (3) is np.array
-    #input partial ordering of the first k items. The first k positions have vals [0,n-1]
-    #output partial ranking of the first k ranks. There are k positions have vals [0,k-1]. The rest have val=k (so the kendall dist can be compared)
-    prank = []
-    # n = len(pord[0])
-    # for perm in pord:
-    res = np.array([val]*n)
-    for i,j in enumerate(pord[~np.isnan(pord)]):
-        res[int(j)]=i
-    # prank.append(res)
-    return np.array(res)
+def mergeSort_rec(lst):
+    """
+    This function count the number of inversions in a permutation by calling
+    count_inversion recursively.
+    Parameters
+    ----------
+    lst: ndarray
+        The permutation
+    Returns
+    -------
+    result: ndarray
+        The sorted permutation
+    (a + b + c): int
+        The number of inversions
+    """
+    lst = list(lst)
+    if len(lst) <= 1:
+        return lst, 0
+    middle = int( len(lst) / 2 )
+    left, a   = mergeSort_rec(lst[:middle])
+    right, b  = mergeSort_rec(lst[middle:])
+    result, c = count_inversion(left, right)
+    return result, (a + b + c)
 
-# m'/M segun wolfram -((j - n) e^(j x))/(e^(n x) - e^(j x)) - (j e^x - j - n e^x + n + e^x)/(e^x - 1)
+
+
+def distance(A, B=None):
+    """
+    This function computes the kendall's-tau distance between two permutations
+    using merge sort algorithm.
+    If only one permutation is given, the distance will be computed with the
+    identity permutation as the second permutation
+   Parameters
+   ----------
+   A: ndarray
+        The first permutation
+   B: ndarray, optionnal
+        The second permutation (default is None)
+   Returns
+   -------
+   int
+        The kendall's-tau distance between both permutations
+    """
+    if B is None : B = list(range(len(A)))
+
+    A = np.asarray(A)
+    B = np.asarray(B)
+    n = len(A)
+
+    # check if A contains NaNs
+    msk = np.isnan(A)
+    indexes = np.array(range(n))[msk]
+
+    if indexes.size: # A contains NaNs
+        # reverse the indexes
+        indexes = sorted(indexes, reverse=True)
+        for i in indexes: # delete all NaNs and their associated values in B
+            A = np.delete(A, i)
+            B = np.delete(B, i)
+    # check if B contains NaNs
+    msk = np.isnan(B)
+    indexes = np.array(range(n - len(indexes)))[msk]
+
+    if indexes.size: # B contains NaNs
+        # reverse the indexes
+        indexes = sorted(indexes, reverse=True)
+        for i in indexes: # delete all NaNs and their associated values in A
+            A = np.delete(A, i)
+            B = np.delete(B, i)
+
+    inverse = np.argsort(B)
+    compose = A[inverse]
+    _, distance = mergeSort_rec(compose)
+    return distance
+
+
+# def dist_alpha(alpha, k):
+#     """Compute the distance of a partial ordering (also called top-k list)
+#     according to an alternative definition of Kendall's-tau distance. The
+#     distance is defined as follows: it is the sum of the js in the head larger
+#     than i for every i.
 #
-def Ewolfram(n,j,x):#NO
-    return (-((j - n) * np.exp(j * x))/(np.exp(n* x) - np.exp(j *x)) - (j* np.exp(x) - j - n *np.exp(x) + n + np.exp(x))/(np.exp(x) - 1))
-#(E^(x + 2 j x) + E^(x + 2 n x) - E^((j + n) x) (j - n)^2 - E^((2 + j + n) x) (j - n)^2 + 2 E^((1 + j + n) x) (-1 + j^2 - 2 j n + n^2))/((-1 + E^x)^2 (-E^(j x) + E^(n x))^2)
-def Vwolfram(n,j,x):#NO
-    numer = (np.exp(x + 2* j *x) + np.exp(x + 2* n *x) - np.exp((j + n) *x)*(j - n)**2 - np.exp((2+j+n)* x)* (j - n)**2 + 2 *np.exp((1 + j + n) *x)*(-1 + j**2 - 2* j *n + n**2))
-    denom = ((-1 + np.exp(x))**2 *(-np.exp(j *x) + np.exp(n* x))**2)
-    return numer/denom
+#         Parameters
+#         ----------
+#         alpha: ndarray
+#             The partial ordering
+#         k: int
+#             The order ??? of the partial list
+#
+#         Returns
+#         -------
+#         int
+#             The kendall's-tau distance alternative for alpha
+#     """
+#     # an alternative def for kendall is to sum the js in the tail smaller than i, for every i
+#     # or the js in the head larger than i for every i*.
+#     # we take this since the head is defined an d the tail is not for alpha in Alpha
+#     dist = 0
+#     for j in range(k):
+#         dist += alpha[j] - np.sum([1 for i in alpha[:j] if i<alpha[j]])
+#
+#     return dist
+# def dist_beta(beta, sigma=None):
+#     """Compute the distance of a partial ranking according to an alternative
+#     definition of Kendall's-tau distance. The distance is defined as follows:
+#     missing ranks in beta are filled with a value greater than all the values
+#     in both rankings (length of the rankings + 1 here). Then the classical
+#     Kendall's-tau distance is applied to this new vector.
+#
+#         Parameters
+#         ----------
+#         beta: ndarray
+#             The partial ranking
+#         sigma: ndarray, optional
+#             A full permutation to which wew want to compute the distance with
+#             beta (default None, sigma will be the identity permutation)
+#
+#         Returns
+#         -------
+#         int
+#             The kendall's-tau distance alternative for beta
+#     """
+#     n = len(beta)
+#     if sigma is None:
+#         sigma = list(range(n))
+#     aux = beta.copy()
+#     aux = [i if not np.isnan(i) else n+1 for i in aux ]
+#     return distance(aux, sigma)
+
+def p_distance(beta_1, beta_2, k, p=0):
+    alpha_1 = beta_to_alpha(beta_1, k=k)
+    alpha_2 = beta_to_alpha(beta_2, k=k)
+    d = 0
+    p_counter = 0
+    alpha_1Ualpha_2 = list(set(int(x) for x in np.union1d(alpha_1, alpha_2) if np.isnan(x) == False))
+    for i_index, i in enumerate(alpha_1Ualpha_2):
+        i_1_nan = np.isnan(beta_1[i])
+        i_2_nan = np.isnan(beta_2[i])
+        for j in alpha_1Ualpha_2[i_index + 1:] :
+            j_1_nan = np.isnan(beta_1[j])
+            j_2_nan = np.isnan(beta_2[j])
+            if not i_1_nan and  not j_1_nan and not i_2_nan and not j_2_nan:
+                if ( beta_1[i] > beta_1[j] and beta_2[i] > beta_2[j] ) or \
+                ( beta_1[i] < beta_1[j] and beta_2[i] < beta_2[j] ):
+                    continue
+                elif ( beta_1[i] > beta_1[j] and beta_2[i] < beta_2[j] ) or \
+                ( beta_1[i] < beta_1[j] and beta_2[i] > beta_2[j] ):
+                    d += 1
+            elif ( not i_1_nan and not j_1_nan and ( (not i_2_nan and j_2_nan) or (i_2_nan and not j_2_nan) ) ) or \
+            ( not i_2_nan and not j_2_nan and ( (not i_1_nan and j_1_nan) or (i_1_nan and not j_1_nan) ) ):
+                if i_1_nan:
+                    d += int(beta_2[j] > beta_2[i])
+                elif j_1_nan:
+                    d += int(beta_2[i] > beta_2[j])
+                elif i_2_nan:
+                    d += int(beta_1[j] > beta_1[i])
+                elif j_2_nan:
+                    d += int(beta_1[i] > beta_1[j])
+            elif ( not i_1_nan and j_1_nan and i_2_nan and not j_2_nan ) or \
+            ( i_1_nan and not j_1_nan and not i_2_nan and j_2_nan ):
+                d += 1
+            elif ( not i_1_nan and not j_1_nan and i_2_nan and j_2_nan ) or \
+            ( i_1_nan and j_1_nan and not i_2_nan and not j_2_nan ):
+                p_counter += 1
+    return d + p_counter*p
+
+def alpha_to_beta(alpha,k): #aux for the p_distance
+    inv = np.full(len(alpha), np.nan)
+    for i,j in enumerate(alpha[:k]):
+        inv[int(j)] = i
+    return inv
+def beta_to_alpha(beta,k): #aux for the p_distance
+    inv = np.full(len(beta), np.nan)
+    for i,j in enumerate(beta):
+        if not np.isnan(j):
+            inv[int(j)] = i
+    return inv
 
 
-## number of perms at each dist
 def num_perms_at_dist(n):
+    """This function computes the number of permutations of length 1 to n for
+    each possible Kendall's-tau distance d
+        Parameters
+        ----------
+        n: int
+            Dimension of the permutations
+        Returns
+        -------
+        ndarray
+            ??? ---> to finish
+    """
     sk = np.zeros((n+1,int(n*(n-1)/2+1)))
     for i in range(n+1):
         sk[i,0] = 1
@@ -261,8 +936,15 @@ def num_perms_at_dist(n):
                 sk[i,j] = sk[i,j-1]+ sk[i-1,j]
     return sk.astype(np.uint64)
 
-## random permutations at distance
 def random_perm_at_dist(n, dist, sk):
+    """
+        Parameters
+        n, dist
+        sk, the matrix restured by the function 'num_perms_at_dist(n)'
+        ----------
+        Returns
+        -------
+    """
     # param sk is the results of the function num_perms_at_dist(n)
     i = 0
     probs = np.zeros(n+1)
@@ -280,27 +962,24 @@ def random_perm_at_dist(n, dist, sk):
         v[i] = np.random.choice(mi,1,p=probs[:mi]/probs[:mi].sum())
         dist -= v[i]
         i += 1
-    return v2ranking(v)
+    return v_to_ranking(v,n)
 
+def find_phi_n(n, bins):
+    ed, phi_ed = [], []
+    ed_uniform = (n*(n-1)/2)/2
+    for dmin in np.linspace(0,ed_uniform-1,bins):
+        ed.append(dmin)
+        phi_ed.append(find_phi(n, dmin, dmin+1))
+    return ed, phi_ed
 
-def u_phi(sample, s0, ws):
-    #m, n = np.asarray(sample).shape
-    #if s0 is None: s0 = np.argsort(np.argsort(rankings.sum(axis=0))) #borda
-    dist_avg = np.asarray([kendallTau(perm, s0) for perm in sample]*ws).sum()/ws.sum() #np.mean(np.array([kendallTau(s0, perm) for perm in rankings]))
-    n = len(sample[0])
-    try:
-        # FIXME: This is the same as fit_MM, no?
-        theta = optimize.newton(mle_theta_mm_f, 0.01, fprime=mle_theta_mm_fdev, args=(n, dist_avg), tol=1.48e-08, maxiter=500, fprime2=None)
-    except:
-        #if dist_avg == 0.0: return s0, np.exp(-5)#=phi
-        print(f"error: u_phi: s0={s0}, dist_avg={dist_avg}", dist_avg == 0.0)
-        raise
-    if theta < 0:
-        theta = 0.001
-    return theta2phi(theta)
-
-def weighted_median(sample, ws):
-    return uborda(sample, ws)
-
-def uborda(sample, ws):
-    return borda(sample * ws[:, None])
+def find_phi(n, dmin, dmax):
+    imin, imax = np.float64(0),np.float64(1)
+    iterat = 0
+    while iterat < 500:
+        med = imin + (imax-imin)/2
+        d = expected_dist_mm(n,phi_to_theta(med))
+        if d < dmax and d > dmin: return med
+        elif d < dmin : imin = med
+        elif d > dmax : imax = med
+        iterat  += 1
+# end
