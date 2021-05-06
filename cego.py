@@ -210,7 +210,7 @@ def cego(instance, seed, budget, m_ini, budgetGA, eval_ranks, dist_name):
     mm = select_mm(dist_name)
     return pd.DataFrame(dict(
         Fitness = instance.evaluations,
-        x = instance.solutions,
+        x = [ ' '.join(map(str,s)) for s in instance.solutions ],
         m_ini = m_ini,
         seed = seed,
         budget = budget, budgetGA = budgetGA,

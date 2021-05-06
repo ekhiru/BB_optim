@@ -115,7 +115,7 @@ def UMM(instance, seed, budget,
 
     df = pd.DataFrame(res, columns=['rho','phi_sample','Distance'])
     df['Fitness'] = fitnesses
-    df['x'] = sample
+    df['x'] = [ ' '.join(map(str,s)) for s in sample ]
     df['m_ini'] = m_ini
     df['seed'] = seed
     df['budget'] = budget
