@@ -4,9 +4,19 @@ import os.path
 from glob import glob
 import re
 import pandas as pd
+import sys
+
+if len(sys.argv) < 2:
+    res_dir = "./results/"
+else:
+    res_dir = sys.argv[1]
+
+if not os.path.exists(res_dir):
+    sys.stderr.write(f'ERROR: directory {res_dir} was not found!')
+    sys.exit(1)
 
 # traverse root directory, and list directories as dirs and files as files
-for root, dirs, files in os.walk("./results/m1000-er0-dist_hamming/"):
+for root, dirs, files in os.walk(res_dir):
     print(root)
     unique_files = []
     for file in files:
@@ -30,10 +40,11 @@ for root, dirs, files in os.walk("./results/m1000-er0-dist_hamming/"):
         if os.path.isfile(res_file):
             df = pd.read_csv(res_file)
             # Remove old data
+            print(f'Replacing runs {np.intersect1d(df["seed"].unique(),runs)}')
             df = df[~df["seed"].isin(runs)]
             run_data.insert(0, df)
         df = pd.concat(run_data, ignore_index = True)
-        print(f"Writing {res_file}")
+        print(f"Writing runs {runs} in {res_file}")
         df.to_csv(res_file, index=False, compression = "xz")
         for run_file in glob(root + os.sep + file + "-r*.csv.xz"):
             print(f"Deleting {run_file}")
