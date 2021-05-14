@@ -40,7 +40,8 @@ for root, dirs, files in os.walk(res_dir):
         if os.path.isfile(res_file):
             df = pd.read_csv(res_file)
             # Remove old data
-            print(f'Replacing runs {np.intersect1d(df["seed"].unique(),runs)}')
+            common_runs = np.intersect1d(df["seed"].unique(),runs)
+            print(f'Replacing {len(common_runs)} runs {common_runs} ')
             df = df[~df["seed"].isin(runs)]
             run_data.insert(0, df)
         df = pd.concat(run_data, ignore_index = True)
