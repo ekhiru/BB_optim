@@ -48,7 +48,7 @@ for root, dirs, files in os.walk(res_dir):
             df = df[~df["seed"].isin(runs)]
             run_data.insert(0, df)
         df = pd.concat(run_data, ignore_index = True, sort = False)
-        print(f"Writing runs {runs} in {res_file}")
+        print(f"Writing {len(runs)} runs {runs} in {res_file}")
         df.to_csv(res_file, index=False, compression = "xz")
         for run_file in to_delete:
             print(f"Deleting {run_file}")
