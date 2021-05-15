@@ -30,7 +30,7 @@ def max_dist(n):
         int
             Maximum distance between permutations of given n length
     """
-    return int(n*(n-1)/2)
+    return n * (n - 1) // 2 # Integer division
 
 def compose(s, p):
     """This function composes two given permutations
@@ -749,6 +749,7 @@ def mergeSort_rec(lst):
     return result, (a + b + c)
 
 
+# MANUEL: Should this be an integer?
 def dist_at_uniform(n): return (n - 1) * n / 4
 
 # MANUEL: I'm not going to change it but I think this interface is error-prone

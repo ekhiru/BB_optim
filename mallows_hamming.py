@@ -25,9 +25,12 @@ def uHungarian(sample, ws):
     #     print(np.around(ws,2))
     return col_ind
 
+# MANUEL: I don't think this is true, it seems closer to n - 1
 def dist_at_uniform(n): return n
 
+# Hamming distance
 def distance(a,b):
+    # MANUEL: Why not simply (a != b).sum() ?
     return len(a) - (a == b).sum()
 
 
