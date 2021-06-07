@@ -1,7 +1,7 @@
 import numpy as np
 import itertools as it
 import scipy as sp
-from mallows_model import phi_to_theta, theta_to_phi
+from mallows_model import *
 
 def weighted_median(sample, ws):
     """
@@ -129,39 +129,7 @@ def borda_partial(rankings, w, k):
     return borda
 
 
-def check_theta_phi(theta, phi):
-    """This function automatically converts theta to phi or phi to theta as
-    list or float depending on the values and value types given as input
-        Parameters
-        ----------
-        theta: float or list
-            Dispersion parameter theta to convert to phi (can be None)
-        phi: float or list
-            Dispersion parameter phi to convert to theta (can be None)
-        Returns
-        -------
-        tuple
-            tuple containing both theta and phi (of list or float type depending on the input type)
-    """
-    # MANUEL: If we do not give an error, the code continues and who knows what may happen.
-    # if not ((phi is None) ^ (theta is None)):
-    #     print("Set valid values for phi or theta")
-    assert (phi is None) ^ (theta is None), "check_theta_phi: you need to provide either theta or phi but not both"
-    # MANUEL: theta_to_phi and phi_to_theta work on numpy arrays, so they will do the right thing independently if the input is a scalar, a list or a numpy array.
-    # if phi is None and type(theta)!=list:
-    #     phi = theta_to_phi(theta)
-    # if theta is None and type(phi)!=list:
-    #     theta = phi_to_theta(phi)
-    # if phi is None and type(theta)==list:
-    #     phi = [theta_to_phi(t) for t in theta]
-    # if theta is None and type(phi)==list:
-    #     theta = [phi_to_theta(p) for p in phi]
-    # return np.array(theta), np.array(phi)
-    if phi is None:
-        phi = theta_to_phi(theta)
-    else:
-        theta = phi_to_theta(phi)
-    return theta, phi
+
 
 def expected_dist_mm(n, theta=None, phi=None):
     """Compute the expected distance, MM under the Kendall's-tau distance
@@ -299,24 +267,24 @@ def psi_mm(n, theta=None, phi=None):
         return np.prod((1-np.power(phi,rnge))/(1-phi))
     theta, phi = check_theta_phi(theta, phi)
 
-def prob_mode(n, theta):
-    """This function computes the probability mode
-        Parameters
-        ----------
-        n: int
-            Length of the permutation in the considered model
-        theta: float
-            Real dispersion parameter
-        Returns
-        -------
-        float
-            The probability mode
-    """
-    rnge = np.array(range(n-1))
-    psi = (1 - np.exp(( - n + rnge )*(theta[rnge])))/(1 - np.exp( -theta[rnge]))
-    return np.prod(1.0/psi)
+# def prob_mode(n, theta):
+#     """This function computes the probability mode
+#         Parameters for both Mallows and Generalized Mallows
+#         ----------
+#         n: int
+#             Length of the permutation in the considered model
+#         theta: float/int/list/numpy array (see theta, params)
+#             Real dispersion parameter
+#         Returns
+#         -------
+#         float
+#             The probability mode
+#     """
+#     psi = (1 - np.exp(( - n + np.arange(n-1) )*(theta)))/(1 - np.exp( -theta))
+#     psi = np.prod(psi)
+#     return np.prod(1.0/psi)
 
-def prob(n, theta, dist):
+def prob(sigma, sigma0, theta=None,phi=None):
     """This function computes the probability of a permutation given a distance to the consensus
         Parameters
         ----------
@@ -331,10 +299,12 @@ def prob(n, theta, dist):
         float
             Probability of the permutation
     """
-    rnge = np.array(range(n-1))
-    psi = (1 - np.exp(( - n + rnge )*(theta)))/(1 - np.exp( -theta))
+    theta, phi = check_theta_phi(theta, phi)
+    n = len(sigma)
+    # rnge = np.array(range(n-1))
+    psi = (1 - np.exp(( - n + np.arange(n-1) )*(theta)))/(1 - np.exp( -theta))
     psi = np.prod(psi)
-    return np.exp(-theta*dist) / psi
+    return np.exp(-theta * distance(sigma,sigma0)) / psi
 
 def prob_sample(perms, sigma, theta=None, phi=None):
     """This function computes the probabilities for each permutation of a sample
@@ -594,7 +564,7 @@ def sample(m, n, k=None, theta=None, phi=None, s0=None):
     if k is not None and n is None:
         # MANUEL: If we don't raise an error the program continues which makes debugging difficult.
         raise ValueError("Error, n is not given!")
-        
+
     theta, phi = check_theta_phi(theta, phi)
 
     if n is not None: #TODO, n should be always given
@@ -777,7 +747,7 @@ def distance(a, b=None):
         b = np.arange(n)
     a = np.asarray(a)
     b = np.asarray(b)
-    
+
     # check if A contains NaNs
     msk = np.isnan(a)
     if msk.any(): # A contains NaNs
@@ -974,7 +944,7 @@ def find_phi(n, dmin, dmax):
     iterat = 0
     while iterat < 500:
         med = (imax + imin) / 2
-        # MANUEL: If expected_dist_mm accepts both phi and theta, why convert?  
+        # MANUEL: If expected_dist_mm accepts both phi and theta, why convert?
         d = expected_dist_mm(n, theta = phi_to_theta(med))
         if d < dmin: imin = med
         elif d > dmax: imax = med
@@ -983,5 +953,25 @@ def find_phi(n, dmin, dmax):
     # MANUEL: This function can stop without returning anything, which will
     # lead to a bug. Let's make sure we give an error.
     assert False, "Max iterations reached"
-    
+
+
+# TODO, move to MM and merge with find phi
+def find_proba_mode(n, target_prob, tol=1e-10, maxiter=1000):
+    # imax, imin, med: vlalues for phi
+    imin, imax = np.float64(0), np.float64(1)
+    iterat = 0
+    while iterat < 500:
+        med = (imax + imin) / 2
+        p = prob(np.arange(n), np.arange(n), theta=None,phi=med)
+        if iterat%20==0: print("trace find proba", iterat, abs(p - target_prob))
+        if abs(p - target_prob) < tol:return med
+        if p > target_prob: imin = med
+        else : imax = med
+
+        iterat += 1
+    # MANUEL: This function can stop without returning anything, which will
+    # lead to a bug. Let's make sure we give an error.
+    assert False, "Max iterations reached"
+
+
 # end

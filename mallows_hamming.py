@@ -1,7 +1,7 @@
 import numpy as np
 import itertools as it
 from scipy.optimize import linear_sum_assignment
-from mallows_model import phi_to_theta, theta_to_phi
+from mallows_model import *
 
 
 def weighted_median(sample, ws):
@@ -14,15 +14,15 @@ def uHungarian(sample, ws):
       for j in range(n):
         freqs = (sample[:,i]==j)
         wmarg[i,j] = (freqs * ws).sum()
-    row_ind, col_ind  = linear_sum_assignment( -wmarg )
-    # import matplotlib.pyplot as plt
-    # import seaborn as sns
-    # if len(ws)%40==0 or len(ws)==10:
-    #     print(np.around(wmarg,2))
-    #     sns.heatmap(-wmarg)
-    #     plt.show()
-    #     print(col_ind)
-    #     print(np.around(ws,2))
+    row_ind, col_ind  = linear_sum_assignment( - wmarg )
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    # if len(ws)%40==0 or len(ws)<=15:
+        # print(np.around(wmarg,2))
+        # sns.heatmap(-wmarg)
+        # plt.show()
+        # print(col_ind)
+        # print(np.around(ws,2))
     return col_ind
 
 # MANUEL: I don't think this is true, it seems closer to n - 1
@@ -86,17 +86,6 @@ def expected_dist(n, phi):
         if k<n : x_n_1 += aux
     return (n * x_n - x_n_1 * np.exp( theta )) / x_n
 
-#     double Hamming::expectation(double theta){
-#     double x_n = 0 , x_n_1 = 0, aux = 0 ;
-#     for (int k = 0 ; k <= n_ ; k ++){
-#         aux = pow (exp(theta )-1, k) / facts_[ k ];
-#         x_n += aux;
-#         if (k < n_ )
-#             x_n_1 += aux ;//pow (exp(theta )-1, k) / facts_[ k ];
-#     }
-#     return (double )(n_ * x_n - x_n_1 * exp( theta )) / x_n;
-# }
-
 
 
 # FIXME: COPY PASTEQ!!!! The comment says it searches for theta, but the function is called find_phi
@@ -118,3 +107,65 @@ def find_phi(n, dmin, dmax): #NO
     # MANUEL: This function can stop without returning anything, which will
     # lead to a bug. Let's make sure we give an error.
     assert False, "Max iterations reached"
+
+def prob_mode(n,theta):
+    return proba(np.arange(n), np.arange(n),theta)
+
+
+# def proba(sigma,sigma0,theta=0):
+def prob(sigma, sigma0, theta=None,phi=None):
+    # theta, phi = check_theta_phi(theta, phi)
+    theta, phi = check_theta_phi(theta, phi)
+    d = distance(sigma,sigma0)
+    n = len(sigma)
+    facts_ = np.array([1,1]+[0]*(n-1),dtype=np.float) # TODO precompute
+    # deran_num_ = np.array([1,0]+[0]*(n-1),dtype=np.float)
+    for i in range(2,n+1):
+        facts_[i] = facts_[i-1] * i
+    sum = 0
+    for i in range(n+1):
+        sum += (((np.exp(theta)-1)**i)/facts_[ i ])
+    psi = sum * np.exp(-n * theta )*facts_[ n ]
+    return np.exp(-d * theta) / psi
+
+
+
+
+#
+# double Hamming::psi_hm(double theta){ //fligner's
+#
+#     double  sum=0;
+#     Generic gen;
+#     for ( int i = 0 ; i <= n_ ; i ++ )
+#         sum += pow((exp(theta)-1),i)/gen.factorial(i)
+#     sum = sum * exp( - n_ * theta) * gen.factorial( n_ );
+#     return sum;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # end

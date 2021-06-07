@@ -1,3 +1,7 @@
+from imp import reload
+import umm as umm
+import pandas as pd
+import numpy as np
 import time
 class Timer:
     def __init__(self):
@@ -11,8 +15,6 @@ class Timer:
     def reset(self):
         self.elapsed()
 
-import pandas as pd
-import numpy as np
 
 def get_problem(instance_name):
     instance_name = instance_name.lower()
@@ -33,6 +35,7 @@ def get_problem(instance_name):
 
 def run_once(algo_name, instance_name, seed, out_filename = None, **algo_params):
     if algo_name == "UMM":
+        reload(umm)
         from umm import UMM
         algo = UMM
     elif algo_name == "CEGO":
